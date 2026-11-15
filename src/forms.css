@@ -1,0 +1,258 @@
+/* Shared form validation styles */
+.field-error{display:block;color:#b3261e;font-size:13px;line-height:1.35;margin:4px 0 10px}
+input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:#b3261e!important;background:#fff7f6!important}
+.form-error-summary{border:1px solid #e4b4ae;background:#fff4f2;color:#7a1d16;border-radius:6px;padding:10px 14px;margin:0 0 14px;font-size:14px}
+.form-error-summary ul{margin:6px 0 0;padding-left:18px}
+.form-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.field-hint{display:block;color:#6b6460;font-size:12px;margin:2px 0 6px}
+form button.back-to-main-btn,button.back-to-main-btn{background:#fff;color:#811d29;border:1px solid #811d29;border-radius:6px;padding:10px 16px;font-weight:600;cursor:pointer}
+form button.back-to-main-btn:hover,button.back-to-main-btn:hover{background:#811d29;color:#fff}
+
+/* ---------- Two fields side by side ---------- */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.form-row>div{min-width:0}
+.form-row input,.form-row select{width:100%}
+select[aria-invalid="true"]{border-color:#b3261e!important;background:#fff7f6!important}
+
+/* ---------- Events form: picked event preview ---------- */
+.picked-event{display:flex;flex-wrap:wrap;gap:6px 22px;padding:10px 12px;margin:4px 0 12px;background:#fff8e7;border:1px solid #ecd9b0;border-radius:6px;font-size:14px}
+
+/* ---------- Admin tables, stats, badges ---------- */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:0 0 22px}
+.stat-card{display:flex;flex-direction:column;gap:4px;padding:14px 16px;background:#fff;border:1px solid #eadfd3;border-radius:10px}
+.stat-card span{font-size:12px;color:#7a6f66;text-transform:uppercase;letter-spacing:.4px}
+.stat-card strong{font-size:22px;color:#5c3822;font-variant-numeric:tabular-nums}
+.stat-card small{font-size:12px;color:#7a6f66}
+.stat-card.stat-alert{border-color:#e5b45f;background:#fff8e7}
+.filter-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 14px}
+.filter-row select,.filter-row input[type="month"]{padding:9px 10px;border:1px solid #ccc;border-radius:6px;font:inherit;background:#fff}
+.filter-row .management-search{flex:1 1 220px;width:auto;margin:0}
+.table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #eadfd3;border-radius:8px;background:#fff}
+.admin-table{width:100%;border-collapse:collapse;font-size:14px}
+.admin-table th{position:sticky;top:0;background:#faf4ea;color:#5c3822;text-align:start;font-weight:600;padding:10px;border-bottom:1px solid #eadfd3;white-space:nowrap}
+.admin-table td{padding:9px 10px;border-bottom:1px solid #f1e9de;vertical-align:top}
+.admin-table tr:last-child td{border-bottom:0}
+.admin-table .num{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+.admin-table.inner{margin-top:10px;border:1px solid #eadfd3}
+.cell-sub{display:block;color:#7a6f66;font-size:12px;margin-top:2px}
+.row-muted td{color:#9a8f86}
+.row-actions{white-space:nowrap}
+.row-actions button{margin:0 6px 4px 0;padding:5px 10px;font-size:13px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;text-transform:capitalize;white-space:nowrap}
+.badge-pending{background:#fff1d6;color:#8a5a00}
+.badge-verified,.badge-active{background:#e4f4e6;color:#1f6b2c}
+.badge-rejected,.badge-cancelled{background:#fbe4e2;color:#9b2219}
+.badge-paused{background:#ececec;color:#555}
+.badge-due{background:#fbe4e2;color:#9b2219}
+.history-row td{background:#fffcf6}
+.month-grid{display:flex;flex-wrap:wrap;gap:6px}
+.month-chip{font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid}
+.month-chip.paid{background:#e4f4e6;border-color:#bfe1c4;color:#1f6b2c}
+.month-chip.due{background:#fff4f2;border-color:#f0c7c2;color:#9b2219}
+.pay-panel{border:2px solid #e5b45f;border-radius:10px;padding:16px;margin:18px 0;background:#fffdf7}
+
+/* ---------- Public donate buttons + modal forms ---------- */
+.donate-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:20px 0 10px}
+.donate-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:4px;border:1px solid var(--maroon,#811d29);font-weight:600;font-size:15px;font-family:inherit;cursor:pointer;background:var(--maroon,#811d29);color:#fff}
+.donate-btn.secondary{background:#fff;color:var(--maroon,#811d29)}
+.donate-btn:hover{filter:brightness(1.08)}
+.donate-office-note{font-size:13px!important;color:#6d6258!important}
+.modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(30,18,14,.55);display:flex;align-items:flex-start;justify-content:center;padding:4vh 16px;overflow-y:auto}
+.modal-dialog{width:100%;max-width:600px;background:#fffdf9;border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:start;color:#302a29}
+.modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid #eadfd3}
+.modal-header h2{margin:0!important;font-size:22px!important;color:var(--maroon,#811d29)}
+.modal-close{background:none;border:0;color:#5c3822;cursor:pointer;padding:4px;border-radius:4px}
+.modal-close:hover{background:#f4ebdd}
+.modal-body{padding:18px 20px 22px}
+.public-form label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+.public-form input,.public-form select,.public-form textarea{width:100%;padding:10px 12px;border:1px solid #d5c8b8;border-radius:6px;font:inherit;font-size:15px;background:#fff;color:#302a29}
+.public-form input:focus,.public-form select:focus,.public-form textarea:focus{outline:2px solid #c99a4f;outline-offset:1px}
+.public-form-intro{font-size:14px!important;line-height:1.55;color:#5b524c!important;margin:0 0 6px!important;max-width:none!important}
+.public-submit{width:100%;margin-top:18px;padding:13px;border:0;border-radius:6px;background:var(--maroon,#811d29);color:#fff;font-weight:600;font-size:16px;font-family:inherit;cursor:pointer}
+.public-submit:disabled{opacity:.6;cursor:wait}
+.pay-box{margin:8px 0 2px;padding:10px 12px;border-radius:6px;background:#f5eddf;font-size:14px}
+.pay-box small{display:block;margin-top:6px;color:#6d6258}
+.pay-value{margin:4px 0 0!important;font-size:16px!important;font-weight:700;color:#302a29!important;white-space:pre-line;max-width:none!important}
+.pay-missing{margin:4px 0 0!important;color:#8a5a00!important;font-size:13px!important;max-width:none!important}
+.pay-card-link{display:inline-block;padding:8px 14px;border-radius:6px;background:#1f4e8c;color:#fff!important;font-weight:600}
+.form-success{padding:16px;border-radius:8px;background:#e4f4e6;color:#1f6b2c;font-size:15px!important;line-height:1.6;max-width:none!important}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}.modal-backdrop{padding:0}.modal-dialog{border-radius:0;min-height:100%}}
+.event-form select{width:100%;padding:11px 12px;border:1px solid #ccc;border-radius:6px;font:inherit;background:#fff;margin:0 0 6px}
+.filter-row button{padding:9px 14px;border-radius:6px;cursor:pointer}
+
+/* ---------- Public: worship schedule cards ---------- */
+.hours-list{display:grid;gap:14px;max-width:760px;margin:26px auto 0;text-align:start}
+.hours-card{display:flex;gap:18px;align-items:flex-start;padding:18px 22px;background:#fffdf5;border:1px solid #ead7a8;border-radius:8px}
+.hours-card.closed{opacity:.85}
+.hours-icon{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#f8eadb;color:#c96a26}
+.hours-card h3{margin:0 0 4px;font-family:'Playfair Display',serif;font-size:20px;color:#2f2420}
+.hours-card p{margin:0!important;max-width:none!important}
+.hours-time{font-size:16px!important;color:#7a5a1e!important;font-variant-numeric:tabular-nums}
+.hours-card.closed .hours-time{color:#9b2219!important}
+.hours-title{color:#c96a26!important;font-weight:600}
+.hours-note{font-size:13px!important;color:#6d6258!important;margin-top:4px!important}
+.hours-empty,.hours-festival{margin-top:18px!important;font-style:italic}
+.panjika-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;color:#a9762e;font-weight:600}
+.panjika-link:hover{color:var(--maroon,#811d29)}
+
+/* ---------- Public: event timings ---------- */
+.event-times{list-style:none;margin:12px 0 0;padding:10px 12px;background:#faf4ea;border-radius:6px;display:grid;gap:4px;font-size:13px}
+.event-times li{display:flex;justify-content:space-between;gap:10px}
+.event-times span{color:#6d6258}
+.event-times b{color:#4e1720;font-variant-numeric:tabular-nums}
+.event-location{display:flex;align-items:center;gap:5px;margin:10px 0 0;font-size:13px;color:#6d6258}
+.event-description{margin:10px 0 0;font-size:14px;line-height:1.55;color:#4f4a48}
+
+/* ---------- Public: contact details ---------- */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;max-width:980px;margin:28px auto 22px;text-align:start}
+.contact-item{display:flex;gap:14px;align-items:flex-start}
+.contact-icon{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12);color:#e9c98f}
+.contact-item small{display:block;letter-spacing:1.2px;text-transform:uppercase;font-size:11px;color:#e0c9b5;margin-bottom:4px}
+.contact-section .contact-item p{margin:0 0 4px!important;color:#fff!important;font-size:15px!important;max-width:none!important}
+.contact-item a{color:#ffd9a0;text-decoration:underline;text-underline-offset:2px}
+.contact-role{color:#e0c9b5}
+.contact-link{display:inline-flex;align-items:center;gap:5px;margin-top:4px;font-size:14px}
+.contact-btn{background:#d97a2b;border-color:#d97a2b}
+
+/* ---------- Admin extras ---------- */
+.form-row.three{grid-template-columns:repeat(3,1fr)}
+.tab-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.tab{padding:10px 16px;border:1px solid #eadfd3;border-radius:8px;background:#fff;color:#5c3822;cursor:pointer;font-weight:600}
+.tab.active{border-color:#8b4513;background:#fff8e7}
+.stat-card.stat-income strong{color:#1f6b2c}
+.stat-card.stat-expense strong{color:#9b2219}
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:0 0 20px}
+.report-grid h4,.events-list h4{margin:0 0 8px;color:#5c3822}
+.admin-table.compact td{padding:7px 10px}
+.income-cell{color:#1f6b2c}
+.expense-cell{color:#9b2219}
+.row-strong td{font-weight:600}
+.row-link{margin-right:6px;font-size:13px;color:#8b4513;text-decoration:underline}
+.message-body{white-space:pre-wrap;margin:0;line-height:1.6}
+.badge-msg-new{background:#fff1d6;color:#8a5a00}
+.badge-msg-read{background:#ececec;color:#555}
+.badge-msg-replied{background:#e4f4e6;color:#1f6b2c}
+@media(max-width:700px){.report-grid,.form-row.three{grid-template-columns:1fr}.hours-card{padding:14px}}
+.contact-section>p{color:#ecd9cf!important}
+
+/* ---------- Banner ticker (message over the top of the banner photo) ---------- */
+.hero-ticker{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:8px;padding:0 10px;height:38px;background:linear-gradient(90deg,rgba(84,18,26,.88),rgba(122,40,22,.82));color:#fff3d6;font-family:'Playfair Display','Noto Serif Bengali','Kohinoor Bangla','Bangla Sangam MN',serif;font-size:17px;letter-spacing:.3px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.ticker-viewport{flex:1;overflow:hidden;white-space:nowrap;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.ticker-track{display:inline-flex;animation:ticker-scroll 90s linear infinite}
+.ticker-track span{padding-right:0;white-space:pre}
+.hero-ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+[dir="rtl"] .ticker-track{animation-direction:reverse}
+@media(prefers-reduced-motion:reduce){.ticker-track{animation:none}.ticker-track span+span{display:none}.ticker-viewport{white-space:normal;text-overflow:ellipsis}}
+.ticker-audio{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,243,214,.6);background:rgba(255,255,255,.12);color:#fff3d6;display:grid;place-items:center;cursor:pointer}
+.ticker-audio:hover{background:rgba(255,255,255,.25)}
+@media(max-width:560px){.hero-ticker{height:30px;font-size:13px}}
+
+/* ---------- Banner buttons ---------- */
+.hero-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px 16px;background:#3d1a12}
+.hero-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:4px;border:1px solid rgba(255,243,214,.55);color:#fff3d6;font-weight:600;font-size:15px}
+.hero-btn.primary{background:#d97a2b;border-color:#d97a2b;color:#fff}
+.hero-btn:hover{filter:brightness(1.1)}
+
+/* ---------- About: story, mission, deities ---------- */
+.story-section{background:#fffdf9}
+.story-body{white-space:pre-line;font-size:16px;line-height:1.75;color:#4f4a48;max-width:860px}
+.highlight-section{padding:clamp(50px,6vw,85px) clamp(22px,8vw,125px);text-align:center}
+.highlight-section h2{font-family:'Playfair Display',serif;color:var(--maroon);font-size:clamp(28px,3vw,40px);margin:0 0 26px}
+.mission-section{background:#f7efe2}
+.mission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;text-align:start}
+.mission-card{background:#fff;border-top:3px solid #d97a2b;border-radius:6px;padding:20px;box-shadow:0 6px 18px rgba(57,37,19,.06)}
+.mission-card h3{margin:0 0 8px;color:#4e1720;font-family:'Playfair Display',serif;font-size:20px}
+.mission-card p{margin:0;line-height:1.6;color:#4f4a48;font-size:14px}
+.deity-section{background:#fffdf9}
+.deity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;text-align:start}
+.deity-card{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.deity-card img,.deity-placeholder{display:block;width:100%;height:220px;object-fit:cover;background:#f2e3cc;color:#a9762e}
+.deity-placeholder{display:grid;place-items:center}
+.deity-card>div:last-child{padding:16px 18px}
+.deity-subtitle{display:inline-block;font-size:12px;font-weight:700;color:#c96a26;background:#fbeee0;border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.deity-card h3{margin:0 0 6px;font-family:'Playfair Display',serif;color:#4e1720;font-size:21px}
+.deity-card p{margin:0;line-height:1.6;color:#4f4a48;font-size:14px}
+.join-box{margin:34px auto 0;max-width:720px;padding:24px;border:1px dashed #d9b98a;border-radius:10px;background:#fff8ec}
+.join-box h3{margin:0 0 6px;font-family:'Playfair Display',serif;color:var(--maroon)}
+.join-box p{margin:0 0 14px;color:#4f4a48}
+
+/* ---------- Gallery filters ---------- */
+.gallery-filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.gallery-filters button{padding:7px 14px;border-radius:999px;border:1px solid #d9b98a;background:#fff;color:#5c3822;cursor:pointer;font-weight:600;font-size:13px}
+.gallery-filters button.active{background:var(--maroon,#811d29);border-color:var(--maroon,#811d29);color:#fff}
+
+/* ---------- Contact map + footer ---------- */
+.contact-map{display:block;width:100%;max-width:980px;height:300px;margin:26px auto 0;border:0;border-radius:8px}
+.site-footer{text-align:start!important;padding:40px clamp(20px,6vw,92px) 20px!important;font-size:14px!important}
+.footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1.2fr 1.2fr;gap:28px;max-width:1200px;margin:0 auto}
+.footer-brand{display:block;font-family:'Playfair Display',serif;font-size:19px;color:#fff;margin-bottom:8px}
+.site-footer h4{margin:0 0 10px;color:#d4a056;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.site-footer p{margin:0 0 6px;line-height:1.55}
+.site-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.site-footer a{color:#e7ddd5}
+.site-footer a:hover{color:#ffd9a0}
+.footer-copy{text-align:center;margin:30px 0 0!important;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:12px}
+@media(max-width:850px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.footer-grid{grid-template-columns:1fr}.contact-map{height:240px}}
+
+/* ---------- Income & Expenditure statement ---------- */
+.statement{background:#fff;border:1px solid #eadfd3;border-radius:10px;padding:24px;margin-top:10px}
+.statement-header{text-align:center;margin-bottom:18px}
+.statement-header h2{margin:0;color:#4e1720;font-size:22px}
+.statement-header h3{margin:10px 0 2px;font-size:17px;color:#2f2420}
+.statement-header p{margin:2px 0;color:#6d6258;font-size:13px}
+.statement-block{margin:0 0 24px}
+.statement-block h4{margin:0 0 8px;color:#5c3822}
+.statement-table{width:100%;border-collapse:collapse;font-size:14px}
+.statement-table th,.statement-table td{border:1px solid #d8cbbb;padding:7px 10px;vertical-align:top}
+.statement-table thead th{background:#faf4ea;text-align:start}
+.statement-table tfoot th{background:#f4ead9}
+.statement-table .num{text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums;width:16%}
+.statement-table .balancing{font-style:italic;font-weight:600}
+.statement-summary{margin:8px 0 0;font-size:13px;color:#4f4a48}
+.statement-signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:56px;text-align:center;font-size:13px;color:#4f4a48}
+.statement-signatures span{display:block;border-top:1px solid #6d6258;margin-bottom:6px}
+.statement-printed{text-align:end;font-size:11px;color:#8a7f76;margin:16px 0 0}
+@media print{
+  body *{visibility:hidden!important}
+  .print-area,.print-area *{visibility:visible!important}
+  .print-area{position:absolute;left:0;top:0;width:100%;border:0!important;padding:0!important}
+  .no-print{display:none!important}
+  @page{margin:16mm}
+}
+@media(max-width:560px){.hero{aspect-ratio:auto!important;height:calc(100vw * 367 / 1536 + 30px)!important;min-height:0!important;background-size:100% auto!important;background-position:center 30px!important}}
+
+/* ---------- Floating location button (bottom-left) with Google Map ---------- */
+.location-float{position:fixed;left:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.location-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:0;border-radius:999px;background:#d97a2b;color:#fff;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 8px 22px rgba(60,25,10,.35)}
+.location-btn:hover{background:#c3681f}
+.location-float.open .location-btn{background:var(--maroon,#811d29)}
+.location-panel{width:min(360px,calc(100vw - 36px));background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 16px 40px rgba(40,20,10,.35);border:1px solid #eadfd3}
+.location-panel-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#54121a;color:#fff3d6}
+.location-panel-head strong{display:inline-flex;align-items:center;gap:6px;font-size:14px}
+.location-panel-head button{background:none;border:0;color:#fff3d6;cursor:pointer;padding:2px;display:grid;place-items:center}
+.location-panel iframe{display:block;width:100%;height:240px;border:0}
+.location-address{margin:10px 12px 0;font-size:13px;color:#4f4a48;line-height:1.5}
+.location-directions{display:inline-flex;align-items:center;gap:5px;margin:10px 12px 12px;font-weight:600;color:#a9562a}
+@media(max-width:560px){.location-btn span{display:none}.location-btn{padding:13px}.location-float{left:12px;bottom:12px}}
+@media print{.location-float{display:none!important}}
+/* Gallery admin: photo count per organisation and photo grid */
+.org-photo-counts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.org-photo-counts button{padding:7px 12px;border-radius:999px;border:1px solid #d9b98a;background:#fff;color:#5c3822;cursor:pointer;font-size:13px}
+.org-photo-counts button b{margin-left:6px;background:#f2dfb9;border-radius:999px;padding:1px 8px}
+.org-photo-counts button.active{background:#811d29;border-color:#811d29;color:#fff}
+.org-photo-counts button.active b{background:rgba(255,255,255,.25)}
+.filter-row select{padding:10px;border:1px solid #ccc;border-radius:6px;font:inherit}
+.admin-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.admin-gallery-grid .event-item{margin:0}
+.admin-gallery-grid .event-image-preview{max-width:none;height:170px}
+.admin-gallery-grid .event-item button{margin:4px 6px 0 0}
+/* Worship schedule in two columns (one column on phones) */
+.hours-list{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1040px}
+@media(max-width:700px){.hours-list{grid-template-columns:1fr}}
+/* Photo enhancement */
+.enhance-option{font-size:14px;margin-top:4px}
+.admin-gallery-grid .event-item .enhance-btn,.enhance-all-row .enhance-btn{background:linear-gradient(135deg,#c76a00,#a3236b)}
+.enhance-all-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 14px}
+.enhance-all-row .enhance-btn{padding:10px 16px;border:0;border-radius:6px;color:#fff;font:inherit;font-weight:600;cursor:pointer}

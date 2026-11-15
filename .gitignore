@@ -1,0 +1,23 @@
+# Dependencies and build output
+node_modules/
+dist/
+dist-ssr/
+
+# Secrets — never commit real keys
+.env
+.env.*
+!.env.example
+
+# Local backups and design files (kept on this computer only)
+_archive/
+
+# Capacitor native builds
+android/
+ios/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

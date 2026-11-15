@@ -1,0 +1,12 @@
+
+/* ---------- Photo upload (Gallery, Deities) ---------- */
+.image-picker{margin:6px 0 10px}
+.image-picker-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:4px 0}
+.image-picker-button{display:inline-flex!important;align-items:center;gap:6px;padding:10px 16px;border:1px dashed #b98a4e;border-radius:8px;background:#fff8ec;color:#5c3822;font-weight:600;cursor:pointer;margin:0!important}
+.image-picker-button:hover{background:#fbeed8}
+.visually-hidden-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.image-picker input[type=file]:focus-visible+.image-picker-name,.image-picker-row:focus-within .image-picker-button{outline:2px solid #c99a4f;outline-offset:2px}
+.image-picker-name{font-size:13px;color:#4f4a48}
+.image-picker-preview{display:block;max-width:260px;max-height:180px;margin-top:8px;border-radius:6px;border:1px solid #eadfd3;object-fit:cover}
+.link-option{margin:4px 0 12px;font-size:14px}
+.link-option summary{cursor:pointer;color:#8b4513;margin-bottom:6px}

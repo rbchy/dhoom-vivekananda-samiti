@@ -1,0 +1,27 @@
+.social-links{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.social-links ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.social-title{font-family:'Playfair Display',serif;font-weight:600;font-size:15px}
+.social-btn{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:0;padding:0;cursor:pointer;color:#fff;transition:transform .2s,box-shadow .2s,filter .2s;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.social-btn:hover,.social-btn:focus-visible{transform:translateY(-3px);box-shadow:0 8px 16px rgba(0,0,0,.25);filter:brightness(1.08)}
+.social-btn:focus-visible{outline:3px solid #f2c063;outline-offset:2px}
+.social-facebook{background:#1877f2}
+.social-youtube{background:#ff0000}
+.social-instagram{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285aeb 90%)}
+.social-whatsapp{background:#25d366}
+.social-tiktok{background:#111}
+.social-share{background:#d97a2b}
+.social-copied{font-size:13px;color:#e9c98f}
+.social-light .social-title{color:var(--maroon,#811d29)}
+.social-light .social-copied{color:#7a5b3a}
+.social-dark .social-title{color:#fff}
+.contact-section .social-links{justify-content:center;margin:26px 0 6px}
+.site-footer .social-links{margin-top:14px}
+.site-footer .social-btn{width:38px;height:38px}
+@media print{.social-links{display:none}}
+/* Follow us + Send us a message, under the two hero buttons */
+.hero-actions{align-items:center}
+.hero-connect{flex-basis:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 20px;padding-top:12px;margin-top:2px;border-top:1px solid rgba(255,243,214,.15)}
+.hero-connect .social-links{justify-content:center}
+.hero-connect .social-title{color:#fff3d6}
+.hero-message-btn{background:transparent;cursor:pointer;font-family:inherit}
+.hero-message-btn:hover{background:rgba(255,243,214,.1)}

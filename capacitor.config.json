@@ -1,0 +1,12 @@
+{
+  "appId": "org.dhoomvivekanandasamiti.app",
+  "appName": "Dhoom Vivekananda Samiti",
+  "webDir": "dist",
+  "backgroundColor": "#54121a",
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}
