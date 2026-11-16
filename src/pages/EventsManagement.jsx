@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
+import { copyText, shareText } from '../lib/share'
 import { checkText, checkUrl, cleanErrors, todayISO } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import { describeDbError } from '../lib/dbErrors'
@@ -759,6 +760,14 @@ export default function EventsManagement() {
                 onClick={() => handleEdit(item)}
               >
                 Edit
+              </button>
+
+              <button
+                type="button"
+                title="Copy Bangla + English text with link, for Facebook groups, WhatsApp, TikTok"
+                onClick={async () => setMessage((await copyText(shareText('event', item, 'both'))) ? 'Copied for social media — paste it in a Facebook group, WhatsApp channel or TikTok. / সোশ্যাল মিডিয়ার জন্য কপি হয়েছে।' : 'Could not copy.')}
+              >
+                📋 Copy for social
               </button>
 
               <button

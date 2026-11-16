@@ -65,6 +65,14 @@ $$;
 
 -- is_temple_admin() (main admin only) stays exactly as before.
 
+-- events, gallery, announcements and temple_content were set up in the dashboard
+-- with rules that call is_admin(). Make it mean exactly "main admin", so the new
+-- accounts admin and secretary roles can never write to those tables directly.
+create or replace function public.is_admin()
+returns boolean language sql stable security definer set search_path = public as $$
+  select public.is_temple_admin();
+$$;
+
 -- Which admin approves requests for a table? null = table not allowed.
 create or replace function public.change_approver(p_table text)
 returns text language sql immutable as $$

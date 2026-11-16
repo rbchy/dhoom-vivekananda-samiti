@@ -1,0 +1,50 @@
+/* Share buttons under each event / announcement */
+.post-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(111, 23, 34, .2);
+}
+.post-share-label {
+  font-size: .82rem;
+  color: #7a5c4a;
+  margin-right: 2px;
+}
+.post-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.post-share-btn:hover,
+.post-share-btn:focus-visible { transform: translateY(-1px); opacity: .9; }
+.post-share-btn:focus-visible { outline: 2px solid #6f1722; outline-offset: 2px; }
+.post-share-whatsapp { background: #1f9d55; }
+.post-share-facebook { background: #1877f2; }
+.post-share-messenger { background: #7b4dff; }
+.post-share-copy,
+.post-share-more { background: #6f1722; }
+.post-share-copied {
+  font-size: .8rem;
+  color: #1f6b3a;
+}
+
+/* Post opened from a shared link */
+.post-highlight {
+  animation: post-highlight 2.4s ease-out 1;
+  scroll-margin-top: 90px;
+}
+@keyframes post-highlight {
+  0%, 30% { box-shadow: 0 0 0 4px rgba(214, 152, 40, .85); }
+  100% { box-shadow: 0 0 0 0 rgba(214, 152, 40, 0); }
+}

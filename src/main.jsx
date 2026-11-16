@@ -13,6 +13,7 @@ import PublicContactForm from './components/PublicContactForm'
 import BackToTopButton from './components/BackToTopButton'
 import PhotoSlideshow from './components/PhotoSlideshow'
 import SocialLinks from './components/SocialLinks'
+import PostShare from './components/PostShare'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import { supabase } from './lib/supabaseClient'
@@ -102,6 +103,20 @@ function App() {
   const [mapOpen, setMapOpen] = useState(false)
 
   const t = key => translate(language, key)
+
+  // A shared link (?event=<id> or ?notice=<id>) scrolls to that post and highlights it once
+  const [sharedPostDone, setSharedPostDone] = useState(false)
+  useEffect(() => {
+    if (sharedPostDone) return
+    const params = new URLSearchParams(window.location.search)
+    const target = params.get('event') ? `event-${params.get('event')}` : params.get('notice') ? `notice-${params.get('notice')}` : null
+    if (!target) { setSharedPostDone(true); return }
+    const element = document.getElementById(target)
+    if (!element) return
+    setSharedPostDone(true)
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    element.classList.add('post-highlight')
+  }, [events, announcements, sharedPostDone])
   const currentLanguage = getLanguage(language)
 
   useEffect(() => {
@@ -255,7 +270,7 @@ function App() {
         {setting('festival_hours_note') && <p className="hours-festival">{setting('festival_hours_note')}</p>}
         {setting('panjika_url') && <a className="panjika-link" href={setting('panjika_url')} target="_blank" rel="noopener noreferrer">{t('panjika_btn')} <ExternalLink size={16} /></a>}
       </section>
-      <section className="events-section" id="events"><div className="section-heading"><div><span className="section-eyebrow">{t('events_eyebrow')}</span><h2>{t('events_title')}</h2></div><p>{t('events_p')}</p></div>{eventsStatus === 'loading' && <p className="events-message">{t('events_loading')}</p>}{eventsStatus === 'unavailable' && <p className="events-message">{t('events_unavailable')}</p>}{eventsStatus === 'ready' && events.length === 0 && <p className="events-message">{t('events_none')}</p>}{events.length > 0 && <div className="events-grid">{events.map(event => { const title = pick(event, 'title', language); return <article className="event-card" key={event.id}>{event.image_url ? <img src={event.image_url} alt={title || t('events_title')} /> : <div className="event-photo-fallback"><CalendarDays size={34} /></div>}<div><time dateTime={event.event_date ? String(event.event_date).slice(0, 10) : undefined}>{formatEventDate(event.event_date, currentLanguage.locale, t('date_tba'))}</time><h3>{title}</h3>{language !== 'bn' && event.title_bn && event.title_bn !== event.title_en && <p className="event-bengali" lang="bn">{event.title_bn}</p>}
+      <section className="events-section" id="events"><div className="section-heading"><div><span className="section-eyebrow">{t('events_eyebrow')}</span><h2>{t('events_title')}</h2></div><p>{t('events_p')}</p></div>{eventsStatus === 'loading' && <p className="events-message">{t('events_loading')}</p>}{eventsStatus === 'unavailable' && <p className="events-message">{t('events_unavailable')}</p>}{eventsStatus === 'ready' && events.length === 0 && <p className="events-message">{t('events_none')}</p>}{events.length > 0 && <div className="events-grid">{events.map(event => { const title = pick(event, 'title', language); return <article className="event-card" id={`event-${event.id}`} key={event.id}>{event.image_url ? <img src={event.image_url} alt={title || t('events_title')} /> : <div className="event-photo-fallback"><CalendarDays size={34} /></div>}<div><time dateTime={event.event_date ? String(event.event_date).slice(0, 10) : undefined}>{formatEventDate(event.event_date, currentLanguage.locale, t('date_tba'))}</time><h3>{title}</h3>{language !== 'bn' && event.title_bn && event.title_bn !== event.title_en && <p className="event-bengali" lang="bn">{event.title_bn}</p>}
               {(event.opens_at || event.puja_starts_at || event.closes_at) && <ul className="event-times">
                 {event.opens_at && <li><span>{t('ev_opens')}</span><b>{formatTime(event.opens_at, currentLanguage.locale)}</b></li>}
                 {event.puja_starts_at && <li><span>{t('ev_puja')}</span><b>{formatTime(event.puja_starts_at, currentLanguage.locale)}</b></li>}
@@ -263,13 +278,14 @@ function App() {
               </ul>}
               {event.location && <p className="event-location"><MapPin size={14} /> {event.location}</p>}
               {pick(event, 'description', language) && <p className="event-description">{pick(event, 'description', language)}</p>}
+              <PostShare kind="event" item={event} language={language} t={t} />
             </div></article> })}</div>}</section>
       <section className="content-section gallery-section" id="gallery"><div><span className="section-eyebrow">{t('gallery_eyebrow')}</span><h2>{galleryOrg === 'all' ? t('gallery_title') : orgName(galleryOrg)}</h2><p>{t('gallery_p')}</p>
         {usedOrgFilters.length > 2 && <div className="gallery-filters org-filters" role="group" aria-label={t('nav_orgs')}>{usedOrgFilters.map(id => <button type="button" key={id} className={galleryOrg === id ? 'active' : ''} aria-pressed={galleryOrg === id} onClick={() => { setGalleryOrg(id); setGalleryFilter('all') }}>{orgName(id)}</button>)}</div>}
         {usedGalleryFilters.length > 2 && <div className="gallery-filters" role="group" aria-label={t('gallery_title')}>{usedGalleryFilters.map(f => <button type="button" key={f} className={galleryFilter === f ? 'active' : ''} aria-pressed={galleryFilter === f} onClick={() => setGalleryFilter(f)}>{t(`gallery_${f}`)}</button>)}</div>}</div>
         {gallery.length > 0 ? <div className="gallery-grid">{shownGallery.map(item => { const title = pick(item, 'title', language); return <figure className="gallery-item" key={item.id}><button type="button" className="gallery-open" onClick={() => setLightbox(item)} aria-label={title || t('gallery_title')}><img src={item.image_url} alt={title || t('gallery_title')} loading="lazy" /></button><figcaption>{title}{item.organisation && galleryOrg === 'all' && <small>{orgName(item.organisation)}</small>}</figcaption></figure> })}</div> : <img src="/temple-photo.jpg" alt={t('welcome_img_alt')} />}</section>
       {lightbox && <Modal title={pick(lightbox, 'title', language) || t('gallery_title')} closeLabel={t('close')} onClose={() => setLightbox(null)}><figure className="lightbox"><img src={lightbox.image_url} alt={pick(lightbox, 'title', language) || t('gallery_title')} />{(lightbox.organisation || pick(lightbox, 'description', language)) && <figcaption>{lightbox.organisation && <b>{orgName(lightbox.organisation)}</b>}{pick(lightbox, 'description', language) && <span>{pick(lightbox, 'description', language)}</span>}</figcaption>}</figure></Modal>}
-      {announcements.length > 0 && <section className="announcements-section"><span className="section-eyebrow">{t('notices_eyebrow')}</span><h2>{t('notices_title')}</h2><div className="announcements-grid">{announcements.map(item => <article className="announcement-card" key={item.id}><h3>{pick(item, 'title', language)}</h3><p>{pick(item, 'message', language)}</p></article>)}</div></section>}
+      {announcements.length > 0 && <section className="announcements-section" id="notices"><span className="section-eyebrow">{t('notices_eyebrow')}</span><h2>{t('notices_title')}</h2><div className="announcements-grid">{announcements.map(item => <article className="announcement-card" id={`notice-${item.id}`} key={item.id}><h3>{pick(item, 'title', language)}</h3><p>{pick(item, 'message', language)}</p><PostShare kind="notice" item={item} language={language} t={t} /></article>)}</div></section>}
       <section className="donate-section" id="donate"><HeartHandshake size={34} /><h2>{t('donate_title')}</h2><p>{t('donate_p')}</p>
         <div className="donate-actions">
           <button type="button" className="donate-btn" onClick={() => setOpenForm('donate')}><HeartHandshake size={18} /> {t('donate_online_btn')}</button>
