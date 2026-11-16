@@ -45,7 +45,10 @@ jobs:
 
       - name: Check that secrets are not in the build
         run: |
-          if grep -rIl "service_role\|sb_secret_" dist; then
+          # Real secret keys: "sb_secret_" followed by the key itself, or a JWT whose
+          # payload says "service_role" (base64: c2VydmljZV9yb2xl). The words alone
+          # appear inside the Supabase library and are fine.
+          if grep -rIlE "sb_secret_[A-Za-z0-9_-]{16,}|c2VydmljZV9yb2xl" dist; then
             echo "::error::A secret key was found in the built website"; exit 1
           fi
 
