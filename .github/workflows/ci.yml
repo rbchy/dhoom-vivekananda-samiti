@@ -32,6 +32,9 @@ jobs:
       - name: Install packages
         run: npm ci
 
+      - name: Unit tests (social-post function)
+        run: node --test supabase/functions/social-post/lib.test.mjs
+
       - name: Build
         run: npm run build
         env:

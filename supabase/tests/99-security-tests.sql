@@ -124,4 +124,23 @@ select pg_temp.expect($$insert into public.pending_changes (table_name, action, 
 select pg_temp.expect($$select public.set_staff_role('main@example.com', 'secretary')$$, true, 'main admin cannot remove own admin role');
 reset role;
 
+-- Social media post log: written only by the server (Edge Function), read only by the main admin
+insert into public.social_posts (kind, item_id, target, status, remote_id)
+values ('event', '11111111-1111-1111-1111-111111111111', 'facebook', 'posted', 'page_post1');
+select pg_temp.login('anon');
+select pg_temp.check((select count(*) from public.social_posts) = 0, 'visitor cannot read the social post log');
+reset role;
+select pg_temp.login('secretary');
+select pg_temp.check((select count(*) from public.social_posts) = 0, 'secretary cannot read the social post log');
+select pg_temp.expect($$insert into public.social_posts (kind, item_id, target, status) values ('event', gen_random_uuid(), 'facebook', 'posted')$$, true, 'secretary cannot fake a social post');
+reset role;
+select pg_temp.login('accounts');
+select pg_temp.check((select count(*) from public.social_posts) = 0, 'accounts admin cannot read the social post log');
+reset role;
+select pg_temp.login('main');
+select pg_temp.check((select count(*) from public.social_posts) = 1, 'main admin reads the social post log');
+select pg_temp.expect($$insert into public.social_posts (kind, item_id, target, status) values ('event', gen_random_uuid(), 'facebook', 'posted')$$, true, 'main admin cannot write the log directly');
+select pg_temp.expect($$delete from public.social_posts$$, true, 'main admin cannot delete the log');
+reset role;
+
 \echo 'ALL SECURITY TESTS PASSED'

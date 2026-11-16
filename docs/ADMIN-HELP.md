@@ -109,6 +109,7 @@ cp .env.example .env
 | ৫ | `storage-photos-policy.sql` | ছবি রাখার জায়গা (`event-photos`) |
 | ৬ | `security-hardening.sql` | নিরাপত্তা শক্ত করা |
 | ৭ | `roles-and-approvals.sql` | তিন ভূমিকা ও অনুমোদন-ব্যবস্থা |
+| ৮ | `social-posts-schema.sql` | Facebook / Instagram পোস্টের হিসাব (স্তর ৩) |
 
 > ℹ️ `events`, `gallery`, `announcements`, `temple_content` আর `admin_profiles` টেবিল আগে Supabase ড্যাশবোর্ড থেকে সরাসরি বানানো হয়েছিল — এগুলোর SQL ফাইল রিপোতে নেই। নতুন প্রজেক্টে বসাতে হলে আগে এগুলো বানাতে হবে।
 
@@ -204,6 +205,8 @@ npm run preview    # তৈরি হওয়া সংস্করণটি �
 | 👥 Staff & Roles | কর্মী ও ভূমিকা | শুধু প্রধান অ্যাডমিন |
 
 **সোশ্যাল মিডিয়ায় শেয়ার:** সাইটের প্রতিটি অনুষ্ঠান ও ঘোষণার নিচে WhatsApp, Facebook, Messenger (শুধু ফোনে) আর "লেখা কপি" বোতাম থাকে — শেয়ার করা লিংক খুললে সাইট সরাসরি সেই পোস্টে চলে যায়। অ্যাডমিন প্যানেলের Events আর Announcements তালিকায় **📋 Copy for social** বোতাম বাংলা + ইংরেজি লেখা ও লিংক একসঙ্গে কপি করে — Facebook গ্রুপ, WhatsApp চ্যানেল বা TikTok-এ পেস্ট করুন। (লিংক ঠিক কাজ করতে `.env`-এ `VITE_SITE_URL` বসানো থাকতে হবে।)
+
+**Facebook পেজ ও Instagram-এ স্বয়ংক্রিয় পোস্ট (স্তর ৩):** প্রধান অ্যাডমিন Events / Announcements-এ **📣 Facebook / Instagram** বোতাম দিয়ে এক চাপে পোস্ট করতে পারেন। সেটআপ: [docs/SOCIAL-AUTOPOST.md](SOCIAL-AUTOPOST.md)।
 
 **অনলাইন দান যাচাই:** দাতা ফর্ম পূরণ করলে দান "Pending" অবস্থায় আসে। হিসাব অ্যাডমিন বিকাশ/নগদ/ব্যাংকে টাকা মিলিয়ে **Verified** বা **Rejected** করবেন।
 

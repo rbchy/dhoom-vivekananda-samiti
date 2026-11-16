@@ -5,7 +5,7 @@
 <!-- ============ STATUS BAR ============ -->
 [![CI](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml)
 [![Deploy](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml)
-![Security tests](https://img.shields.io/badge/DB%20security%20checks-42-22c55e?style=flat-square&logo=postgresql&logoColor=white)
+![Security tests](https://img.shields.io/badge/DB%20security%20checks-49-22c55e?style=flat-square&logo=postgresql&logoColor=white)
 ![Languages](https://img.shields.io/badge/UI%20languages-10-0d9488?style=flat-square&logo=googletranslate&logoColor=white)
 ![Roles](https://img.shields.io/badge/staff%20roles-3%20%2B%20approvals-155e75?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Pre--launch-f59e0b?style=flat-square)
@@ -47,7 +47,7 @@ where changes by the secretary wait for **approval** by the right admin.
 | 🌐 **Languages** | 10 (incl. Bangla, Arabic RTL) |
 | 👥 **Staff roles** | Main Admin · Accounts Admin · Secretary |
 | 🗄️ **Database** | Supabase PostgreSQL, RLS on every table |
-| ✅ **CI** | build + 42 database security checks |
+| ✅ **CI** | build + 14 unit tests + 49 database security checks |
 | 🚀 **CD** | GitHub Pages after green CI |
 | 📱 **Apps** | Android / iOS via Capacitor |
 | 📖 **Help** | [docs/ADMIN-HELP.md](docs/ADMIN-HELP.md) (Bangla) |
@@ -105,6 +105,7 @@ Also: annual clothes distribution and a Gita learning centre for children.
 - **Approvals** — see before/after, approve or reject with a reason
 - **My Requests** for the secretary, **Staff & Roles** for the main admin
 - "Copy for social" text (Bangla + English) for Facebook groups, WhatsApp channels, TikTok
+- **📣 Post to the Facebook Page and Instagram** in one click (main admin) — [setup](docs/SOCIAL-AUTOPOST.md)
 
 </td>
 </tr>
@@ -149,6 +150,9 @@ flowchart LR
   ADM -->|photos| ST
   PUB -->|photos| ST
   PUB -.->|share links| SOC(["WhatsApp · Facebook · Messenger"])
+  ADM -->|📣 post| EF["Edge Function<br/>social-post"]
+  EF -->|Graph API| META(["Facebook Page · Instagram"])
+  EF --> PG
 ```
 
 **Key ideas**
@@ -283,7 +287,7 @@ online `donations`, `subscriptions`.
 flowchart LR
   DEV["💻 commit on main<br/>or pull request"] --> CI{"CI<br/>ci.yml"}
   CI --> J1["🔨 Build website<br/>npm ci · vite build<br/>app code present · no secrets"]
-  CI --> J2["🐘 Database & security<br/>PostgreSQL 16 service<br/>all SQL files + 42 checks"]
+  CI --> J2["🐘 Database & security<br/>PostgreSQL 16 service<br/>all SQL files + 49 checks"]
   J1 & J2 -->|all green on main| CD["🚀 Deploy<br/>deploy.yml"]
   CD --> PAGES(["GitHub Pages<br/>rbchy.github.io/dhoom-vivekananda-samiti"])
   J1 & J2 -->|any red| STOP["⛔ no deploy"]
@@ -291,10 +295,10 @@ flowchart LR
 
 | Workflow | When | What it does |
 |---|---|---|
-| [`ci.yml`](.github/workflows/ci.yml) | every push to `main`, every pull request, manual | **Build:** installs packages, builds the site, checks the app code is in the bundle and no secret key leaked. **Database:** runs every file in `supabase/` on a fresh PostgreSQL 16 (twice where re-runs must be safe), seeds and removes test data, then [`99-security-tests.sql`](supabase/tests/99-security-tests.sql) |
+| [`ci.yml`](.github/workflows/ci.yml) | every push to `main`, every pull request, manual | **Build:** installs packages, runs 14 unit tests of the social-post function against a fake Graph API, builds the site, checks the app code is in the bundle and no secret key leaked. **Database:** runs every file in `supabase/` on a fresh PostgreSQL 16 (twice where re-runs must be safe), seeds and removes test data, then [`99-security-tests.sql`](supabase/tests/99-security-tests.sql) |
 | [`deploy.yml`](.github/workflows/deploy.yml) | after CI succeeds on `main`, manual | Builds with repository **variables** (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, donation details) and publishes to GitHub Pages; skipped until the variables are set |
 
-**What the 42 database checks prove** (excerpt)
+**What the 49 database checks prove** (excerpt)
 
 | Area | Examples |
 |---|---|
@@ -304,6 +308,7 @@ flowchart LR
 | Accounts Admin | adds income directly; **cannot** add events, change roles or approve content |
 | Secretary | **cannot** write any table directly or approve; requests go to the right admin and are applied only after approval (id cannot be changed) |
 | Workflow | reject needs a reason; rejected delete does not delete; settings upsert applied; main admin cannot remove their own role |
+| Social post log | only the main admin can read it; nobody can write or delete it from the website (only the Edge Function) |
 
 Run the same checks locally:
 
@@ -328,10 +333,11 @@ PGHOST=localhost PGUSER=postgres PGDATABASE=postgres bash supabase/tests/run-db-
 | Layer | Technology |
 |---|---|
 | Front end | React 19, React Router 7, Vite 8, plain CSS, Lucide icons |
-| Back end | Supabase: PostgreSQL, Row Level Security, `security definer` functions, Auth, Storage |
+| Back end | Supabase: PostgreSQL, Row Level Security, `security definer` functions, Auth, Storage, Edge Functions (Deno) |
+| Social | Meta Graph API v25 (Facebook Page photos / feed, Instagram content publishing) |
 | Internationalisation | Own lightweight i18n (`src/i18n*.js`): EN · BN · HI · KO · JA · ZH · ES · FR · AR (RTL) · RU |
 | Mobile | Capacitor (Android / iOS), web app manifest |
-| Quality | GitHub Actions CI, PostgreSQL 16 service container, SQL assertion tests |
+| Quality | GitHub Actions CI, PostgreSQL 16 service container, SQL assertion tests, `node:test` unit tests |
 | Delivery | GitHub Pages (CD), sub-path aware build (`VITE_BASE_PATH`) |
 
 ---
@@ -392,9 +398,12 @@ dhoom-vivekananda-samiti/
 │   ├── roles-and-approvals.sql  roles, pending_changes, approve / reject functions
 │   ├── security-audit.sql       read-only report
 │   ├── test-data-seed.sql / remove-test-data.sql
-│   └── tests/                   CI-only Supabase mock, 42 checks, runner
+│   ├── social-posts-schema.sql  log of Facebook / Instagram posts
+│   ├── functions/social-post/   Edge Function + unit tests (Meta Graph API)
+│   └── tests/                   CI-only Supabase mock, 49 checks, runner
 ├── docs/
 │   ├── ADMIN-HELP.md            full help guide (Bangla)
+│   ├── SOCIAL-AUTOPOST.md       Facebook / Instagram auto-post setup (Bangla)
 │   └── banner.svg
 ├── .github/workflows/           ci.yml, deploy.yml
 ├── capacitor.config.json        mobile app settings
@@ -440,6 +449,7 @@ Then turn off public sign-up, add staff logins and give roles in **Staff & Roles
 | 15 Nov 2026 | Share buttons for events and notices; "Copy for social" in admin; labels in 10 languages |
 | 15 Nov 2026 | CI (build + 42 DB checks) and GitHub Pages deploy; sub-path aware build; manifest icons fixed |
 | 15 Nov 2026 | Bangla help guide; Belur Math photo on the home page |
+| 16 Nov 2026 | Home banner with Sri Ramakrishna and Belur Math; Facebook Page / Instagram auto-posting (Edge Function, log table, 14 unit + 7 DB tests) |
 
 ## 📈 Roadmap
 
@@ -453,7 +463,7 @@ Then turn off public sign-up, add staff logins and give roles in **Staff & Roles
 - [ ] Separate page per institution; community clinic page with doctor schedule
 - [ ] PDF donation receipts and a public yearly accounts summary
 - [ ] Playwright end-to-end tests for donation, contact, login and approvals
-- [ ] Automatic posting to the Facebook Page and Instagram (level 3)
+- [x] Automatic posting to the Facebook Page and Instagram (level 3) — needs the Meta setup in [docs/SOCIAL-AUTOPOST.md](docs/SOCIAL-AUTOPOST.md)
 
 ## 🔗 Related
 

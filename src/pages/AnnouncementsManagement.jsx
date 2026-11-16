@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
 import { copyText, shareText } from '../lib/share'
+import SocialPostButton from '../components/SocialPostButton'
 import { checkText, cleanErrors } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 
@@ -112,6 +113,6 @@ export default function AnnouncementsManagement() {
       </div>
     </form>
     {message && <p className="event-message" role="status">{message}</p>}
-    <div className="events-list"><h3>Saved Announcements ({items.length})</h3><input className="management-search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search announcements" aria-label="Search announcements" maxLength={100} />{items.filter(item => `${item.title_en || ''} ${item.title_bn || ''} ${item.message_en || ''} ${item.message_bn || ''}`.toLowerCase().includes(search.trim().toLowerCase())).map(item => <article className="event-item" key={item.id}><h4>{item.title_en}</h4><p>{item.message_en || item.message_bn}</p><p>{item.is_published ? 'Published' : 'Draft'}</p><button type="button" onClick={() => handleEdit(item)}>Edit</button><button type="button" title="Copy Bangla + English text with link, for Facebook groups, WhatsApp, TikTok" onClick={async () => setMessage((await copyText(shareText('notice', item, 'both'))) ? 'Copied for social media — paste it in a Facebook group, WhatsApp channel or TikTok. / সোশ্যাল মিডিয়ার জন্য কপি হয়েছে।' : 'Could not copy.')}>📋 Copy for social</button><button type="button" onClick={() => handleDelete(item.id)} disabled={deletingId === item.id}>{deletingId === item.id ? 'Deleting...' : 'Delete'}</button></article>)}</div>
+    <div className="events-list"><h3>Saved Announcements ({items.length})</h3><input className="management-search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search announcements" aria-label="Search announcements" maxLength={100} />{items.filter(item => `${item.title_en || ''} ${item.title_bn || ''} ${item.message_en || ''} ${item.message_bn || ''}`.toLowerCase().includes(search.trim().toLowerCase())).map(item => <article className="event-item" key={item.id}><h4>{item.title_en}</h4><p>{item.message_en || item.message_bn}</p><p>{item.is_published ? 'Published' : 'Draft'}</p><button type="button" onClick={() => handleEdit(item)}>Edit</button><button type="button" title="Copy Bangla + English text with link, for Facebook groups, WhatsApp, TikTok" onClick={async () => setMessage((await copyText(shareText('notice', item, 'both'))) ? 'Copied for social media — paste it in a Facebook group, WhatsApp channel or TikTok. / সোশ্যাল মিডিয়ার জন্য কপি হয়েছে।' : 'Could not copy.')}>📋 Copy for social</button><SocialPostButton kind="notice" item={item} /><button type="button" onClick={() => handleDelete(item.id)} disabled={deletingId === item.id}>{deletingId === item.id ? 'Deleting...' : 'Delete'}</button></article>)}</div>
   </div>
 }

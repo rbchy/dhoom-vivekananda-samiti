@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
 import { copyText, shareText } from '../lib/share'
+import SocialPostButton from '../components/SocialPostButton'
 import { checkText, checkUrl, cleanErrors, todayISO } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import { describeDbError } from '../lib/dbErrors'
@@ -769,6 +770,8 @@ export default function EventsManagement() {
               >
                 📋 Copy for social
               </button>
+
+              <SocialPostButton kind="event" item={item} />
 
               <button
                 type="button"
