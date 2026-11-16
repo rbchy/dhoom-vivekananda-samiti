@@ -122,3 +122,6 @@ Run `supabase/roles-and-approvals.sql` (after `security-hardening.sql`). Three r
 Nobody can approve their own request. Admin pages write through `db('table')` from `src/lib/staff.js`,
 which turns a secretary's change into a row in `pending_changes`.
 To add a person: Supabase → Authentication → Add user, then Dashboard → Staff & Roles.
+
+## Help guide (Bangla)
+See [docs/ADMIN-HELP.md](docs/ADMIN-HELP.md) — installation, database setup, running, roles and approvals, updates, backups and troubleshooting.
