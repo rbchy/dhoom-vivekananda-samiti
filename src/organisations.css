@@ -101,5 +101,10 @@
 .hero-actions .hero-visit-btn:hover{background:#fff}
 @media(max-width:700px){.acts-grid{grid-template-columns:1fr}}
 #about.welcome-section{align-items:start}
-#about.welcome-section>img{position:sticky;top:110px;margin-top:40px}
-@media(max-width:560px){#about.welcome-section>img{position:static;margin-top:0}}
+#about.welcome-section>img,.welcome-section>.welcome-photo{position:sticky;top:110px;margin-top:40px}
+@media(max-width:560px){#about.welcome-section>img,.welcome-section>.welcome-photo{position:static;margin-top:0}}
+
+/* Welcome photo (Belur Math) with caption */
+.welcome-photo{margin:0}
+.welcome-photo img{display:block;width:100%;height:auto;aspect-ratio:1200/676;object-fit:cover}
+.welcome-photo figcaption{margin-top:10px;font-size:14px;line-height:1.45;color:#6d5a4c;text-align:center}
