@@ -14,8 +14,8 @@ export function siteAddress() {
   if (published) return published
   const onThisComputer = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname)
   const lan = typeof __DEV_LAN_URL__ !== 'undefined' ? __DEV_LAN_URL__ : ''
-  if (onThisComputer && lan) return lan + '/'
-  if (window.location.protocol.startsWith('http')) return window.location.origin + '/'
+  if (onThisComputer && lan) return lan + import.meta.env.BASE_URL
+  if (window.location.protocol.startsWith('http')) return window.location.origin + import.meta.env.BASE_URL
   return ''
 }
 

@@ -1,0 +1,73 @@
+# CI — runs on every push and pull request.
+#   1. build:    install packages and build the website (catches code errors)
+#   2. database: run every Supabase SQL file on a fresh PostgreSQL, then the
+#                security / approval tests in supabase/tests
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build website
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Placeholders: the build only needs the names to exist
+          VITE_SUPABASE_URL: https://example.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder
+
+      - name: Check that the app code is in the build
+        # If supabaseClient.js throws at load time the bundler drops the whole app
+        run: grep -q "pending_changes" dist/assets/*.js || { echo "::error::App code missing from the bundle"; exit 1; }
+
+      - name: Check that secrets are not in the build
+        run: |
+          if grep -rIl "service_role\|sb_secret_" dist; then
+            echo "::error::A secret key was found in the built website"; exit 1
+          fi
+
+  database:
+    name: Database & security tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run SQL files and security tests
+        run: bash supabase/tests/run-db-tests.sh

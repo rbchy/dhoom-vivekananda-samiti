@@ -1,0 +1,76 @@
+# CD — publishes the website to GitHub Pages after CI passes on main.
+#
+# One-time setup (Settings → Secrets and variables → Actions → Variables):
+#   VITE_SUPABASE_URL              https://xxxx.supabase.co
+#   VITE_SUPABASE_PUBLISHABLE_KEY  the publishable (anon) key — NEVER the service_role key
+#   VITE_DONATION_BKASH / _NAGAD / _ROCKET / _BANK / _PAYMENT_URL   (optional)
+#   VITE_SITE_URL                  (optional) e.g. https://dhoomvivekanandasamiti.org
+#   PAGES_BASE_PATH                (optional) "/" when a custom domain is used;
+#                                  default "/<repository-name>/"
+# Until VITE_SUPABASE_URL is set, the deploy job is skipped.
+name: Deploy to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and publish
+    if: >-
+      vars.VITE_SUPABASE_URL != '' &&
+      (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Build
+        run: |
+          npm run build
+          # Single-page app: let GitHub Pages serve the app for /admin/... links
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+        env:
+          VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || format('/{0}/', github.event.repository.name) }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_DONATION_BKASH: ${{ vars.VITE_DONATION_BKASH }}
+          VITE_DONATION_NAGAD: ${{ vars.VITE_DONATION_NAGAD }}
+          VITE_DONATION_ROCKET: ${{ vars.VITE_DONATION_ROCKET }}
+          VITE_DONATION_BANK: ${{ vars.VITE_DONATION_BANK }}
+          VITE_DONATION_PAYMENT_URL: ${{ vars.VITE_DONATION_PAYMENT_URL }}
+          VITE_SITE_URL: ${{ vars.VITE_SITE_URL || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

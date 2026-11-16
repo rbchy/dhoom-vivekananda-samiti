@@ -1,5 +1,7 @@
 # Dhoom Vivekananda Samiti — React website
 
+[![CI](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml) [![Deploy](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml)
+
 A responsive, multilingual website built with React and Vite for Dhoom Vivekananda Samiti and the institutions it runs:
 
 - Sree Sree Dokkhin Kalika Mandir
@@ -125,3 +127,11 @@ To add a person: Supabase → Authentication → Add user, then Dashboard → St
 
 ## Help guide (Bangla)
 See [docs/ADMIN-HELP.md](docs/ADMIN-HELP.md) — installation, database setup, running, roles and approvals, updates, backups and troubleshooting.
+
+## CI / CD
+- **CI** (`.github/workflows/ci.yml`) — on every push and pull request: builds the website, and runs every
+  SQL file in `supabase/` on a fresh PostgreSQL followed by the security and approval tests in
+  `supabase/tests/` (run locally with `bash supabase/tests/run-db-tests.sh`).
+- **Deploy** (`.github/workflows/deploy.yml`) — after CI passes on `main`, builds and publishes the site to
+  GitHub Pages. Set the repository **variables** listed at the top of that file first
+  (Settings → Secrets and variables → Actions → Variables). Only the publishable key — never `service_role`.

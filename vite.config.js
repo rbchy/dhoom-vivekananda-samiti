@@ -13,6 +13,8 @@ function lanAddress(port) {
 }
 
 export default defineConfig(({ command }) => ({
+  // '/' normally; '/dhoom-vivekananda-samiti/' when the GitHub Pages workflow builds the site
+  base: process.env.VITE_BASE_PATH || '/',
   server: { host: true, port: 5173 },
   define: {
     __DEV_LAN_URL__: JSON.stringify(command === 'serve' ? lanAddress(5173) : '')

@@ -69,7 +69,7 @@ export default function AdminLogin() {
   return (
     <div className="admin-login-page">
       <form className="admin-login-card" onSubmit={handleLogin} noValidate>
-        <img className="admin-login-emblem" src="/emblem.svg" alt="Dhoom Vivekananda Samiti" />
+        <img className="admin-login-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt="Dhoom Vivekananda Samiti" />
         <h1>Admin Login</h1>
         <p>Dhoom Vivekananda Samiti</p>
 

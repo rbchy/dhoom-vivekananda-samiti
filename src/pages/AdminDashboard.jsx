@@ -142,7 +142,7 @@ const AdminDashboard = () => {
       <header className="admin-dashboard-header">
 
         <div className="admin-header-left admin-header-brand">
-          <img className="admin-header-emblem" src="/emblem.svg" alt="" />
+          <img className="admin-header-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt="" />
           <div>
             <h1>Dhoom Vivekananda Samiti — Administration</h1>
             <p>Management Dashboard</p>
