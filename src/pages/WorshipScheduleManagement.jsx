@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
@@ -84,8 +85,8 @@ export default function WorshipScheduleManagement() {
       is_active: form.is_active
     }
     const result = editingId
-      ? await supabase.from('worship_schedule').update(payload).eq('id', editingId)
-      : await supabase.from('worship_schedule').insert(payload)
+      ? await db('worship_schedule').update(payload).eq('id', editingId)
+      : await db('worship_schedule').insert(payload)
     if (result.error) setMessage('Error: ' + describeDbError(result.error))
     else { setMessage(editingId ? 'Schedule updated.' : 'Schedule added.'); resetForm(); await loadItems() }
     setSaving(false)
@@ -105,7 +106,7 @@ export default function WorshipScheduleManagement() {
 
   async function handleDelete(item) {
     if (!window.confirm(`Delete "${item.title_en}" from the schedule?`)) return
-    const { error } = await supabase.from('worship_schedule').delete().eq('id', item.id)
+    const { error } = await db('worship_schedule').delete().eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Schedule deleted.'); if (editingId === item.id) resetForm(); await loadItems() }
   }

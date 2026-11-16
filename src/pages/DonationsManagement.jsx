@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel } from '../lib/money'
 import { describeDbError } from '../lib/dbErrors'
@@ -95,7 +96,7 @@ export default function DonationsManagement() {
       donated_on: form.donated_on,
       notes: form.notes.trim() || null
     }
-    const { error } = await supabase.from('donations').insert(payload)
+    const { error } = await db('donations').insert(payload)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage(`Donation saved. Receipt no. ${payload.receipt_no}`); setForm(makeEmptyForm()); setErrors({}); await loadItems() }
     setSaving(false)
@@ -105,7 +106,7 @@ export default function DonationsManagement() {
     setBusyId(item.id)
     const patch = { status }
     if (status === 'verified' && !item.receipt_no) patch.receipt_no = newReceiptNo()
-    const { error } = await supabase.from('donations').update(patch).eq('id', item.id)
+    const { error } = await db('donations').update(patch).eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage(status === 'verified' ? 'Donation verified.' : 'Donation marked as rejected.'); await loadItems() }
     setBusyId(null)
@@ -114,7 +115,7 @@ export default function DonationsManagement() {
   async function handleDelete(item) {
     if (!window.confirm(`Delete the donation of ${formatMoney(item.amount, item.currency)} from ${item.donor_name}? This cannot be undone.`)) return
     setBusyId(item.id)
-    const { error } = await supabase.from('donations').delete().eq('id', item.id)
+    const { error } = await db('donations').delete().eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Donation deleted.'); await loadItems() }
     setBusyId(null)

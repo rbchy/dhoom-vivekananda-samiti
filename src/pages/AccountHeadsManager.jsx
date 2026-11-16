@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { describeDbError } from '../lib/dbErrors'
 import { slugify } from '../lib/finance'
@@ -42,8 +43,8 @@ export default function AccountHeadsManager({ heads, usedCodes, onChanged }) {
     setSaving(true)
     const payload = { head_type: form.head_type, code: form.code, name_en: form.name_en.trim(), name_bn: form.name_bn.trim() || null, sort_order: Number(form.sort_order), is_active: form.is_active }
     const result = editingId
-      ? await supabase.from('account_heads').update({ name_en: payload.name_en, name_bn: payload.name_bn, sort_order: payload.sort_order, is_active: payload.is_active }).eq('id', editingId)
-      : await supabase.from('account_heads').insert(payload)
+      ? await db('account_heads').update({ name_en: payload.name_en, name_bn: payload.name_bn, sort_order: payload.sort_order, is_active: payload.is_active }).eq('id', editingId)
+      : await db('account_heads').insert(payload)
     if (result.error) setMessage('Error: ' + describeDbError(result.error))
     else { setMessage(editingId ? 'Head updated.' : 'Head added.'); reset(); await onChanged() }
     setSaving(false)
@@ -52,7 +53,7 @@ export default function AccountHeadsManager({ heads, usedCodes, onChanged }) {
   async function handleDelete(head) {
     if (usedCodes.has(`${head.head_type}|${head.code}`)) { setMessage(`"${head.name_en}" is used in entries, so it cannot be deleted. Untick "Active" to hide it instead.`); return }
     if (!window.confirm(`Delete the head "${head.name_en}"?`)) return
-    const { error } = await supabase.from('account_heads').delete().eq('id', head.id)
+    const { error } = await db('account_heads').delete().eq('id', head.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Head deleted.'); await onChanged() }
   }

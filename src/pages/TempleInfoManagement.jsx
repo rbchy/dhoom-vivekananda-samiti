@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkOptionalEmail, checkPhone, checkText, checkUrl, cleanErrors } from '../lib/validation'
 import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
@@ -85,7 +86,7 @@ export default function TempleInfoManagement() {
       { key: 'whatsapp_url', value_en: clean(settings.whatsapp_url), value_bn: null },
       { key: 'tiktok_url', value_en: clean(settings.tiktok_url), value_bn: null }
     ].map(row => ({ ...row, updated_at: new Date().toISOString() }))
-    const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' })
+    const { error } = await db('site_settings').upsert(rows, { onConflict: 'key' })
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Temple information saved.'); setSavedSettings(settings) }
     setSaving(false)
@@ -119,7 +120,7 @@ export default function TempleInfoManagement() {
       name: contact.name.trim(), role_en: contact.role_en.trim() || null, role_bn: contact.role_bn.trim() || null,
       phone: contact.phone.trim() || null, email: contact.email.trim() || null, sort_order: Number(contact.sort_order), is_public: contact.is_public
     }
-    const result = editingId ? await supabase.from('committee_contacts').update(payload).eq('id', editingId) : await supabase.from('committee_contacts').insert(payload)
+    const result = editingId ? await db('committee_contacts').update(payload).eq('id', editingId) : await db('committee_contacts').insert(payload)
     if (result.error) setMessage('Error: ' + describeDbError(result.error))
     else { setMessage(editingId ? 'Contact updated.' : 'Contact added.'); resetContact(); await loadAll() }
     setSaving(false)
@@ -127,7 +128,7 @@ export default function TempleInfoManagement() {
 
   async function deleteContact(item) {
     if (!window.confirm(`Remove ${item.name} from the committee contacts?`)) return
-    const { error } = await supabase.from('committee_contacts').delete().eq('id', item.id)
+    const { error } = await db('committee_contacts').delete().eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Contact removed.'); if (editingId === item.id) resetContact(); await loadAll() }
   }

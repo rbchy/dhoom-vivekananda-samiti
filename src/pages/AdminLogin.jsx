@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { isStaffRole } from '../lib/staff'
 import { useNavigate } from 'react-router-dom'
 import { checkEmail, cleanErrors } from '../lib/validation'
 import { BackToMainButton, FieldError, invalidProps } from '../components/FormHelpers'
@@ -50,9 +51,9 @@ export default function AdminLogin() {
 
       if (profileError) throw profileError
 
-      if (!profile || profile.role !== 'admin') {
+      if (!profile || !isStaffRole(profile.role)) {
         await supabase.auth.signOut()
-        throw new Error('You are not authorized as an administrator.')
+        throw new Error('You are not authorized to use the admin panel.')
       }
 
       navigate('/admin/dashboard')

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, checkUrl, cleanErrors } from '../lib/validation'
 import { describeDbError } from '../lib/dbErrors'
 import { removeImage, storagePathFromUrl, uploadImage } from '../lib/storage'
@@ -89,7 +90,7 @@ export default function GalleryManagement() {
       }
       const previous = items.find(item => item.id === editingId)
       const payload = { ...form, organisation: form.organisation || null, title_en: form.title_en.trim(), title_bn: form.title_bn.trim() || null, image_url: imageUrl, description_en: form.description_en.trim() || null, description_bn: form.description_bn.trim() || null }
-      const result = editingId ? await supabase.from('gallery').update(payload).eq('id', editingId) : await supabase.from('gallery').insert(payload)
+      const result = editingId ? await db('gallery').update(payload).eq('id', editingId) : await db('gallery').insert(payload)
       if (result.error) throw result.error
       // The old uploaded photo is no longer used after replacing it
       if (previous && previous.image_url !== imageUrl && storagePathFromUrl(previous.image_url)) await removeImage(previous.image_url)
@@ -108,7 +109,7 @@ export default function GalleryManagement() {
   async function handleDelete(item) {
     if (!window.confirm('Delete this gallery item?')) return
     setDeletingId(item.id)
-    const { error } = await supabase.from('gallery').delete().eq('id', item.id)
+    const { error } = await db('gallery').delete().eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else {
       const photoError = await removeImage(item.image_url)
@@ -126,7 +127,7 @@ export default function GalleryManagement() {
     try {
       const better = await enhanceImage(item.image_url, { name: (item.title_en || 'photo').replace(/[^\w-]+/g, '-').slice(0, 40) })
       uploaded = await uploadImage(better, `gallery/${item.organisation || 'general'}`)
-      const { error } = await supabase.from('gallery').update({ image_url: uploaded.url }).eq('id', item.id)
+      const { error } = await db('gallery').update({ image_url: uploaded.url }).eq('id', item.id)
       if (error) throw error
       setUndoUrls(previous => ({ ...previous, [item.id]: item.image_url }))
       if (!quiet) { setMessage(`✨ "${item.title_en || item.title_bn}" enhanced. Use Undo to go back to the original.`); await loadItems() }
@@ -143,7 +144,7 @@ export default function GalleryManagement() {
   async function undoEnhance(item) {
     const before = undoUrls[item.id]
     if (!before) return
-    const { error } = await supabase.from('gallery').update({ image_url: before }).eq('id', item.id)
+    const { error } = await db('gallery').update({ image_url: before }).eq('id', item.id)
     if (error) { setMessage('Error: ' + describeDbError(error)); return }
     await removeImage(item.image_url)
     setUndoUrls(previous => { const next = { ...previous }; delete next[item.id]; return next })
@@ -167,7 +168,7 @@ export default function GalleryManagement() {
   // Publish / hide a photo straight from the list
   async function togglePublished(item) {
     setTogglingId(item.id)
-    const { error } = await supabase.from('gallery').update({ is_published: !item.is_published }).eq('id', item.id)
+    const { error } = await db('gallery').update({ is_published: !item.is_published }).eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage(item.is_published ? 'Photo hidden from the website.' : 'Photo published on the website.'); await loadItems() }
     setTogglingId(null)

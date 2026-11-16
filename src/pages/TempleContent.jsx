@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 
@@ -91,12 +92,10 @@ export default function TempleContent() {
     }
 
     const result = recordId
-      ? await supabase
-          .from('temple_content')
+      ? await db('temple_content')
           .update(payload)
           .eq('id', recordId)
-      : await supabase
-          .from('temple_content')
+      : await db('temple_content')
           .insert(payload)
           .select()
           .single()

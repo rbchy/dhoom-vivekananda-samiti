@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
+import { isStaffRole } from '../lib/staff'
 
 export default function ProtectedRoute({ children }) {
   const [status, setStatus] = useState('checking')
@@ -27,7 +28,7 @@ export default function ProtectedRoute({ children }) {
 
       if (!active) return
 
-      if (profileError || !profile || profile.role !== 'admin') {
+      if (profileError || !profile || !isStaffRole(profile.role)) {
         await supabase.auth.signOut()
         setStatus('denied')
         return

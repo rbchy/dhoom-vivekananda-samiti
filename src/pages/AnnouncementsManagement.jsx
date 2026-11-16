@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 
@@ -55,7 +56,7 @@ export default function AnnouncementsManagement() {
     if (!validate()) return
     setSaving(true)
     const payload = { ...form, title_en: form.title_en.trim(), title_bn: form.title_bn.trim() || null, message_en: form.message_en.trim() || null, message_bn: form.message_bn.trim() || null }
-    const result = editingId ? await supabase.from('announcements').update(payload).eq('id', editingId) : await supabase.from('announcements').insert(payload)
+    const result = editingId ? await db('announcements').update(payload).eq('id', editingId) : await db('announcements').insert(payload)
     if (result.error) setMessage('Error: ' + result.error.message)
     else { setMessage(editingId ? 'Announcement updated.' : 'Announcement added.'); resetForm(); await loadItems() }
     setSaving(false)
@@ -64,7 +65,7 @@ export default function AnnouncementsManagement() {
   async function handleDelete(id) {
     if (!window.confirm('Delete this announcement?')) return
     setDeletingId(id)
-    const { error } = await supabase.from('announcements').delete().eq('id', id)
+    const { error } = await db('announcements').delete().eq('id', id)
     if (error) setMessage('Error: ' + error.message)
     else { setMessage('Announcement deleted.'); if (editingId === id) resetForm(); await loadItems() }
     setDeletingId(null)

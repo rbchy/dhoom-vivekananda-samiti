@@ -16,8 +16,21 @@ import TempleInfoManagement from "./TempleInfoManagement";
 import MessagesManagement from "./MessagesManagement";
 import HighlightsManagement from "./HighlightsManagement";
 
+import ApprovalsManagement from "./ApprovalsManagement";
+import MyRequests from "./MyRequests";
+import StaffManagement from "./StaffManagement";
+import { STAFF_ROLES, REQUEST_SENT_EVENT, fetchStaffRole, setCurrentStaffRole } from "../lib/staff";
 import "./AdminDashboard.css";
 import BackToTopButton from "../components/BackToTopButton";
+
+// Which dashboard sections each role sees.
+const CONTENT_PANELS = ["temple", "events", "gallery", "announcements", "catalog", "worship", "info", "highlights"];
+const ACCOUNTS_PANELS = ["donations", "subscriptions", "finance"];
+const PANELS_BY_ROLE = {
+  admin: [...CONTENT_PANELS, ...ACCOUNTS_PANELS, "messages", "approvals", "staff"],
+  accounts_admin: [...ACCOUNTS_PANELS, "approvals"],
+  secretary: [...CONTENT_PANELS, ...ACCOUNTS_PANELS, "myrequests"],
+};
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -25,6 +38,20 @@ const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activePanel, setActivePanel] = useState(null);
+  const [role, setRole] = useState(null);
+  const [notice, setNotice] = useState("");
+
+  // Secretary: show a short confirmation whenever a change is sent for approval
+  useEffect(() => {
+    let timer;
+    const onSent = () => {
+      setNotice("Sent for approval — it goes live after the admin approves. / অনুমোদনের জন্য পাঠানো হয়েছে।");
+      clearTimeout(timer);
+      timer = setTimeout(() => setNotice(""), 6000);
+    };
+    window.addEventListener(REQUEST_SENT_EVENT, onSent);
+    return () => { window.removeEventListener(REQUEST_SENT_EVENT, onSent); clearTimeout(timer); };
+  }, []);
 
   // Check authenticated admin
   useEffect(() => {
@@ -44,7 +71,16 @@ const AdminDashboard = () => {
           return;
         }
 
+        const staffRole = await fetchStaffRole(user.id);
+        if (!staffRole) {
+          await supabase.auth.signOut();
+          if (mounted) navigate("/admin/login", { replace: true });
+          return;
+        }
+        setCurrentStaffRole(staffRole);
+
         if (mounted) {
+          setRole(staffRole);
           setAdmin(user);
         }
       } catch (error) {
@@ -76,6 +112,7 @@ const AdminDashboard = () => {
         throw error;
       }
 
+      setCurrentStaffRole(null);
       navigate("/admin/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error.message);
@@ -117,7 +154,7 @@ const AdminDashboard = () => {
             <span className="admin-user-icon">👤</span>
 
             <div>
-              <strong>Administrator</strong>
+              <strong>{STAFF_ROLES[role]?.en} / {STAFF_ROLES[role]?.bn}</strong>
               <small>{admin.email}</small>
             </div>
           </div>
@@ -146,8 +183,12 @@ const AdminDashboard = () => {
         </p>
       </section>
 
+      {role === "secretary" && <p className="role-banner" role="note">Secretary mode: every add, edit or delete is sent for approval — content to the Main Admin, accounts to the Accounts Admin. Track them in “My Requests”. / আপনার সব পরিবর্তন অনুমোদনের জন্য যাবে।</p>}
+      {role === "admin" && <p className="role-banner" role="note">Accounts sections (Donations, Subscriptions, Income &amp; Expenditure) are view-only for the Main Admin; the Accounts Admin keeps them. / হিসাব শুধু দেখার জন্য।</p>}
+      {notice && <p className="role-notice" role="status">{notice}</p>}
+
       <section className="admin-management-selector" id="admin-menu" aria-label="Management sections">
-        {[['temple', '🏛️ Temple Content', 'Update temple information'], ['events', '📅 Events', 'Add, edit, publish, and delete events'], ['gallery', '🖼️ Gallery', 'Manage gallery images'], ['announcements', '📢 Announcements', 'Manage temple notices'], ['catalog', '📋 Yearly Event List', 'Names used in the Events drop-down'], ['donations', '💰 Donations', 'Office entry, verify online donations'], ['subscriptions', '🔁 Monthly Subscriptions', 'Subscribers and monthly payments'], ['worship', '🕉️ Worship Schedule', 'Daily / weekly worship and temple hours'], ['finance', '📊 Income & Expenditure', 'Ledger, expenses, reports'], ['info', '📇 Temple Info & Contacts', 'Banner message, address, Panjika, committee'], ['highlights', '🪔 Mission & Deities', 'About section cards'], ['messages', '✉️ Messages', 'Messages from the website']].map(([key, label, description]) => <button type="button" className={activePanel === key ? 'management-selector-btn active' : 'management-selector-btn'} onClick={() => setActivePanel(activePanel === key ? null : key)} key={key} aria-expanded={activePanel === key}><strong>{label}</strong><span>{description}</span></button>)}
+        {[['temple', '🏛️ Temple Content', 'Update temple information'], ['events', '📅 Events', 'Add, edit, publish, and delete events'], ['gallery', '🖼️ Gallery', 'Manage gallery images'], ['announcements', '📢 Announcements', 'Manage temple notices'], ['catalog', '📋 Yearly Event List', 'Names used in the Events drop-down'], ['donations', '💰 Donations', 'Office entry, verify online donations'], ['subscriptions', '🔁 Monthly Subscriptions', 'Subscribers and monthly payments'], ['worship', '🕉️ Worship Schedule', 'Daily / weekly worship and temple hours'], ['finance', '📊 Income & Expenditure', 'Ledger, expenses, reports'], ['info', '📇 Temple Info & Contacts', 'Banner message, address, Panjika, committee'], ['highlights', '🪔 Mission & Deities', 'About section cards'], ['messages', '✉️ Messages', 'Messages from the website'], ['approvals', '✅ Approvals / অনুমোদন', 'Approve or reject requests from the secretary'], ['myrequests', '📨 My Requests / আমার অনুরোধ', 'Changes you sent for approval'], ['staff', '👥 Staff & Roles / কর্মী ও ভূমিকা', 'Who can use this panel, and how']].filter(([key]) => (PANELS_BY_ROLE[role] || []).includes(key)).map(([key, label, description]) => <button type="button" className={activePanel === key ? 'management-selector-btn active' : 'management-selector-btn'} onClick={() => setActivePanel(activePanel === key ? null : key)} key={key} aria-expanded={activePanel === key}><strong>{label}</strong><span>{description}</span></button>)}
       </section>
 
       {activePanel === 'temple' && <section className="admin-dashboard-section" id="temple-content"><div className="admin-section-heading"><h2>🏛️ Temple Content Management</h2><p>Update temple information in English and Bengali.</p></div><TempleContent /></section>}
@@ -164,6 +205,10 @@ const AdminDashboard = () => {
       {activePanel === 'info' && <section className="admin-dashboard-section" id="info-management"><div className="admin-section-heading"><h2>📇 Temple Info & Contacts / মন্দিরের তথ্য</h2><p>Address, phone, email, Panjika link and committee contacts.</p></div><TempleInfoManagement /></section>}
       {activePanel === 'highlights' && <section className="admin-dashboard-section" id="highlights-management"><div className="admin-section-heading"><h2>🪔 Mission & Deities / লক্ষ্য ও দেবদেবী</h2><p>Cards shown in the About part of the website.</p></div><HighlightsManagement /></section>}
       {activePanel === 'messages' && <section className="admin-dashboard-section" id="messages-management"><div className="admin-section-heading"><h2>✉️ Messages / বার্তা</h2><p>Messages sent from the website contact form.</p></div><MessagesManagement /></section>}
+
+      {activePanel === 'approvals' && role !== 'secretary' && <section className="admin-dashboard-section" id="approvals-management"><div className="admin-section-heading"><h2>✅ Approvals / অনুমোদন</h2><p>{role === 'accounts_admin' ? 'Accounts changes requested by the secretary.' : 'Website content changes requested by the secretary.'} Check the details, then approve or reject.</p></div><ApprovalsManagement /></section>}
+      {activePanel === 'myrequests' && role === 'secretary' && <section className="admin-dashboard-section" id="my-requests"><div className="admin-section-heading"><h2>📨 My Requests / আমার অনুরোধ</h2><p>Every change you sent, and whether it was approved.</p></div><MyRequests /></section>}
+      {activePanel === 'staff' && role === 'admin' && <section className="admin-dashboard-section" id="staff-management"><div className="admin-section-heading"><h2>👥 Staff &amp; Roles / কর্মী ও ভূমিকা</h2><p>Main Admin, Accounts Admin or Secretary.</p></div><StaffManagement /></section>}
 
       {/* Back to the dashboard menu (keeps the open form and its unsaved text) */}
       <BackToTopButton label="Dashboard menu" targetId="admin-menu" showAfter={400} />

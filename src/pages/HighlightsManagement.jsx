@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, checkUrl, cleanErrors } from '../lib/validation'
 import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
@@ -59,7 +60,7 @@ export default function HighlightsManagement() {
       if (photoFile && form.kind === 'deity') { setMessage('Uploading photo...'); uploaded = await uploadImage(photoFile, 'deities'); imageUrl = uploaded.url }
       const previous = items.find(i => i.id === editingId)
       const payload = { kind: form.kind, title_en: form.title_en.trim(), title_bn: clean(form.title_bn), subtitle_en: clean(form.subtitle_en), subtitle_bn: clean(form.subtitle_bn), body_en: clean(form.body_en), body_bn: clean(form.body_bn), image_url: form.kind === 'deity' ? imageUrl : null, sort_order: Number(form.sort_order), is_active: form.is_active }
-      const result = editingId ? await supabase.from('temple_highlights').update(payload).eq('id', editingId) : await supabase.from('temple_highlights').insert(payload)
+      const result = editingId ? await db('temple_highlights').update(payload).eq('id', editingId) : await db('temple_highlights').insert(payload)
       if (result.error) throw result.error
       if (previous?.image_url && previous.image_url !== payload.image_url && storagePathFromUrl(previous.image_url)) await removeImage(previous.image_url)
       setMessage(editingId ? 'Updated.' : 'Added.'); resetForm(); await loadItems()
@@ -73,7 +74,7 @@ export default function HighlightsManagement() {
 
   async function handleDelete(item) {
     if (!window.confirm(`Delete "${item.title_en}"?`)) return
-    const { error } = await supabase.from('temple_highlights').delete().eq('id', item.id)
+    const { error } = await db('temple_highlights').delete().eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { await removeImage(item.image_url); setMessage('Deleted.'); if (editingId === item.id) resetForm(); await loadItems() }
   }

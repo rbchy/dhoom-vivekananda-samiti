@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkAmount, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel } from '../lib/money'
 import { headLabel, headsFromRows, nextNumber } from '../lib/finance'
@@ -87,8 +88,8 @@ function EntryForm({ mode, catalog, heads, existingNumbers, editing, onSaved, on
     }
     if (mode === 'expense') payload.approved_by = form.approved_by.trim() || null
     const result = editing
-      ? await supabase.from(config.table).update(payload).eq('id', editing.id)
-      : await supabase.from(config.table).insert(payload)
+      ? await db(config.table).update(payload).eq('id', editing.id)
+      : await db(config.table).insert(payload)
     if (result.error) setMessage('Error: ' + describeDbError(result.error))
     else { setMessage(`${mode === 'expense' ? 'Expense' : 'Income'} ${editing ? 'updated' : 'saved'} (${payload[config.numberField]}).`); setForm(emptyEntry(mode)); setErrors({}); onSaved() }
     setSaving(false)
@@ -226,7 +227,7 @@ export default function FinanceManagement() {
 
   async function deleteRow(row) {
     if (!window.confirm(`Delete ${row.type} ${row.number || ''} of ${formatMoney(row.amount, row.currency)}? This cannot be undone.`)) return
-    const { error } = await supabase.from(CONFIG[row.editable].table).delete().eq('id', row.id)
+    const { error } = await db(CONFIG[row.editable].table).delete().eq('id', row.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Entry deleted.'); await loadAll() }
   }

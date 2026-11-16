@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, checkUrl, cleanErrors, todayISO } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import { describeDbError } from '../lib/dbErrors'
@@ -301,12 +302,10 @@ export default function EventsManagement() {
       )
 
       const result = editingId
-        ? await supabase
-            .from('events')
+        ? await db('events')
             .update(payload)
             .eq('id', editingId)
-        : await supabase
-            .from('events')
+        : await db('events')
             .insert(payload)
 
       if (result.error) throw result.error
@@ -399,8 +398,7 @@ export default function EventsManagement() {
     setMessage('')
 
     try {
-      const { error } = await supabase
-        .from('events')
+      const { error } = await db('events')
         .delete()
         .eq('id', id)
 

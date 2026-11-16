@@ -109,3 +109,16 @@ npm run app:ios       # builds, copies into the app, opens Xcode — press ▶ R
 
 Installable website (no app store): open the website on the phone →
 iPhone Safari: Share → "Add to Home Screen"; Android Chrome: ⋮ → "Install app".
+
+## Staff roles and approvals
+Run `supabase/roles-and-approvals.sql` (after `security-hardening.sql`). Three roles:
+
+| Role | Can do | Approves |
+|---|---|---|
+| Main Admin (`admin`) | Edit website content directly; view accounts; manage staff roles | Secretary's content requests |
+| Accounts Admin (`accounts_admin`) | Edit donations, subscriptions, income, expenses, account heads directly | Secretary's accounts requests |
+| Secretary (`secretary`) | Send add / edit / delete requests for content and accounts | — |
+
+Nobody can approve their own request. Admin pages write through `db('table')` from `src/lib/staff.js`,
+which turns a secretary's change into a row in `pending_changes`.
+To add a person: Supabase → Authentication → Add user, then Dashboard → Staff & Roles.

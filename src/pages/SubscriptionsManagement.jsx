@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel, monthLabel, monthStart } from '../lib/money'
 import { describeDbError } from '../lib/dbErrors'
@@ -79,7 +80,7 @@ export default function SubscriptionsManagement() {
     setMessage('')
     if (!validateSubscriber()) return
     setSaving(true)
-    const { error } = await supabase.from('subscriptions').insert({
+    const { error } = await db('subscriptions').insert({
       donor_name: form.donor_name.trim(), phone: form.phone.trim(), email: form.email.trim() || null, address: form.address.trim() || null,
       monthly_amount: Number(form.monthly_amount), currency: form.currency, payment_method: form.payment_method,
       start_month: `${form.start_month}-01`, status: 'active', source: 'office', notes: form.notes.trim() || null
@@ -92,7 +93,7 @@ export default function SubscriptionsManagement() {
   async function changeStatus(sub, status) {
     if (status === 'cancelled' && !window.confirm(`Cancel the monthly subscription of ${sub.donor_name}?`)) return
     setBusyId(sub.id)
-    const { error } = await supabase.from('subscriptions').update({ status }).eq('id', sub.id)
+    const { error } = await db('subscriptions').update({ status }).eq('id', sub.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage(`${sub.donor_name}: ${STATUS_LABEL[status]}.`); await loadAll() }
     setBusyId(null)
@@ -131,7 +132,7 @@ export default function SubscriptionsManagement() {
     setPayErrors(found)
     if (Object.keys(found).length) return
     setBusyId(paying.id)
-    const { error } = await supabase.from('subscription_payments').insert({
+    const { error } = await db('subscription_payments').insert({
       subscription_id: paying.id, month: `${payForm.month}-01`, amount: Number(payForm.amount), currency: payForm.currency,
       method: payForm.method, transaction_ref: payForm.transaction_ref.trim() || null, paid_on: payForm.paid_on
     })
@@ -142,7 +143,7 @@ export default function SubscriptionsManagement() {
 
   async function deletePayment(payment) {
     if (!window.confirm(`Delete the payment for ${monthLabel(payment.month)}?`)) return
-    const { error } = await supabase.from('subscription_payments').delete().eq('id', payment.id)
+    const { error } = await db('subscription_payments').delete().eq('id', payment.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Payment deleted.'); await loadAll() }
   }

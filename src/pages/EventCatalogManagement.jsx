@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
@@ -62,22 +63,22 @@ export default function EventCatalogManagement() {
       is_active: form.is_active
     }
     const result = editingId
-      ? await supabase.from('event_catalog').update(payload).eq('id', editingId)
-      : await supabase.from('event_catalog').insert(payload)
+      ? await db('event_catalog').update(payload).eq('id', editingId)
+      : await db('event_catalog').insert(payload)
     if (result.error) setMessage('Error: ' + describeDbError(result.error))
     else { setMessage(editingId ? 'Event name updated.' : 'Event name added to the yearly list.'); resetForm(); await loadItems() }
     setSaving(false)
   }
 
   async function toggleActive(item) {
-    const { error } = await supabase.from('event_catalog').update({ is_active: !item.is_active }).eq('id', item.id)
+    const { error } = await db('event_catalog').update({ is_active: !item.is_active }).eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else await loadItems()
   }
 
   async function handleDelete(item) {
     if (!window.confirm(`Remove "${item.name_en}" from the yearly list? Events already saved will not be changed.`)) return
-    const { error } = await supabase.from('event_catalog').delete().eq('id', item.id)
+    const { error } = await db('event_catalog').delete().eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
     else { setMessage('Event name removed.'); if (editingId === item.id) resetForm(); await loadItems() }
   }
