@@ -106,5 +106,7 @@
 
 /* Welcome photo (Belur Math) with caption */
 .welcome-photo{margin:0}
-.welcome-photo img{display:block;width:100%;height:auto;aspect-ratio:1200/676;object-fit:cover}
+.welcome-photo img{display:block;width:100%;height:auto;aspect-ratio:820/1016;object-fit:cover;border-radius:6px;box-shadow:0 10px 28px rgba(60,30,20,.18)}
+/* About: text and Belur Math photo share the width 50 / 50 on wide screens */
+@media(min-width:851px){#about.welcome-section{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px}}
 .welcome-photo figcaption{margin-top:10px;font-size:14px;line-height:1.45;color:#6d5a4c;text-align:center}
