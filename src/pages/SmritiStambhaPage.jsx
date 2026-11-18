@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Flame } from 'lucide-react'
 import LanguageSwitcher from '../components/LanguageSwitcher'
-import StambhaPillar from '../components/StambhaPillar'
+import { StambhaMonument, localDigits } from '../components/StambhaPillar'
 import { getInitialLanguage, getLanguage, saveLanguage, translate } from '../i18n'
 import { initials, loadSmritiNames, pickText } from '../lib/smriti'
 import '../smriti.css'
@@ -33,12 +33,13 @@ export default function SmritiStambhaPage() {
     </header>
 
     <section className="smriti-hero">
-      <StambhaPillar className="smriti-hero-pillar" label={t('smriti_engraving')} />
+      <StambhaMonument title={t('smriti_title')} dedication={t('smriti_engraving')} locale={current.locale} lateLabel={t('smriti_late')}
+        people={(people || []).map(person => ({ id: person.id, name: pickText(person, 'name', language), years: person.years, is_late: person.is_late }))} />
       <div className="smriti-hero-text">
         <span className="smriti-eyebrow">{t('smriti_eyebrow')}</span>
         <h1>{t('smriti_title')}</h1>
         <p>{t('smriti_p')}</p>
-        {people?.length > 0 && <p className="smriti-count"><Flame size={18} /> {people.length}</p>}
+        {people?.length > 0 && <p className="smriti-count"><Flame size={18} /> {localDigits(people.length, current.locale)}</p>}
       </div>
     </section>
 
@@ -51,7 +52,7 @@ export default function SmritiStambhaPage() {
             {person.is_late && <span className="smriti-late"><Flame size={13} /> {t('smriti_late')}</span>}
             <h2>{name}</h2>
             {pickText(person, 'role', language) && <p className="smriti-role">{pickText(person, 'role', language)}</p>}
-            {person.years && <p className="smriti-years">{person.years}</p>}
+            {person.years && <p className="smriti-years">{localDigits(person.years, current.locale)}</p>}
             {pickText(person, 'tribute', language) && <p className="smriti-tribute">{pickText(person, 'tribute', language)}</p>}
           </li>
         })}</ol>}

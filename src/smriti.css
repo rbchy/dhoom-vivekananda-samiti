@@ -57,3 +57,29 @@
 @media(max-width:700px){.smriti-teaser{flex-direction:column;text-align:center}.smriti-teaser-text{text-align:center}.smriti-chips{justify-content:center}}
 :lang(bn) .smriti-eyebrow,:lang(bn) .stambha-engraving{letter-spacing:0}
 #smriti-management .event-form textarea{display:block;width:100%;box-sizing:border-box;min-height:90px}
+
+/* Large memorial pillar with engraved names */
+.smriti-hero{align-items:center}
+.stambha-monument{flex:none;width:min(440px,92vw);margin:0;filter:drop-shadow(0 22px 34px rgba(0,0,0,.5))}
+.stambha-top,.stambha-base{display:block;width:100%;height:auto}
+.stambha-top{margin-bottom:-1px}
+.stambha-base{margin-top:-1px}
+.stambha-shaft{width:60%;margin:0 auto;padding:16px 12px;background:linear-gradient(90deg,#cfc2a9 0,#efe6d4 12%,#fbf6ec 38%,#f6efe1 62%,#e6dbc6 88%,#c4b598 100%);border-inline:1px solid #b9a684;box-shadow:inset 0 6px 0 -2px #d9b46a,inset 0 -6px 0 -2px #d9b46a}
+.stambha-panel{padding:18px 10px;border:2px solid #c9a961;border-radius:4px;outline:1px dashed #c9b289;outline-offset:-7px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(201,169,97,.08))}
+.stambha-title,.stambha-dedication,.stambha-names,.stambha-om{color:#5a3f12;text-shadow:0 1px 0 rgba(255,255,255,.9)}
+.stambha-title{margin:0;font-family:'Playfair Display','Noto Serif Bengali',serif;font-size:clamp(18px,2.2vw,22px);font-weight:700;letter-spacing:1px}
+.stambha-dedication{margin:4px 0 0;font-size:13px;font-style:italic;color:#6b5122}
+.stambha-rule{display:block;width:60%;height:2px;margin:12px auto;background:linear-gradient(90deg,transparent,#c9a961,transparent)}
+.stambha-names{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.stambha-names li{display:grid;grid-template-columns:auto 1fr;column-gap:6px;text-align:start;align-items:baseline}
+.stambha-sl{font-family:'Playfair Display','Noto Serif Bengali',serif;font-weight:700;font-size:14px;min-width:1.4em;text-align:end}
+.stambha-name{font-family:'Playfair Display','Noto Serif Bengali',serif;font-weight:700;font-size:clamp(13.5px,1.5vw,15.5px);line-height:1.3}
+.stambha-late{margin-inline-start:4px;font-size:11px;text-decoration:none;text-shadow:none;cursor:help}
+.stambha-years{grid-column:2;font-size:12px;letter-spacing:.5px;color:#86703f;font-variant-numeric:tabular-nums}
+.stambha-om{margin:0;font-size:22px;line-height:1}
+:lang(bn) .stambha-title{letter-spacing:0}
+@media(max-width:700px){.stambha-shaft{width:68%;padding:12px 8px}.stambha-panel{padding:14px 6px}}
+.smriti-hero .stambha-title,.smriti-hero .stambha-om{color:#5a3f12;font-size:clamp(18px,2.2vw,22px);line-height:1.3}
+.smriti-hero .stambha-om{font-size:22px}
+.smriti-hero .stambha-dedication{color:#6b5122;font-size:13px;line-height:1.4}
+.smriti-hero .stambha-years{font-size:13px;color:#6b5122}
