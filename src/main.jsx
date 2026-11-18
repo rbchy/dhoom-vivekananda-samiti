@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse, Sunrise, Sunset } from 'lucide-react'
 import './styles.css'
 import './language.css'
@@ -213,6 +213,8 @@ function App() {
   }
   hoursByDay.forEach(g => { if (g.morning.length || g.evening.length) g.closed = false })
   const todayKey = new Date().getDay()
+  // A title every slot shares (e.g. "Temple open") adds nothing in the table, so it is only shown when it differs
+  const sharedTitle = scheduleRows.length > 1 && scheduleRows.every(row => row.title_en === scheduleRows[0].title_en) ? scheduleRows[0].title_en : null
 
   const closeMenu = () => setMenuOpen(false)
   return <div className="site">
@@ -285,7 +287,7 @@ function App() {
               {group.closed ? <td colSpan="2" className="hours-closed-cell">{t('hours_closed')}</td> : ['morning', 'evening'].map(part => <td key={part} data-label={t(part === 'morning' ? 'hours_morning' : 'hours_evening')}>
                 {group[part].length === 0 ? <span className="hours-none">—</span> : group[part].map(row => <div className="hours-slot" key={row.id}>
                   <span className="hours-time">{formatTime(row.start_time, currentLanguage.locale)}{row.end_time ? ` – ${formatTime(row.end_time, currentLanguage.locale)}` : ''}</span>
-                  {(row.title_en || row.title_bn) && <span className="hours-title">{language === 'bn' ? row.title_bn || row.title_en : row.title_en || row.title_bn}</span>}
+                  {(row.title_en || row.title_bn) && row.title_en !== sharedTitle && <span className="hours-title">{language === 'bn' ? row.title_bn || row.title_en : row.title_en || row.title_bn}</span>}
                   {(row.note_en || row.note_bn) && <span className="hours-note">{language === 'bn' ? row.note_bn || row.note_en : row.note_en || row.note_bn}</span>}
                 </div>)}
               </td>)}
@@ -361,4 +363,6 @@ function App() {
   </div>
 }
 
-createRoot(document.getElementById('root')).render(<BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></BrowserRouter>)
+// The demo build (npm run build:demo) is one HTML file opened from disk, so it keeps the route in memory
+const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)
