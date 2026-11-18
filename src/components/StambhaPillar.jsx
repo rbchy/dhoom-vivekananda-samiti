@@ -72,7 +72,7 @@ export function localDigits(text, locale) {
 }
 
 // A large memorial pillar with the names, serial numbers and years engraved on the stone.
-// people: [{ id, name, years, is_late }]
+// people: [{ id, name, role, years, is_late }]
 export function StambhaMonument({ title, dedication, people = [], locale = 'en', lateLabel = '' }) {
   return (
     <figure className="stambha-monument" aria-label={title}>
@@ -100,6 +100,7 @@ export function StambhaMonument({ title, dedication, people = [], locale = 'en',
           <ol className="stambha-names">{people.map((person, index) => <li key={person.id}>
             <span className="stambha-sl">{localDigits(index + 1, locale)}.</span>
             <span className="stambha-name">{person.name}{person.is_late && <abbr className="stambha-late" title={lateLabel} aria-label={lateLabel}>🪔</abbr>}</span>
+            {person.role && <span className="stambha-role">{person.role}</span>}
             {person.years && <span className="stambha-years">{localDigits(person.years, locale)}</span>}
           </li>)}</ol>
           <span className="stambha-rule" aria-hidden="true" />

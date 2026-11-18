@@ -83,3 +83,6 @@
 .smriti-hero .stambha-om{font-size:22px}
 .smriti-hero .stambha-dedication{color:#6b5122;font-size:13px;line-height:1.4}
 .smriti-hero .stambha-years{font-size:13px;color:#6b5122}
+:lang(bn) .smriti-teaser .section-eyebrow{letter-spacing:0}
+.stambha-role{grid-column:2;font-size:12.5px;font-weight:600;color:#7a4a1a;line-height:1.35}
+.smriti-hero .stambha-years{white-space:nowrap}

@@ -8,12 +8,22 @@ function query(table) {
   let rows = [...(DEMO_TABLES[table] || [])]
   let one = null
   let write = false
+  const sorts = []
   const api = {
     select() { return api },
     eq(column, value) { if (!write) rows = rows.filter(row => row[column] === value); return api },
     neq(column, value) { if (!write) rows = rows.filter(row => row[column] !== value); return api },
+    // Several .order() calls sort by the first column, then the next, as in Supabase
     order(column, { ascending = true } = {}) {
-      rows.sort((a, b) => (String(a[column] ?? '') < String(b[column] ?? '') ? -1 : String(a[column] ?? '') > String(b[column] ?? '') ? 1 : 0) * (ascending ? 1 : -1))
+      sorts.push([column, ascending ? 1 : -1])
+      rows.sort((a, b) => {
+        for (const [key, dir] of sorts) {
+          const x = a[key] ?? '', y = b[key] ?? ''
+          if (x < y) return -dir
+          if (x > y) return dir
+        }
+        return 0
+      })
       return api
     },
     limit(n) { rows = rows.slice(0, n); return api },

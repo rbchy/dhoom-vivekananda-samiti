@@ -88,26 +88,12 @@ export const DEMO_TABLES = {
           "is_published": true
       },
       {
-          "id": "5a3b1e00-0000-4000-8000-000000000002",
-          "name_en": "Smt. Sabitri Devi",
-          "name_bn": "শ্রীমতী সাবিত্রী দেবী",
-          "role_en": "Founder Member",
-          "role_bn": "প্রতিষ্ঠাতা সদস্য",
-          "years": "1985 – 2010",
-          "tribute_en": "Looked after the bhog kitchen and the women's prayer circle for twenty-five years. (Sample entry)",
-          "tribute_bn": "পঁচিশ বছর ভোগঘর আর মহিলাদের প্রার্থনাসভা দেখাশোনা করেছেন। (নমুনা)",
-          "is_late": true,
-          "sort_order": 20,
-          "photo_url": null,
-          "is_published": true
-      },
-      {
           "id": "5a3b1e00-0000-4000-8000-000000000003",
           "name_en": "Sri Gopal Chandra Nath",
           "name_bn": "শ্রী গোপাল চন্দ্র নাথ",
-          "role_en": "First Secretary",
-          "role_bn": "প্রথম সম্পাদক",
-          "years": "1987 – 2015",
+          "role_en": "Founder General Secretary",
+          "role_bn": "প্রতিষ্ঠাতা সাধারণ সম্পাদক",
+          "years": "1985 – 2015",
           "tribute_en": "Kept the first accounts book and built the Durga Mandir with volunteers. (Sample entry)",
           "tribute_bn": "প্রথম হিসাবের খাতা রাখেন এবং স্বেচ্ছাসেবকদের নিয়ে দুর্গা মন্দির গড়ে তোলেন। (নমুনা)",
           "is_late": true,
@@ -116,16 +102,30 @@ export const DEMO_TABLES = {
           "is_published": true
       },
       {
+          "id": "5a3b1e00-0000-4000-8000-000000000002",
+          "name_en": "Smt. Sabitri Devi",
+          "name_bn": "শ্রীমতী সাবিত্রী দেবী",
+          "role_en": "Founder Treasurer",
+          "role_bn": "প্রতিষ্ঠাতা কোষাধ্যক্ষ",
+          "years": "1985 – 2010",
+          "tribute_en": "Kept the Samiti's funds and looked after the bhog kitchen for twenty-five years. (Sample entry)",
+          "tribute_bn": "পঁচিশ বছর সমিতির তহবিল আর ভোগঘর দেখাশোনা করেছেন। (নমুনা)",
+          "is_late": true,
+          "sort_order": 50,
+          "photo_url": null,
+          "is_published": true
+      },
+      {
           "id": "5a3b1e00-0000-4000-8000-000000000004",
           "name_en": "Dr. Ashok Kumar Das",
           "name_bn": "ডা. অশোক কুমার দাশ",
-          "role_en": "Founder, Community Clinic",
-          "role_bn": "কমিউনিটি ক্লিনিকের প্রতিষ্ঠাতা",
-          "years": "1995 – present",
+          "role_en": "Founder Member",
+          "role_bn": "প্রতিষ্ঠাতা সদস্য",
+          "years": "1985 – present",
           "tribute_en": "Started the free clinic and still sees patients every Sunday. (Sample entry)",
           "tribute_bn": "বিনামূল্যের ক্লিনিক শুরু করেন, এখনও প্রতি রবিবার রোগী দেখেন। (নমুনা)",
           "is_late": false,
-          "sort_order": 40,
+          "sort_order": 100,
           "photo_url": null,
           "is_published": true
       },
@@ -133,15 +133,16 @@ export const DEMO_TABLES = {
           "id": "5a3b1e00-0000-4000-8000-000000000005",
           "name_en": "Sri Nitai Mitra",
           "name_bn": "শ্রী নিতাই মিত্র",
-          "role_en": "Gita Teacher",
-          "role_bn": "গীতা শিক্ষক",
-          "years": "2001 – present",
+          "role_en": "Founder Member",
+          "role_bn": "প্রতিষ্ঠাতা সদস্য",
+          "years": "1985 – present",
           "tribute_en": "Teaches the Gita to the children of the village every Friday evening. (Sample entry)",
           "tribute_bn": "প্রতি শুক্রবার সন্ধ্যায় গ্রামের শিশুদের গীতা শেখান। (নমুনা)",
           "is_late": false,
-          "sort_order": 50,
+          "sort_order": 100,
           "photo_url": null,
           "is_published": true
       }
   ]
+
 }

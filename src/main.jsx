@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
 import StambhaPillar from './components/StambhaPillar'
@@ -230,7 +230,7 @@ function App() {
       <LanguageSwitcher language={language} onChange={code => { setLanguage(code); closeMenu() }} label={t('choose_language')} />
       <button className="menu-toggle" type="button" onClick={() => setMenuOpen(open => !open)} aria-label={t('toggle_nav')} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
       <nav className={menuOpen ? 'nav nav-open' : 'nav'} aria-label="Main navigation">
-        {navigation.map(([key, section], index) => <a className={index === 0 ? 'active' : ''} href={`#${section}`} onClick={closeMenu} key={section}>{t(key)}</a>)}
+        {navigation.map(([key, section], index) => <Fragment key={section}><a className={index === 0 ? 'active' : ''} href={`#${section}`} onClick={closeMenu}>{t(key)}</a>{section === 'about' && <Link to="/smriti-stambha" onClick={closeMenu}>{t('smriti_title')}</Link>}</Fragment>)}
         <Link className="admin-link" to="/admin/login" onClick={closeMenu}>{t('admin_login')}</Link><a className="search-link" href="#events" onClick={closeMenu} aria-label={t('search_aria')}><Search size={20} /></a>
       </nav>
     </header>
@@ -255,6 +255,16 @@ function App() {
         <ul className="acts-grid">{ACTIVITIES.map(act => { const Icon = ORG_ICONS[act.icon] || Landmark; const org = ORGANISATIONS.find(o => o.id === act.id); const name = org ? (language === 'bn' ? org.name_bn : org.name_en) : t(`act_${act.id}_t`); return <li key={act.id} className={`act-item act-${act.icon}`}><span className="act-icon"><Icon size={20} strokeWidth={1.8} /></span><div><strong>{name}</strong><small>{t(`act_${act.id}_d`)}</small></div></li> })}</ul>
         <p>{t('welcome_p2')}</p>
         <a className="donate-btn welcome-visit-btn" href="#contact"><MapPinHouse size={18} /> {t('visit_btn')}</a><img className="welcome-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><blockquote>{t('blessing')}</blockquote></div><figure className="welcome-photo"><picture><source srcSet={`${import.meta.env.BASE_URL}images/belur-math-front.webp`} type="image/webp" /><img src={`${import.meta.env.BASE_URL}images/belur-math-front.jpg`} alt={t('belur_alt')} width="820" height="1016" loading="lazy" /></picture><figcaption>{t('belur_caption')}</figcaption></figure></section>
+      {smriti.length > 0 && <section className="smriti-teaser" id="smriti" aria-labelledby="smriti-title">
+        <StambhaPillar compact label={t('smriti_title')} />
+        <div className="smriti-teaser-text">
+          <span className="section-eyebrow">{t('smriti_engraving')}</span>
+          <h2 id="smriti-title">{t('smriti_title')}</h2>
+          <p>{t('smriti_p')}</p>
+          <ul className="smriti-chips">{smriti.slice(0, 6).map(person => <li key={person.id} className={person.is_late ? 'late' : undefined}>{pickSmriti(person, 'name', language)}</li>)}{smriti.length > 6 && <li>+{smriti.length - 6}</li>}</ul>
+          <Link to="/smriti-stambha" className="smriti-back">{t('smriti_btn')} <ArrowRight size={17} /></Link>
+        </div>
+      </section>}
       <PhotoSlideshow photos={gallery} t={t} getTitle={item => pick(item, 'title', language) || t('gallery_title')} getOrg={item => (item.organisation ? orgName(item.organisation) : '')} />
       <section className="org-section" id="organisations">
         <span className="section-eyebrow">{t('orgs_eyebrow')}</span><h2>{t('orgs_title')}</h2><p className="org-intro">{t('orgs_p')}</p>
@@ -328,17 +338,7 @@ function App() {
         <p className="donate-office-note">{t('donate_office_note')}</p>
       </section>
       {openForm === 'donate' && <Modal title={t('donate_online_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><OnlineDonationForm t={t} language={language} /></Modal>}
-      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}{smriti.length > 0 && <section className="smriti-teaser" id="smriti" aria-labelledby="smriti-title">
-        <StambhaPillar compact label={t('smriti_title')} />
-        <div className="smriti-teaser-text">
-          <span className="section-eyebrow">{t('smriti_eyebrow')}</span>
-          <h2 id="smriti-title">{t('smriti_title')}</h2>
-          <p>{t('smriti_p')}</p>
-          <ul className="smriti-chips">{smriti.slice(0, 6).map(person => <li key={person.id} className={person.is_late ? 'late' : undefined}>{pickSmriti(person, 'name', language)}</li>)}{smriti.length > 6 && <li>+{smriti.length - 6}</li>}</ul>
-          <Link to="/smriti-stambha" className="smriti-back">{t('smriti_btn')} <ArrowRight size={17} /></Link>
-        </div>
-      </section>}
-      <section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
+      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}      <section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
         <div className="contact-grid">
           {address && <div className="contact-item"><span className="contact-icon"><MapPin size={20} /></span><div><small>{t('contact_address')}</small><p>{address}</p>{mapUrl && <a className="contact-link" href={mapUrl} target="_blank" rel="noopener noreferrer">{t('directions')} <ExternalLink size={14} /></a>}</div></div>}
           {(setting('temple_phone') || committee.some(c => c.phone)) && <div className="contact-item"><span className="contact-icon"><Phone size={20} /></span><div><small>{t('contact_phone')}</small>

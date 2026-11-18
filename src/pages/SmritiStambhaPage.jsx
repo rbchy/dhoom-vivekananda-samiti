@@ -34,7 +34,7 @@ export default function SmritiStambhaPage() {
 
     <section className="smriti-hero">
       <StambhaMonument title={t('smriti_title')} dedication={t('smriti_engraving')} locale={current.locale} lateLabel={t('smriti_late')}
-        people={(people || []).map(person => ({ id: person.id, name: pickText(person, 'name', language), years: person.years, is_late: person.is_late }))} />
+        people={(people || []).map(person => ({ id: person.id, name: pickText(person, 'name', language), role: pickText(person, 'role', language), years: person.years, is_late: person.is_late }))} />
       <div className="smriti-hero-text">
         <span className="smriti-eyebrow">{t('smriti_eyebrow')}</span>
         <h1>{t('smriti_title')}</h1>

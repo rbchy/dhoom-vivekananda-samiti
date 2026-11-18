@@ -60,17 +60,21 @@ returns text language sql immutable as $$
   end;
 $$;
 
--- Five sample names (replace or delete them from Admin → Smriti Stambha).
--- Their ids start with 5a3b1e00 so they are easy to find and remove.
+-- Five sample founders (replace or delete them from Admin → Smriti Stambha).
+-- Their ids start with 5a3b1e00 so they are easy to find and remove. Running this file
+-- again refreshes only these five sample rows; real names are never touched.
 insert into public.smriti_stambha (id, name_en, name_bn, role_en, role_bn, years, tribute_en, tribute_bn, is_late, sort_order) values
   ('5a3b1e00-0000-4000-8000-000000000001', 'Sri Haripada Chowdhury', 'শ্রী হরিপদ চৌধুরী', 'Founder President', 'প্রতিষ্ঠাতা সভাপতি', '1985 – 2004',
    'Gave the first land and gathered the villagers to start daily worship. (Sample entry)', 'প্রথম জমি দান করে গ্রামবাসীদের নিয়ে নিত্যপূজা শুরু করেন। (নমুনা)', true, 10),
-  ('5a3b1e00-0000-4000-8000-000000000002', 'Smt. Sabitri Devi', 'শ্রীমতী সাবিত্রী দেবী', 'Founder Member', 'প্রতিষ্ঠাতা সদস্য', '1985 – 2010',
-   'Looked after the bhog kitchen and the women''s prayer circle for twenty-five years. (Sample entry)', 'পঁচিশ বছর ভোগঘর আর মহিলাদের প্রার্থনাসভা দেখাশোনা করেছেন। (নমুনা)', true, 20),
-  ('5a3b1e00-0000-4000-8000-000000000003', 'Sri Gopal Chandra Nath', 'শ্রী গোপাল চন্দ্র নাথ', 'First Secretary', 'প্রথম সম্পাদক', '1987 – 2015',
+  ('5a3b1e00-0000-4000-8000-000000000003', 'Sri Gopal Chandra Nath', 'শ্রী গোপাল চন্দ্র নাথ', 'Founder General Secretary', 'প্রতিষ্ঠাতা সাধারণ সম্পাদক', '1985 – 2015',
    'Kept the first accounts book and built the Durga Mandir with volunteers. (Sample entry)', 'প্রথম হিসাবের খাতা রাখেন এবং স্বেচ্ছাসেবকদের নিয়ে দুর্গা মন্দির গড়ে তোলেন। (নমুনা)', true, 30),
-  ('5a3b1e00-0000-4000-8000-000000000004', 'Dr. Ashok Kumar Das', 'ডা. অশোক কুমার দাশ', 'Founder, Community Clinic', 'কমিউনিটি ক্লিনিকের প্রতিষ্ঠাতা', '1995 – present',
-   'Started the free clinic and still sees patients every Sunday. (Sample entry)', 'বিনামূল্যের ক্লিনিক শুরু করেন, এখনও প্রতি রবিবার রোগী দেখেন। (নমুনা)', false, 40),
-  ('5a3b1e00-0000-4000-8000-000000000005', 'Sri Nitai Mitra', 'শ্রী নিতাই মিত্র', 'Gita Teacher', 'গীতা শিক্ষক', '2001 – present',
-   'Teaches the Gita to the children of the village every Friday evening. (Sample entry)', 'প্রতি শুক্রবার সন্ধ্যায় গ্রামের শিশুদের গীতা শেখান। (নমুনা)', false, 50)
-on conflict (id) do nothing;
+  ('5a3b1e00-0000-4000-8000-000000000002', 'Smt. Sabitri Devi', 'শ্রীমতী সাবিত্রী দেবী', 'Founder Treasurer', 'প্রতিষ্ঠাতা কোষাধ্যক্ষ', '1985 – 2010',
+   'Kept the Samiti''s funds and looked after the bhog kitchen for twenty-five years. (Sample entry)', 'পঁচিশ বছর সমিতির তহবিল আর ভোগঘর দেখাশোনা করেছেন। (নমুনা)', true, 50),
+  ('5a3b1e00-0000-4000-8000-000000000004', 'Dr. Ashok Kumar Das', 'ডা. অশোক কুমার দাশ', 'Founder Member', 'প্রতিষ্ঠাতা সদস্য', '1985 – present',
+   'Started the free clinic and still sees patients every Sunday. (Sample entry)', 'বিনামূল্যের ক্লিনিক শুরু করেন, এখনও প্রতি রবিবার রোগী দেখেন। (নমুনা)', false, 100),
+  ('5a3b1e00-0000-4000-8000-000000000005', 'Sri Nitai Mitra', 'শ্রী নিতাই মিত্র', 'Founder Member', 'প্রতিষ্ঠাতা সদস্য', '1985 – present',
+   'Teaches the Gita to the children of the village every Friday evening. (Sample entry)', 'প্রতি শুক্রবার সন্ধ্যায় গ্রামের শিশুদের গীতা শেখান। (নমুনা)', false, 100)
+on conflict (id) do update set
+  name_en = excluded.name_en, name_bn = excluded.name_bn, role_en = excluded.role_en, role_bn = excluded.role_bn,
+  years = excluded.years, tribute_en = excluded.tribute_en, tribute_bn = excluded.tribute_bn,
+  is_late = excluded.is_late, sort_order = excluded.sort_order;

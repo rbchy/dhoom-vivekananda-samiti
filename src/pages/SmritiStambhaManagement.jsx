@@ -6,9 +6,10 @@ import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import ImagePicker from '../components/ImagePicker'
 import { removeImage, storagePathFromUrl, uploadImage } from '../lib/storage'
+import { FOUNDER_POSITIONS, positionFor } from '../lib/smriti'
 
 // Admin → Smriti Stambha: names of the people who built the Samiti (shown at /smriti-stambha)
-const emptyForm = { name_en: '', name_bn: '', role_en: '', role_bn: '', years: '', tribute_en: '', tribute_bn: '', photo_url: '', is_late: false, sort_order: '100', is_published: true }
+const emptyForm = { position: 'member', name_en: '', name_bn: '', role_en: 'Founder Member', role_bn: 'প্রতিষ্ঠাতা সদস্য', years: '', tribute_en: '', tribute_bn: '', photo_url: '', is_late: false, sort_order: '100', is_published: true }
 
 export default function SmritiStambhaManagement() {
   const [form, setForm] = useState(emptyForm)
@@ -20,7 +21,7 @@ export default function SmritiStambhaManagement() {
   const [photoFile, setPhotoFile] = useState(null)
 
   async function loadItems() {
-    const { data, error } = await supabase.from('smriti_stambha').select('*').order('sort_order').order('created_at')
+    const { data, error } = await supabase.from('smriti_stambha').select('*').order('sort_order').order('name_en')
     if (error) setMessage(/relation|does not exist|schema cache/i.test(error.message || '') ? 'The Smriti Stambha table is not set up yet — run supabase/smriti-stambha.sql once in Supabase → SQL Editor.' : describeDbError(error))
     else setItems(data || [])
   }
@@ -29,6 +30,13 @@ export default function SmritiStambhaManagement() {
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target
+    if (name === 'position') {
+      // A committee position fills the role and the display order; "other" lets you type them
+      const position = FOUNDER_POSITIONS.find(p => p.id === value)
+      setForm(previous => position ? { ...previous, position: value, role_en: position.en, role_bn: position.bn, sort_order: String(position.order) } : { ...previous, position: value, role_en: '', role_bn: '', sort_order: '200' })
+      setErrors(previous => ({ ...previous, role_en: '', role_bn: '', sort_order: '' }))
+      return
+    }
     setForm(previous => ({ ...previous, [name]: type === 'checkbox' ? checked : value }))
     setErrors(previous => ({ ...previous, [name]: '' }))
   }
@@ -82,7 +90,7 @@ export default function SmritiStambhaManagement() {
 
   function startEdit(item) {
     setEditingId(item.id); setErrors({}); setPhotoFile(null)
-    setForm({ name_en: item.name_en, name_bn: item.name_bn || '', role_en: item.role_en || '', role_bn: item.role_bn || '', years: item.years || '', tribute_en: item.tribute_en || '', tribute_bn: item.tribute_bn || '', photo_url: item.photo_url || '', is_late: item.is_late, sort_order: String(item.sort_order), is_published: item.is_published })
+    setForm({ position: positionFor(item)?.id || 'other', name_en: item.name_en, name_bn: item.name_bn || '', role_en: item.role_en || '', role_bn: item.role_bn || '', years: item.years || '', tribute_en: item.tribute_en || '', tribute_bn: item.tribute_bn || '', photo_url: item.photo_url || '', is_late: item.is_late, sort_order: String(item.sort_order), is_published: item.is_published })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -94,13 +102,21 @@ export default function SmritiStambhaManagement() {
   </div>
 
   return <div className="events-management">
-    <p className="field-hint">Names added here appear on the website's Smriti Stambha page (/smriti-stambha) and in the short band above "Visit us" on the home page. Lower display order comes first. Tick "Late" for someone who has passed away — the website shows "Late / প্রয়াত" with a lamp.</p>
+    <p className="field-hint">Add the founders of the Samiti here. Their names are engraved on the website's Smriti Stambha page (/smriti-stambha) and shown in the Founders band right after the About section on the home page. Choose each founder's position at founding: the website lists them in the order of the founding committee. Tick "Late" for someone who has passed away — the website shows "Late / প্রয়াত" with a lamp.</p>
     <form className="event-form" onSubmit={handleSave} noValidate>
       <h3>{editingId ? 'Edit name / নাম সম্পাদনা' : 'Add a name / নাম যোগ করুন'}</h3>
       <ErrorSummary errors={errors} />
       <div className="form-row">{input('name_en', 'Full name (English) *', { maxLength: 120, placeholder: 'e.g. Sri Haripada Chowdhury' })}{input('name_bn', 'পুরো নাম (বাংলা)', { maxLength: 120, placeholder: 'যেমন শ্রী হরিপদ চৌধুরী' })}</div>
-      <div className="form-row">{input('role_en', 'Role / contribution (English)', { maxLength: 120, placeholder: 'e.g. Founder President' })}{input('role_bn', 'ভূমিকা (বাংলা)', { maxLength: 120, placeholder: 'যেমন প্রতিষ্ঠাতা সভাপতি' })}</div>
-      <div className="form-row">{input('years', 'Years of service / সেবাকাল', { maxLength: 40, placeholder: 'e.g. 1985 – 2004' })}{input('sort_order', 'Display order', { inputMode: 'numeric', maxLength: 4 })}</div>
+      <div>
+        <label htmlFor="ss-position">Position at founding / প্রতিষ্ঠাকালীন পদ *</label>
+        <select id="ss-position" name="position" value={form.position} onChange={handleChange}>
+          {FOUNDER_POSITIONS.map(p => <option key={p.id} value={p.id}>{p.en} / {p.bn}</option>)}
+          <option value="other">Other (type below) / অন্য</option>
+        </select>
+        <p className="field-hint">The position decides where the name stands on the pillar: President, Vice President, General Secretary, Joint Secretary, Treasurer, then Founder Members. Founders with the same position are listed alphabetically.</p>
+      </div>
+      {form.position === 'other' && <div className="form-row">{input('role_en', 'Role (English)', { maxLength: 120, placeholder: 'e.g. Founder Advisor' })}{input('role_bn', 'ভূমিকা (বাংলা)', { maxLength: 120, placeholder: 'যেমন প্রতিষ্ঠাতা উপদেষ্টা' })}</div>}
+      <div className="form-row">{input('years', 'Years of service / সেবাকাল', { maxLength: 40, placeholder: 'e.g. 1985 – 2004' })}{input('sort_order', 'Display order (set by the position)', { inputMode: 'numeric', maxLength: 4 })}</div>
       <div className="form-row">{input('tribute_en', 'Tribute (English)', { rows: 3, maxLength: 800, placeholder: 'A line or two about what they did for the Samiti' })}{input('tribute_bn', 'শ্রদ্ধাঞ্জলি (বাংলা)', { rows: 3, maxLength: 800 })}</div>
       <ImagePicker id="ss-photo" label="Photo (optional) / ছবি" file={photoFile} onFileChange={file => { setPhotoFile(file); setErrors(p => ({ ...p, photo: '', photo_url: '' })) }} currentUrl={!photoFile && form.photo_url && !checkUrl(form.photo_url, { label: 'x' }) ? form.photo_url : ''} error={errors.photo} onError={problem => setErrors(p => ({ ...p, photo: problem }))} />
       <details className="link-option" open={Boolean(form.photo_url) && !photoFile}>
@@ -118,9 +134,9 @@ export default function SmritiStambhaManagement() {
     {message && <p className="event-message" role="status">{message}</p>}
     <div className="events-list">
       {items.length === 0 ? <p>No names yet.</p> : <div className="table-scroll"><table className="admin-table">
-        <thead><tr><th>#</th><th>Name</th><th>Role</th><th>Years</th><th>Late</th><th>Show</th><th>Actions</th></tr></thead>
-        <tbody>{items.map(item => <tr key={item.id} className={item.is_published ? '' : 'row-muted'}>
-          <td>{item.sort_order}</td>
+        <thead><tr><th>Sl</th><th>Name</th><th>Position</th><th>Years</th><th>Late</th><th>Show</th><th>Actions</th></tr></thead>
+        <tbody>{items.map((item, index) => <tr key={item.id} className={item.is_published ? '' : 'row-muted'}>
+          <td>{index + 1}</td>
           <td>{item.name_en}{item.name_bn && <small className="cell-sub">{item.name_bn}</small>}</td>
           <td>{item.role_en}{item.role_bn && <small className="cell-sub">{item.role_bn}</small>}</td>
           <td>{item.years}</td>
