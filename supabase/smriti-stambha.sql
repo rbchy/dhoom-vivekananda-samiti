@@ -1,7 +1,7 @@
 -- =====================================================================
 -- Smriti Stambha (স্মৃতিস্তম্ভ): the people who gave their time and
 -- dedication to build the Samiti. Shown on the website page /smriti-stambha.
--- Run once in Supabase → SQL Editor, AFTER roles-and-approvals.sql.
+-- Run once in Supabase → SQL Editor. Works with or without roles-and-approvals.sql.
 -- Safe to run again.
 -- =====================================================================
 
@@ -28,10 +28,17 @@ drop policy if exists "smriti_stambha public read" on public.smriti_stambha;
 create policy "smriti_stambha public read" on public.smriti_stambha
   for select using (is_published or public.is_temple_admin());
 
--- Secretary (and accounts admin) may read drafts to prepare a request
+-- Secretary (and accounts admin) may read drafts to prepare a request.
+-- Only when roles-and-approvals.sql has been run (it creates is_staff());
+-- otherwise this step is skipped, and roles-and-approvals.sql adds it later.
 drop policy if exists "smriti_stambha staff read" on public.smriti_stambha;
-create policy "smriti_stambha staff read" on public.smriti_stambha
-  for select to authenticated using (public.is_staff());
+do $$
+begin
+  if to_regprocedure('public.is_staff()') is not null then
+    create policy "smriti_stambha staff read" on public.smriti_stambha
+      for select to authenticated using (public.is_staff());
+  end if;
+end $$;
 
 -- Only the main admin writes directly; the secretary's changes go through Approvals
 drop policy if exists "smriti_stambha admin write" on public.smriti_stambha;
