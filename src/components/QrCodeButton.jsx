@@ -26,6 +26,44 @@ function makeSvg(text) {
   return qr.createSvgTag({ cellSize: 8, margin: 2, scalable: true })
 }
 
+// Save the QR code as a picture (for posters, notices, WhatsApp)
+function downloadQr(svg, url, t) {
+  const img = new Image()
+  img.onload = () => {
+    const size = 1024, pad = 60, canvas = document.createElement('canvas')
+    canvas.width = size; canvas.height = size + 110
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(img, pad, pad, size - pad * 2, size - pad * 2)
+    ctx.fillStyle = '#6d1822'; ctx.font = 'bold 44px Georgia, serif'; ctx.textAlign = 'center'
+    ctx.fillText(t('brand_name'), size / 2, size + 20)
+    ctx.fillStyle = '#5c4a40'; ctx.font = '28px Arial, sans-serif'
+    ctx.fillText(url.replace(/\/$/, ''), size / 2, size + 70)
+    const link = document.createElement('a')
+    link.download = 'dhoom-vivekananda-samiti-qr.png'
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
+}
+
+// Larger QR card shown on the page itself (Visit us section)
+export function VisitQr({ t }) {
+  const url = siteAddress()
+  const svg = useMemo(() => (url ? makeSvg(url) : ''), [url])
+  if (!url) return null
+  return <div className="visit-qr">
+    <div className="visit-qr-code" role="img" aria-label={`QR: ${url}`} dangerouslySetInnerHTML={{ __html: svg }} />
+    <div className="visit-qr-text">
+      <span className="visit-qr-icon"><QrCode size={18} /></span>
+      <h3>{t('qr_title')}</h3>
+      <p>{t('qr_hint')}</p>
+      <a className="visit-qr-url" href={url}>{url.replace(/^https?:\/\//, '').replace(/\/$/, '')}</a>
+      <button type="button" className="visit-qr-download" onClick={() => downloadQr(svg, url, t)}><Download size={16} /> {t('qr_download')}</button>
+    </div>
+  </div>
+}
+
 export default function QrCodeButton({ t, className = 'social-btn social-qr' }) {
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -37,26 +75,7 @@ export default function QrCodeButton({ t, className = 'social-btn social-qr' }) 
     try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000) } catch { /* not allowed */ }
   }
 
-  // Save the QR code as a picture (for posters, notices, WhatsApp)
-  function download() {
-    const img = new Image()
-    img.onload = () => {
-      const size = 1024, pad = 60, canvas = document.createElement('canvas')
-      canvas.width = size; canvas.height = size + 110
-      const ctx = canvas.getContext('2d')
-      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height)
-      ctx.drawImage(img, pad, pad, size - pad * 2, size - pad * 2)
-      ctx.fillStyle = '#6d1822'; ctx.font = 'bold 44px Georgia, serif'; ctx.textAlign = 'center'
-      ctx.fillText(t('brand_name'), size / 2, size + 20)
-      ctx.fillStyle = '#5c4a40'; ctx.font = '28px Arial, sans-serif'
-      ctx.fillText(url.replace(/\/$/, ''), size / 2, size + 70)
-      const link = document.createElement('a')
-      link.download = 'dhoom-vivekananda-samiti-qr.png'
-      link.href = canvas.toDataURL('image/png')
-      link.click()
-    }
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
-  }
+  const download = () => downloadQr(svg, url, t)
 
   if (!url) return null
   return <>

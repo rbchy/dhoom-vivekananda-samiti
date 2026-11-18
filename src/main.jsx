@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import { VisitQr } from './components/QrCodeButton'
 import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse, Sunrise, Sunset } from 'lucide-react'
 import './styles.css'
@@ -321,7 +322,7 @@ function App() {
         <p className="donate-office-note">{t('donate_office_note')}</p>
       </section>
       {openForm === 'donate' && <Modal title={t('donate_online_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><OnlineDonationForm t={t} language={language} /></Modal>}
-      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}<section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><p>{t('contact_p')}</p>
+      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}<section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
         <div className="contact-grid">
           {address && <div className="contact-item"><span className="contact-icon"><MapPin size={20} /></span><div><small>{t('contact_address')}</small><p>{address}</p>{mapUrl && <a className="contact-link" href={mapUrl} target="_blank" rel="noopener noreferrer">{t('directions')} <ExternalLink size={14} /></a>}</div></div>}
           {(setting('temple_phone') || committee.some(c => c.phone)) && <div className="contact-item"><span className="contact-icon"><Phone size={20} /></span><div><small>{t('contact_phone')}</small>

@@ -20,7 +20,8 @@ const demoConfig = {
   plugins: [viteSingleFile()],
   resolve: { alias: [{ find: /^.*\/supabaseClient(\.js)?$/, replacement: fileURLToPath(new URL('./demo/demoClient.js', import.meta.url)) }] },
   build: { outDir: 'dist-demo', assetsInlineLimit: 100000000 },
-  define: { __DEV_LAN_URL__: JSON.stringify('') }
+  // The QR code in the demo points at the published website
+  define: { __DEV_LAN_URL__: JSON.stringify(''), 'import.meta.env.VITE_SITE_URL': JSON.stringify(process.env.VITE_SITE_URL || 'https://rbchy.github.io/dhoom-vivekananda-samiti/') }
 }
 
 export default defineConfig(({ command, mode }) => mode === 'demo' ? demoConfig : ({
