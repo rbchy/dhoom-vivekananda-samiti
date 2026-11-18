@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
-import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse } from 'lucide-react'
+import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse, Sunrise, Sunset } from 'lucide-react'
 import './styles.css'
 import './language.css'
 import './organisations.css'
@@ -193,6 +193,19 @@ function App() {
     (a.day_of_week === null ? -1 : DAY_ORDER.indexOf(a.day_of_week)) - (b.day_of_week === null ? -1 : DAY_ORDER.indexOf(b.day_of_week)) ||
     String(a.start_time || '').localeCompare(String(b.start_time || '')))
 
+  // Temple hours grouped per day: every day first, then Monday … Sunday; morning = before 12:00
+  const hoursByDay = []
+  for (const row of scheduleRows) {
+    const key = row.day_of_week === null ? 'daily' : row.day_of_week
+    let group = hoursByDay.find(g => g.key === key)
+    if (!group) { group = { key, morning: [], evening: [], closed: false }; hoursByDay.push(group) }
+    if (row.is_closed) { group.closed = true; continue }
+    const hour = Number(String(row.start_time || '0').split(':')[0])
+    group[hour < 12 ? 'morning' : 'evening'].push(row)
+  }
+  hoursByDay.forEach(g => { if (g.morning.length || g.evening.length) g.closed = false })
+  const todayKey = new Date().getDay()
+
   const closeMenu = () => setMenuOpen(false)
   return <div className="site">
     <header className="header">
@@ -256,16 +269,20 @@ function App() {
         <div className="join-box"><h3>{t('join_title')}</h3><p>{t('join_p')}</p><button type="button" className="donate-btn" onClick={() => setOpenForm('contact')}>{t('join_btn')}</button></div>
       </section>}
       <section className="worship-section" id="worship"><span className="section-eyebrow">{t('worship_eyebrow')}</span><h2>{t('hours_title')}</h2><p>{t('worship_p')}</p>
-        {scheduleRows.length === 0 ? <p className="hours-empty">{t('hours_none')}</p> : <div className="hours-list">
-          {scheduleRows.map(row => <div className={row.is_closed ? 'hours-card closed' : 'hours-card'} key={row.id}>
-            <span className="hours-icon"><Clock size={22} /></span>
-            <div>
-              <h3>{row.day_of_week === null ? t('hours_daily') : weekdayName(row.day_of_week, currentLanguage.locale)}</h3>
-              <p className="hours-time">{row.is_closed ? t('hours_closed') : `${formatTime(row.start_time, currentLanguage.locale)}${row.end_time ? ` – ${formatTime(row.end_time, currentLanguage.locale)}` : ''}`}</p>
-              {!row.is_closed && <p className="hours-title">{language === 'bn' ? row.title_bn || row.title_en : row.title_en}</p>}
-              {(row.note_en || row.note_bn) && <p className="hours-note">{language === 'bn' ? row.note_bn || row.note_en : row.note_en || row.note_bn}</p>}
-            </div>
-          </div>)}
+        {scheduleRows.length === 0 ? <p className="hours-empty">{t('hours_none')}</p> : <div className="hours-table-wrap">
+          <table className="hours-table">
+            <thead><tr><th scope="col">{t('hours_day')}</th><th scope="col"><Sunrise size={18} aria-hidden="true" /> {t('hours_morning')}</th><th scope="col"><Sunset size={18} aria-hidden="true" /> {t('hours_evening')}</th></tr></thead>
+            <tbody>{hoursByDay.map(group => <tr key={group.key} className={[group.key === 'daily' ? 'daily' : '', group.key === todayKey ? 'today' : ''].join(' ').trim() || undefined}>
+              <th scope="row">{group.key === 'daily' ? t('hours_daily') : weekdayName(group.key, currentLanguage.locale)}{group.key === todayKey && <span className="hours-today">{t('hours_today')}</span>}</th>
+              {group.closed ? <td colSpan="2" className="hours-closed-cell">{t('hours_closed')}</td> : ['morning', 'evening'].map(part => <td key={part} data-label={t(part === 'morning' ? 'hours_morning' : 'hours_evening')}>
+                {group[part].length === 0 ? <span className="hours-none">—</span> : group[part].map(row => <div className="hours-slot" key={row.id}>
+                  <span className="hours-time">{formatTime(row.start_time, currentLanguage.locale)}{row.end_time ? ` – ${formatTime(row.end_time, currentLanguage.locale)}` : ''}</span>
+                  {(row.title_en || row.title_bn) && <span className="hours-title">{language === 'bn' ? row.title_bn || row.title_en : row.title_en || row.title_bn}</span>}
+                  {(row.note_en || row.note_bn) && <span className="hours-note">{language === 'bn' ? row.note_bn || row.note_en : row.note_en || row.note_bn}</span>}
+                </div>)}
+              </td>)}
+            </tr>)}</tbody>
+          </table>
         </div>}
         {setting('festival_hours_note') && <p className="hours-festival">{setting('festival_hours_note')}</p>}
         {setting('panjika_url') && <a className="panjika-link" href={setting('panjika_url')} target="_blank" rel="noopener noreferrer">{t('panjika_btn')} <ExternalLink size={16} /></a>}

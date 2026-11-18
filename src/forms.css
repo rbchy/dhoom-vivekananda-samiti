@@ -256,3 +256,29 @@ select[aria-invalid="true"]{border-color:#b3261e!important;background:#fff7f6!im
 .admin-gallery-grid .event-item .enhance-btn,.enhance-all-row .enhance-btn{background:linear-gradient(135deg,#c76a00,#a3236b)}
 .enhance-all-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 14px}
 .enhance-all-row .enhance-btn{padding:10px 16px;border:0;border-radius:6px;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+
+/* Temple hours as a Day | Morning | Evening table */
+.hours-table-wrap{max-width:820px;margin:26px auto 0;overflow:hidden;border:1px solid #ead7a8;border-radius:12px;background:#fffdf5;box-shadow:0 8px 24px rgba(90,40,20,.08)}
+.hours-table{width:100%;border-collapse:collapse;text-align:start;font-variant-numeric:tabular-nums}
+.hours-table thead th{background:linear-gradient(90deg,#6f1722,#9a3a24);color:#fff3dc;font-family:'Playfair Display',serif;font-size:17px;font-weight:600;padding:14px 18px;text-align:start}
+.hours-table thead th svg{vertical-align:-3px;margin-inline-end:6px;color:#ffd27a}
+.hours-table tbody th{width:26%;padding:14px 18px;font-family:'Playfair Display',serif;font-size:17px;color:#2f2420;font-weight:600;text-align:start;vertical-align:top}
+.hours-table td{padding:12px 18px;vertical-align:top;border-inline-start:1px dashed #ead7a8}
+.hours-table tbody tr+tr{border-top:1px solid #f1e3c4}
+.hours-table tbody tr:nth-child(even){background:#fffaf0}
+.hours-table tr.daily{background:#fbefd9!important}
+.hours-table tr.daily th{color:#9a3a24}
+.hours-table tr.today{box-shadow:inset 4px 0 0 #c96a26}
+.hours-today{display:inline-block;margin-inline-start:8px;padding:1px 8px;border-radius:999px;background:#c96a26;color:#fff;font:600 11px/1.6 system-ui,sans-serif;vertical-align:2px}
+.hours-slot+.hours-slot{margin-top:8px}
+.hours-slot .hours-time{display:block;font-size:16px;color:#7a5a1e;font-weight:600}
+.hours-slot .hours-title{display:block;font-size:13px;color:#c96a26;font-weight:600}
+.hours-slot .hours-note{display:block;font-size:12px;color:#6d6258}
+.hours-none{color:#c9b89a}
+.hours-closed-cell{color:#9b2219;font-weight:600}
+@media(max-width:600px){
+  .hours-table thead th{font-size:15px;padding:12px 10px}
+  .hours-table tbody th,.hours-table td{padding:10px}
+  .hours-table tbody th{font-size:15px;width:30%}
+  .hours-slot .hours-time{font-size:14px}
+}
