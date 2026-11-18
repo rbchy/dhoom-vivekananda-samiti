@@ -5,7 +5,7 @@ import { checkOptionalEmail, checkPhone, checkText, checkUrl, cleanErrors } from
 import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 
-const emptySettings = { ticker_en: '', ticker_bn: '', ticker_audio_url: '', address_en: '', address_bn: '', map_url: '', temple_phone: '', email: '', panjika_url: '', festival_hours_note_en: '', festival_hours_note_bn: '', facebook_url: '', youtube_url: '', instagram_url: '', whatsapp_url: '', tiktok_url: '' }
+const emptySettings = { ticker_en: '', ticker_bn: '', ticker_audio_url: '', bhajan_autoplay: false, bhajan_title_en: '', bhajan_title_bn: '', address_en: '', address_bn: '', map_url: '', temple_phone: '', email: '', panjika_url: '', festival_hours_note_en: '', festival_hours_note_bn: '', facebook_url: '', youtube_url: '', instagram_url: '', whatsapp_url: '', tiktok_url: '' }
 const emptyContact = { name: '', role_en: '', role_bn: '', phone: '', email: '', sort_order: '100', is_public: true }
 
 export default function TempleInfoManagement() {
@@ -27,7 +27,7 @@ export default function TempleInfoManagement() {
     if (error || peopleError) { setMessage(describeDbError(error || peopleError)); return }
     const map = Object.fromEntries((rows || []).map(row => [row.key, row]))
     const loaded = {
-      ticker_en: map.ticker_message?.value_en || '', ticker_bn: map.ticker_message?.value_bn || '', ticker_audio_url: map.ticker_audio_url?.value_en || '',
+      ticker_en: map.ticker_message?.value_en || '', ticker_bn: map.ticker_message?.value_bn || '', ticker_audio_url: map.ticker_audio_url?.value_en || '', bhajan_autoplay: map.bhajan_autoplay?.value_en === 'on', bhajan_title_en: map.bhajan_title?.value_en || '', bhajan_title_bn: map.bhajan_title?.value_bn || '',
       address_en: map.address?.value_en || '', address_bn: map.address?.value_bn || '', map_url: map.map_url?.value_en || '',
       temple_phone: map.temple_phone?.value_en || '', email: map.email?.value_en || '', panjika_url: map.panjika_url?.value_en || '',
       festival_hours_note_en: map.festival_hours_note?.value_en || '', festival_hours_note_bn: map.festival_hours_note?.value_bn || '',
@@ -41,8 +41,8 @@ export default function TempleInfoManagement() {
   useEffect(() => { loadAll() }, [])
 
   function changeSetting(event) {
-    const { name, value } = event.target
-    setSettings(previous => ({ ...previous, [name]: value }))
+    const { name, value, type, checked } = event.target
+    setSettings(previous => ({ ...previous, [name]: type === 'checkbox' ? checked : value }))
     setSettingErrors(previous => ({ ...previous, [name]: '' }))
   }
 
@@ -52,7 +52,9 @@ export default function TempleInfoManagement() {
     const found = cleanErrors({
       ticker_en: checkText(settings.ticker_en, { label: 'Banner message (English)', max: 1000 }),
       ticker_bn: checkText(settings.ticker_bn, { label: 'Banner message (Bangla)', max: 1000, bengali: true }),
-      ticker_audio_url: checkUrl(settings.ticker_audio_url, { label: 'Audio link' }),
+      ticker_audio_url: checkUrl(settings.ticker_audio_url, { label: 'Audio link' }) || (settings.bhajan_autoplay && !settings.ticker_audio_url.trim() ? 'Add the song link first, then tick “play when the website opens”.' : ''),
+      bhajan_title_en: checkText(settings.bhajan_title_en, { label: 'Bhajan name (English)', max: 120 }),
+      bhajan_title_bn: checkText(settings.bhajan_title_bn, { label: 'Bhajan name (Bangla)', max: 120, bengali: true }),
       address_en: checkText(settings.address_en, { label: 'Address (English)', min: 5, max: 300 }),
       address_bn: checkText(settings.address_bn, { label: 'Address (Bangla)', min: 5, max: 300, bengali: true }),
       map_url: checkUrl(settings.map_url, { label: 'Google Maps link' }),
@@ -74,6 +76,8 @@ export default function TempleInfoManagement() {
     const rows = [
       { key: 'ticker_message', value_en: clean(settings.ticker_en), value_bn: clean(settings.ticker_bn) },
       { key: 'ticker_audio_url', value_en: clean(settings.ticker_audio_url), value_bn: null },
+      { key: 'bhajan_autoplay', value_en: settings.bhajan_autoplay ? 'on' : null, value_bn: null },
+      { key: 'bhajan_title', value_en: clean(settings.bhajan_title_en), value_bn: clean(settings.bhajan_title_bn) },
       { key: 'address', value_en: clean(settings.address_en), value_bn: clean(settings.address_bn) },
       { key: 'map_url', value_en: clean(settings.map_url), value_bn: null },
       { key: 'temple_phone', value_en: clean(settings.temple_phone), value_bn: null },
@@ -151,6 +155,9 @@ export default function TempleInfoManagement() {
       </div>
       <small className="field-hint">Leave both empty to hide the banner message. Each line is separated by ✦ when it scrolls.</small>
       {field('ticker_audio_url', 'Song audio link (optional .mp3 — only a recording you have permission to use)', { type: 'url', placeholder: 'https://…/ramakrishna-sharanam.mp3' })}
+      <label className="publish-option"><input type="checkbox" name="bhajan_autoplay" checked={settings.bhajan_autoplay} onChange={changeSetting} /> Play this song when the website opens / সাইট খুললেই এই ভজন বাজবে</label>
+      <p className="field-hint">The song starts softly when the home page opens and plays once. Most browsers keep sound off until the visitor first touches the page, so it may start on the first tap. Visitors can pause it any time with the button at the bottom right.</p>
+      <div className="form-row"><div>{field('bhajan_title_en', 'Bhajan name shown on the player (English)', { maxLength: 120, placeholder: 'e.g. Khandana Bhava Bandhana' })}</div><div>{field('bhajan_title_bn', 'প্লেয়ারে ভজনের নাম (বাংলা)', { maxLength: 120, placeholder: 'যেমন খণ্ডন ভব বন্ধন' })}</div></div>
       <div className="form-row"><div>{field('address_en', 'Address (English)', { maxLength: 300 })}</div><div>{field('address_bn', 'ঠিকানা (বাংলা)', { maxLength: 300 })}</div></div>
       {field('map_url', 'Google Maps link (for "Get directions")', { type: 'url', placeholder: 'https://maps.google.com/?q=...' })}
       <div className="form-row"><div>{field('temple_phone', 'Temple phone', { type: 'tel', maxLength: 20 })}</div><div>{field('email', 'Temple email', { type: 'email', maxLength: 254 })}</div></div>

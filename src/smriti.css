@@ -86,3 +86,27 @@
 :lang(bn) .smriti-teaser .section-eyebrow{letter-spacing:0}
 .stambha-role{grid-column:2;font-size:12.5px;font-weight:600;color:#7a4a1a;line-height:1.35}
 .smriti-hero .stambha-years{white-space:nowrap}
+
+/* Pranam mantra under each deity */
+.pranam{margin:10px 0 12px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg,#fff7e6,#fdebc8);border:1px solid #efd29a;text-align:center}
+.pranam figcaption{font-size:12px;font-weight:700;letter-spacing:.5px;color:#9a3a24;margin-bottom:4px}
+.pranam blockquote{margin:0;padding:0;border:0;font-family:'Noto Serif Bengali','Playfair Display',serif;font-size:15px;line-height:1.65;color:#5a2a12;font-weight:600}
+.pranam blockquote span{display:block}
+.pranam blockquote[lang='bn']{font-style:normal}
+.pranam blockquote[lang='sa-Latn']{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:500;font-size:14px}
+
+/* Welcome bhajan player */
+.welcome-bhajan{position:fixed;right:18px;bottom:84px;z-index:61}
+.welcome-bhajan button{display:flex;align-items:center;gap:10px;max-width:290px;padding:8px 14px 8px 8px;border:1px solid #e9c98f;border-radius:999px;background:#fffaf0f2;color:#6d1822;box-shadow:0 8px 22px rgba(60,20,10,.25);cursor:pointer;text-align:start;backdrop-filter:blur(4px)}
+.welcome-bhajan-icon{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#811d29;color:#fff}
+.welcome-bhajan-text{display:flex;flex-direction:column;min-width:0}
+.welcome-bhajan-text small{display:flex;align-items:center;gap:4px;font-size:11px;color:#c96a26;font-weight:700}
+.welcome-bhajan-text strong{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.welcome-bhajan.waiting button{animation:bhajan-nudge 2.4s ease-in-out infinite}
+.welcome-bhajan-bars{display:flex;align-items:flex-end;gap:2px;height:16px}
+.welcome-bhajan-bars i{width:3px;background:#c96a26;border-radius:2px;animation:bhajan-bar 1s ease-in-out infinite}
+.welcome-bhajan-bars i:nth-child(2){animation-delay:.2s}.welcome-bhajan-bars i:nth-child(3){animation-delay:.4s}
+@keyframes bhajan-bar{0%,100%{height:4px}50%{height:16px}}
+@keyframes bhajan-nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.welcome-bhajan.waiting button,.welcome-bhajan-bars i{animation:none}}
+@media(max-width:600px){.welcome-bhajan{right:10px;bottom:76px}.welcome-bhajan button{max-width:230px}}

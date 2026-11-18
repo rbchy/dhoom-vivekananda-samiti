@@ -13,6 +13,8 @@ import evVivekananda from './images/ev-vivekananda.webp'
 import sqRamakrishna from './images/sq-ramakrishna.webp'
 import sqSarada from './images/sq-sarada.webp'
 import sqVivekananda from './images/sq-vivekananda.webp'
+// Original placeholder tone made for the demo; the real site plays the recording set in Admin → Temple info
+import demoTone from './audio/demo-tanpura.mp3'
 
 // Event dates are placed a few weeks after the day the demo is opened, so they always show as upcoming
 const inDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10) }
@@ -21,6 +23,14 @@ const id = () => `demo-${++n}`
 const created = i => new Date(Date.now() - i * 86400000).toISOString()
 
 const hours = (day, start, end, sort) => ({ id: id(), day_of_week: day, title_en: 'Temple open', title_bn: 'মন্দির খোলা', start_time: start, end_time: end, is_closed: false, is_active: true, sort_order: sort })
+
+// Same pranam mantras as supabase/pranam-mantra.sql
+const PRANAM = {
+  "Sri Ramakrishna": { pranam_bn: "ওঁ স্থাপকায় চ ধর্মস্য সর্বধর্মস্বরূপিণে।\nঅবতারবরিষ্ঠায় রামকৃষ্ণায় তে নমঃ॥", pranam_en: "Om sthāpakāya cha dharmasya sarva-dharma-svarūpiṇe,\navatāra-variṣṭhāya Rāmakṛṣṇāya te namaḥ." },
+  "Holy Mother Sri Sarada Devi": { pranam_bn: "ওঁ জননীং সারদাং দেবীং রামকৃষ্ণং জগদ্‌গুরুম্‌।\nপাদপদ্মে তয়োঃ শ্রিত্বা প্রণমামি মুহুর্মুহুঃ॥", pranam_en: "Om jananīṁ Sāradāṁ devīṁ Rāmakṛṣṇaṁ jagad-gurum,\npāda-padme tayoḥ śritvā praṇamāmi muhur-muhuḥ." },
+  "Swami Vivekananda": { pranam_bn: "ওঁ নমঃ শ্রীযতিরাজায় বিবেকানন্দসূরয়ে।\nসচ্চিৎসুখস্বরূপায় স্বামিনে তাপহারিণে॥", pranam_en: "Om namaḥ śrī-yatirājāya Vivekānanda-sūraye,\nsac-cit-sukha-svarūpāya svāmine tāpa-hāriṇe." },
+  "Ma Kali": { pranam_bn: "ওঁ কালি কালি মহাকালি কালিকে পাপহারিণি।\nধর্মার্থমোক্ষদে দেবি নারায়ণি নমোঽস্তু তে॥", pranam_en: "Om Kāli Kāli Mahākāli Kālike pāpa-hāriṇi,\ndharmārtha-mokṣade devi Nārāyaṇi namo'stu te." },
+}
 
 export const DEMO_TABLES = {
   worship_schedule: [
@@ -66,9 +76,12 @@ export const DEMO_TABLES = {
     ['deity', 'Holy Mother Sri Sarada Devi', 'শ্রীশ্রী মা সারদা দেবী', null, null, sqSarada],
     ['deity', 'Swami Vivekananda', 'স্বামী বিবেকানন্দ', null, null, sqVivekananda],
     ['deity', 'Ma Kali', 'মা কালী', null, null, kaliDeity]
-  ].map(([kind, title_en, title_bn, body_en, body_bn, image_url], i) => ({ id: id(), kind, title_en, title_bn, body_en, body_bn, image_url: image_url || null, sort_order: i, is_active: true })),
+  ].map(([kind, title_en, title_bn, body_en, body_bn, image_url], i) => ({ id: id(), kind, title_en, title_bn, body_en, body_bn, image_url: image_url || null, sort_order: i, is_active: true, ...(PRANAM[title_en] || {}) })),
   site_settings: [
-    { key: 'festival_hours_note', value_en: 'Hours may change on festival days.', value_bn: 'উৎসবের দিনে সময় বদলাতে পারে।' }
+    { key: 'festival_hours_note', value_en: 'Hours may change on festival days.', value_bn: 'উৎসবের দিনে সময় বদলাতে পারে।' },
+    { key: 'ticker_audio_url', value_en: demoTone, value_bn: null },
+    { key: 'bhajan_autoplay', value_en: 'on', value_bn: null },
+    { key: 'bhajan_title', value_en: 'Demo tone: your bhajan recording plays here', value_bn: 'নমুনা সুর: এখানে আপনার ভজনের রেকর্ডিং বাজবে' }
   ],
   committee_contacts: [],
   // Same five sample names as supabase/smriti-stambha.sql

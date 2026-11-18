@@ -8,7 +8,7 @@ import ImagePicker from '../components/ImagePicker'
 import { removeImage, storagePathFromUrl, uploadImage } from '../lib/storage'
 
 const KIND_LABEL = { mission: 'Mission value / লক্ষ্য', deity: 'Presiding deity / দেবদেবী' }
-const emptyForm = { kind: 'mission', title_en: '', title_bn: '', subtitle_en: '', subtitle_bn: '', body_en: '', body_bn: '', image_url: '', sort_order: '100', is_active: true }
+const emptyForm = { kind: 'mission', title_en: '', title_bn: '', subtitle_en: '', subtitle_bn: '', body_en: '', body_bn: '', pranam_bn: '', pranam_en: '', image_url: '', sort_order: '100', is_active: true }
 
 export default function HighlightsManagement() {
   const [form, setForm] = useState(emptyForm)
@@ -46,6 +46,8 @@ export default function HighlightsManagement() {
       subtitle_bn: checkText(form.subtitle_bn, { label: 'Subtitle (Bangla)', max: 120, bengali: true }),
       body_en: checkText(form.body_en, { label: 'Description (English)', required: true, min: 10, max: 800 }),
       body_bn: checkText(form.body_bn, { label: 'Description (Bangla)', min: 10, max: 800, bengali: true }),
+      pranam_bn: form.pranam_bn.length > 400 ? 'Pranam mantra can be at most 400 characters.' : '',
+      pranam_en: form.pranam_en.length > 400 ? 'Pranam mantra can be at most 400 characters.' : '',
       photo: errors.photo || '',
       image_url: photoFile ? '' : checkUrl(form.image_url, { label: 'Image URL' }),
       sort_order: !/^\d{1,4}$/.test(String(form.sort_order).trim()) ? 'Display order must be a whole number from 0 to 9999.' : ''
@@ -60,13 +62,16 @@ export default function HighlightsManagement() {
       if (photoFile && form.kind === 'deity') { setMessage('Uploading photo...'); uploaded = await uploadImage(photoFile, 'deities'); imageUrl = uploaded.url }
       const previous = items.find(i => i.id === editingId)
       const payload = { kind: form.kind, title_en: form.title_en.trim(), title_bn: clean(form.title_bn), subtitle_en: clean(form.subtitle_en), subtitle_bn: clean(form.subtitle_bn), body_en: clean(form.body_en), body_bn: clean(form.body_bn), image_url: form.kind === 'deity' ? imageUrl : null, sort_order: Number(form.sort_order), is_active: form.is_active }
+      // Pranam mantra columns come from supabase/pranam-mantra.sql; send them only when they exist or were filled in
+      const pranam = { pranam_bn: form.kind === 'deity' ? form.pranam_bn.trim() || null : null, pranam_en: form.kind === 'deity' ? form.pranam_en.trim() || null : null }
+      if (items.some(i => 'pranam_bn' in i) || pranam.pranam_bn || pranam.pranam_en) Object.assign(payload, pranam)
       const result = editingId ? await db('temple_highlights').update(payload).eq('id', editingId) : await db('temple_highlights').insert(payload)
       if (result.error) throw result.error
       if (previous?.image_url && previous.image_url !== payload.image_url && storagePathFromUrl(previous.image_url)) await removeImage(previous.image_url)
       setMessage(editingId ? 'Updated.' : 'Added.'); resetForm(); await loadItems()
     } catch (error) {
       if (uploaded) await removeImage(uploaded.path)
-      setMessage('Error: ' + (describeDbError(error) || error.message) + (/row-level|policy|permission|Unauthorized/i.test(error.message || '') ? ' (Photo upload is not allowed yet — run supabase/storage-photos-policy.sql once.)' : ''))
+      setMessage('Error: ' + (describeDbError(error) || error.message) + (/pranam/i.test(error.message || '') ? ' (The pranam mantra fields are not set up yet — run supabase/pranam-mantra.sql once in Supabase → SQL Editor.)' : '') + (/row-level|policy|permission|Unauthorized/i.test(error.message || '') ? ' (Photo upload is not allowed yet — run supabase/storage-photos-policy.sql once.)' : ''))
     } finally {
       setSaving(false)
     }
@@ -98,6 +103,8 @@ export default function HighlightsManagement() {
       <div className="form-row">{input('title_en', form.kind === 'deity' ? 'Deity name (English) *' : 'Value (English) *', { maxLength: 120, placeholder: form.kind === 'deity' ? 'e.g. Sri Ramakrishna' : 'e.g. Devotion' })}{input('title_bn', form.kind === 'deity' ? 'দেবদেবীর নাম (বাংলা)' : 'আদর্শ (বাংলা)', { maxLength: 120 })}</div>
       {form.kind === 'deity' && <div className="form-row">{input('subtitle_en', 'Festival / observance (English)', { maxLength: 120, placeholder: 'e.g. Janmatithi — annual' })}{input('subtitle_bn', 'উৎসব (বাংলা)', { maxLength: 120 })}</div>}
       <div className="form-row">{input('body_en', 'Description (English) *', { rows: 3, maxLength: 800 })}{input('body_bn', 'বিবরণ (বাংলা)', { rows: 3, maxLength: 800 })}</div>
+      {form.kind === 'deity' && <div className="form-row">{input('pranam_bn', 'প্রণাম মন্ত্র (বাংলা হরফে)', { rows: 3, maxLength: 400, placeholder: 'ওঁ স্থাপকায় চ ধর্মস্য সর্বধর্মস্বরূপিণে।\nঅবতারবরিষ্ঠায় রামকৃষ্ণায় তে নমঃ॥' })}{input('pranam_en', 'Pranam mantra (Roman letters, for other languages)', { rows: 3, maxLength: 400, placeholder: 'Om sthāpakāya cha dharmasya…' })}</div>}
+      {form.kind === 'deity' && <p className="field-hint">The pranam mantra is shown under the deity's picture and name. Press Enter to start the second line (after ।).</p>}
       {form.kind === 'deity' && <>
         <ImagePicker id="hl-photo" label="Deity photo (optional) / দেবদেবীর ছবি" file={photoFile} onFileChange={file => { setPhotoFile(file); setErrors(p => ({ ...p, photo: '', image_url: '' })) }} currentUrl={!photoFile && form.image_url && !checkUrl(form.image_url, { label: 'x' }) ? form.image_url : ''} error={errors.photo} onError={problem => setErrors(p => ({ ...p, photo: problem }))} />
         <details className="link-option" open={Boolean(form.image_url) && !photoFile}>
@@ -121,7 +128,7 @@ export default function HighlightsManagement() {
           <td>{item.title_en}{item.title_bn && <small className="cell-sub">{item.title_bn}</small>}{item.subtitle_en && <small className="cell-sub">{item.subtitle_en}</small>}</td>
           <td>{(item.body_en || '').slice(0, 90)}{(item.body_en || '').length > 90 ? '…' : ''}</td>
           <td>{item.is_active ? 'Yes' : 'Hidden'}</td>
-          <td className="row-actions"><button type="button" onClick={() => { setEditingId(item.id); setErrors({}); setPhotoFile(null); setForm({ kind: item.kind, title_en: item.title_en, title_bn: item.title_bn || '', subtitle_en: item.subtitle_en || '', subtitle_bn: item.subtitle_bn || '', body_en: item.body_en || '', body_bn: item.body_bn || '', image_url: item.image_url || '', sort_order: String(item.sort_order), is_active: item.is_active }); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>Edit</button><button type="button" onClick={() => handleDelete(item)}>Delete</button></td>
+          <td className="row-actions"><button type="button" onClick={() => { setEditingId(item.id); setErrors({}); setPhotoFile(null); setForm({ kind: item.kind, title_en: item.title_en, title_bn: item.title_bn || '', subtitle_en: item.subtitle_en || '', subtitle_bn: item.subtitle_bn || '', body_en: item.body_en || '', body_bn: item.body_bn || '', pranam_bn: item.pranam_bn || '', pranam_en: item.pranam_en || '', image_url: item.image_url || '', sort_order: String(item.sort_order), is_active: item.is_active }); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>Edit</button><button type="button" onClick={() => handleDelete(item)}>Delete</button></td>
         </tr>)}</tbody>
       </table></div>}
     </div>

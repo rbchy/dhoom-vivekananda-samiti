@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, Fragment } from 'react'
 import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
 import StambhaPillar from './components/StambhaPillar'
+import WelcomeBhajan from './components/WelcomeBhajan'
 import SmritiStambhaPage from './pages/SmritiStambhaPage'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
 import './smriti.css'
@@ -181,6 +182,8 @@ function App() {
   }, [])
 
   const setting = key => (settings[key] ? (language === 'bn' ? settings[key].value_bn || settings[key].value_en : settings[key].value_en || settings[key].value_bn) : '')
+  // Admin → Temple info: "play the song when the website opens"
+  const bhajanAutoplay = settings.bhajan_autoplay?.value_en === 'on' && Boolean(setting('ticker_audio_url'))
   const address = setting('address')
   const socialLinks = Object.fromEntries(['facebook', 'youtube', 'instagram', 'whatsapp', 'tiktok'].map(name => [name, setting(`${name}_url`)]))
   const missions = highlights.filter(h => h.kind === 'mission')
@@ -235,7 +238,7 @@ function App() {
       </nav>
     </header>
     <main>
-      <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={setting('ticker_audio_url')} t={t} /><div className="hero-copy sr-only"><p>{t('quote_1')} {t('quote_2')}</p><span>{t('quote_by')}</span></div></section>
+      <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={bhajanAutoplay ? '' : setting('ticker_audio_url')} t={t} /><div className="hero-copy sr-only"><p>{t('quote_1')} {t('quote_2')}</p><span>{t('quote_by')}</span></div></section>
       {language !== 'en' && <p className="hero-caption">{t('quote_1')} {t('quote_2')}<span>{t('quote_by')}</span></p>}
       <div className="hero-orgs" aria-label={t('nav_orgs')}>
         <div className="hero-orgs-track">{[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 ? true : undefined}>{ORGANISATIONS.map(org => <li key={org.id}><a href="#organisations" tabIndex={copy === 1 ? -1 : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</a></li>)}</ul>)}</div>
@@ -291,7 +294,7 @@ function App() {
         <span className="section-eyebrow">{t('deities_eyebrow')}</span><h2>{t('deities_title')}</h2>
         <div className="deity-grid">{deities.map(item => <article className="deity-card" key={item.id}>
           {item.image_url ? <img src={item.image_url} alt={pick(item, 'title', language)} loading="lazy" /> : <div className="deity-placeholder"><Landmark size={34} /></div>}
-          <div>{pick(item, 'subtitle', language) && <span className="deity-subtitle">{pick(item, 'subtitle', language)}</span>}<h3>{pick(item, 'title', language)}</h3><p>{pick(item, 'body', language)}</p></div>
+          <div>{pick(item, 'subtitle', language) && <span className="deity-subtitle">{pick(item, 'subtitle', language)}</span>}<h3>{pick(item, 'title', language)}</h3>{(item.pranam_bn || item.pranam_en) && <figure className="pranam"><figcaption>🙏 {t('pranam_label')}</figcaption><blockquote lang={language === 'bn' || !item.pranam_en ? 'bn' : 'sa-Latn'}>{(language === 'bn' ? item.pranam_bn || item.pranam_en : item.pranam_en || item.pranam_bn).split('\n').map((line, i) => <span key={i}>{line}</span>)}</blockquote></figure>}<p>{pick(item, 'body', language)}</p></div>
         </article>)}</div>
         <div className="join-box"><h3>{t('join_title')}</h3><p>{t('join_p')}</p><button type="button" className="donate-btn" onClick={() => setOpenForm('contact')}>{t('join_btn')}</button></div>
       </section>}
@@ -368,6 +371,7 @@ function App() {
       <p className="footer-copy">© {new Date().getFullYear()} RbcTcsWorld <span>·</span> {t('rights')}</p>
     </footer>
     <BackToTopButton label={t('back_home')} />
+    {bhajanAutoplay && <WelcomeBhajan url={setting('ticker_audio_url')} title={setting('bhajan_title')} t={t} />}
     <div className={mapOpen ? 'location-float open' : 'location-float'}>
       {mapOpen && <div className="location-panel" role="dialog" aria-label={t('map_title')}>
         <div className="location-panel-head"><strong><MapPin size={16} /> {t('map_title')}</strong><button type="button" onClick={() => setMapOpen(false)} aria-label={t('close')}><X size={18} /></button></div>
