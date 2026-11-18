@@ -282,3 +282,17 @@ select[aria-invalid="true"]{border-color:#b3261e!important;background:#fff7f6!im
   .hours-table tbody th{font-size:15px;width:30%}
   .hours-slot .hours-time{font-size:14px}
 }
+
+/* Footer: compact Day | Morning | Evening table */
+.footer-hours-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.footer-hours-table thead th{color:#d4a056;font-weight:600;font-size:11.5px;text-align:start;padding:0 6px 6px;border-bottom:1px solid rgba(212,160,86,.4);white-space:nowrap}
+.footer-hours-table thead th svg{vertical-align:-2px}
+.footer-hours-table tbody th{text-align:start;font-weight:600;color:#fff;padding:5px 6px;white-space:nowrap}
+.footer-hours-table td{padding:5px 6px;color:#e7ddd5;vertical-align:top}
+.footer-hours-table td span{display:block;white-space:nowrap;padding:0;color:#e7ddd5}
+.footer-hours-table tbody th{vertical-align:top}
+.footer-hours-table td{text-align:start}
+.footer-hours-table tr.today td span{color:#ffd27a}
+.footer-hours-table th:first-child{padding-inline-start:0}
+.footer-hours-table tbody tr+tr{border-top:1px solid rgba(255,255,255,.08)}
+.footer-hours-table tr.today th,.footer-hours-table tr.today td{color:#ffd27a}

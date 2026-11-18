@@ -32,14 +32,22 @@ const featureCards = [
 ]
 
 // Weekday name in the visitor's language (2024-01-07 was a Sunday)
-function weekdayName(day, locale) {
-  return new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(new Date(2024, 0, 7 + day))
+function weekdayName(day, locale, style = 'long') {
+  return new Intl.DateTimeFormat(locale, { weekday: style }).format(new Date(2024, 0, 7 + day))
 }
 
 function formatTime(value, locale) {
   if (!value) return ''
   const [h, m] = String(value).split(':').map(Number)
   return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(new Date(2000, 0, 1, h, m))
+}
+
+// Compact time for the footer table: the Morning / Evening column already says AM or PM
+function shortTime(value, locale) {
+  if (!value) return ''
+  const [h, m] = String(value).split(':').map(Number)
+  return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit', hour12: true }).formatToParts(new Date(2000, 0, 1, h, m))
+    .filter(part => part.type !== 'dayPeriod').map(part => part.value).join('').trim()
 }
 
 const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]
@@ -327,7 +335,15 @@ function App() {
       <div className="footer-grid">
         <div><img className="footer-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><strong className="footer-brand">{t('brand_name')}</strong><p>{t('footer_nonprofit')}</p>{address && <p>{address}</p>}<SocialLinks links={socialLinks} t={t} variant="dark" /></div>
         <div><h4>{t('footer_links')}</h4><ul>{navigation.map(([key, section]) => <li key={section}><a href={`#${section}`}>{t(key)}</a></li>)}</ul></div>
-        <div><h4>{t('footer_hours')}</h4>{scheduleRows.length === 0 ? <p>{t('hours_none')}</p> : <ul>{scheduleRows.map(row => <li key={row.id}><b>{row.day_of_week === null ? t('hours_daily') : weekdayName(row.day_of_week, currentLanguage.locale)}</b> — {row.is_closed ? t('hours_closed') : `${formatTime(row.start_time, currentLanguage.locale)}${row.end_time ? ` – ${formatTime(row.end_time, currentLanguage.locale)}` : ''}`}</li>)}</ul>}</div>
+        <div className="footer-hours"><h4>{t('footer_hours')}</h4>{hoursByDay.length === 0 ? <p>{t('hours_none')}</p> : <table className="footer-hours-table">
+          <thead><tr><th scope="col">{t('hours_day')}</th><th scope="col"><Sunrise size={14} aria-hidden="true" /> {t('hours_morning')}</th><th scope="col"><Sunset size={14} aria-hidden="true" /> {t('hours_evening')}</th></tr></thead>
+          <tbody>{hoursByDay.map(group => <tr key={group.key} className={group.key === todayKey ? 'today' : undefined}>
+            <th scope="row">{group.key === 'daily' ? t('hours_daily') : weekdayName(group.key, currentLanguage.locale, 'short')}</th>
+            {group.closed ? <td colSpan="2">{t('hours_closed')}</td> : ['morning', 'evening'].map(part => <td key={part}>
+              {group[part].length === 0 ? '—' : group[part].map(row => <span key={row.id}>{shortTime(row.start_time, currentLanguage.locale)}{row.end_time ? `–${shortTime(row.end_time, currentLanguage.locale)}` : ''}</span>)}
+            </td>)}
+          </tr>)}</tbody>
+        </table>}</div>
         <div><h4>{t('footer_contact')}</h4><ul>{setting('temple_phone') && <li><a href={telHref(setting('temple_phone'))}>{setting('temple_phone')}</a></li>}{committee.filter(c => c.phone).slice(0, 3).map(c => <li key={c.id}>{c.name} — <a href={telHref(c.phone)}>{c.phone}</a></li>)}{setting('email') && <li><a href={`mailto:${setting('email')}`}>{setting('email')}</a></li>}</ul></div>
       </div>
       <p className="footer-copy">© {new Date().getFullYear()} RbcTcsWorld <span>·</span> {t('rights')}</p>
