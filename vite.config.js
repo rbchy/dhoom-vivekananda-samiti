@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import { networkInterfaces } from 'node:os'
 import { fileURLToPath } from 'node:url'
-import { viteSingleFile } from 'vite-plugin-singlefile'
 
 // Address of this computer on the Wi-Fi network (e.g. http://192.168.1.20:5173),
 // so the QR code on the page can be scanned by a phone on the same Wi-Fi during development.
@@ -15,16 +14,17 @@ function lanAddress(port) {
 }
 
 // Demo build (npm run build:demo): one self-contained HTML file with sample data and no Supabase
-const demoConfig = {
+// The single-file plugin is loaded only for the demo, so `npm run dev` and the normal build never need it
+const demoConfig = async () => ({
   base: './',
-  plugins: [viteSingleFile()],
+  plugins: [(await import('vite-plugin-singlefile')).viteSingleFile()],
   resolve: { alias: [{ find: /^.*\/supabaseClient(\.js)?$/, replacement: fileURLToPath(new URL('./demo/demoClient.js', import.meta.url)) }] },
   build: { outDir: 'dist-demo', assetsInlineLimit: 100000000 },
   // The QR code in the demo points at the published website
   define: { __DEV_LAN_URL__: JSON.stringify(''), 'import.meta.env.VITE_SITE_URL': JSON.stringify(process.env.VITE_SITE_URL || 'https://rbchy.github.io/dhoom-vivekananda-samiti/') }
-}
+})
 
-export default defineConfig(({ command, mode }) => mode === 'demo' ? demoConfig : ({
+export default defineConfig(({ command, mode }) => mode === 'demo' ? demoConfig() : ({
   // '/' normally; '/dhoom-vivekananda-samiti/' when the GitHub Pages workflow builds the site
   base: process.env.VITE_BASE_PATH || '/',
   server: { host: true, port: 5173 },
