@@ -144,3 +144,26 @@ select pg_temp.expect($$delete from public.social_posts$$, true, 'main admin can
 reset role;
 
 \echo 'ALL SECURITY TESTS PASSED'
+
+-- Smriti Stambha: everyone reads published names, only the main admin writes,
+-- the secretary's additions wait for the main admin's approval
+update public.smriti_stambha set is_published = false where id = '5a3b1e00-0000-4000-8000-000000000005';
+select pg_temp.login('anon');
+select pg_temp.check((select count(*) from public.smriti_stambha) = 4, 'visitor sees only published Smriti Stambha names');
+select pg_temp.expect($$insert into public.smriti_stambha (name_en) values ('Someone')$$, true, 'visitor cannot add a Smriti Stambha name');
+reset role;
+select pg_temp.login('secretary');
+select pg_temp.check((select count(*) from public.smriti_stambha) = 5, 'secretary sees hidden Smriti Stambha names');
+select pg_temp.expect($$insert into public.smriti_stambha (name_en) values ('Someone')$$, true, 'secretary cannot add a name directly');
+select pg_temp.expect($$insert into public.pending_changes (table_name, action, new_data) values ('smriti_stambha', 'insert', '{"name_en": "Sri Test Member", "role_en": "Volunteer"}')$$, false, 'secretary requests a new Smriti Stambha name');
+reset role;
+select pg_temp.check((select approver_role from public.pending_changes where table_name = 'smriti_stambha') = 'admin', 'Smriti Stambha requests go to the main admin');
+select set_config('test.smriti_request', (select id::text from public.pending_changes where table_name = 'smriti_stambha'), false);
+select pg_temp.login('accounts');
+select pg_temp.expect($$select public.approve_change(current_setting('test.smriti_request')::uuid)$$, true, 'accounts admin cannot approve a Smriti Stambha name');
+reset role;
+select pg_temp.login('main');
+select pg_temp.expect($$select public.approve_change(id) from public.pending_changes where table_name = 'smriti_stambha'$$, false, 'main admin approves the Smriti Stambha name');
+select pg_temp.expect($$update public.smriti_stambha set is_published = true where id = '5a3b1e00-0000-4000-8000-000000000005'$$, false, 'main admin edits a name directly');
+reset role;
+select pg_temp.check((select count(*) from public.smriti_stambha where name_en = 'Sri Test Member') = 1, 'approved Smriti Stambha name exists');

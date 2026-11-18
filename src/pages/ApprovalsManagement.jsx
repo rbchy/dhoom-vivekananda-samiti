@@ -10,6 +10,7 @@ export const TABLE_LABELS = {
   announcements: 'Announcements / ঘোষণা',
   worship_schedule: 'Worship schedule / পূজার সময়সূচি',
   temple_highlights: 'Mission & Deities / লক্ষ্য ও দেবদেবী',
+  smriti_stambha: 'Smriti Stambha / স্মৃতিস্তম্ভ',
   temple_content: 'Temple content / মন্দিরের তথ্য',
   committee_contacts: 'Committee contacts / কমিটি',
   site_settings: 'Temple info / যোগাযোগের তথ্য',

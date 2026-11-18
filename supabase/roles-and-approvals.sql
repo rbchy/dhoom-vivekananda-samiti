@@ -79,7 +79,7 @@ returns text language sql immutable as $$
   select case
     when p_table in ('events', 'gallery', 'announcements', 'worship_schedule',
                      'temple_highlights', 'temple_content', 'committee_contacts',
-                     'site_settings', 'event_catalog')
+                     'site_settings', 'event_catalog', 'smriti_stambha')
       then 'admin'
     when p_table in ('donations', 'subscriptions', 'subscription_payments',
                      'income_entries', 'expense_entries', 'account_heads')
@@ -120,7 +120,7 @@ declare t text;
 begin
   foreach t in array array['events', 'gallery', 'announcements', 'worship_schedule',
                            'temple_highlights', 'temple_content', 'committee_contacts',
-                           'event_catalog']
+                           'event_catalog', 'smriti_stambha']
   loop
     if to_regclass('public.' || t) is not null then
       execute format('drop policy if exists %I on public.%I', t || ' staff read', t);

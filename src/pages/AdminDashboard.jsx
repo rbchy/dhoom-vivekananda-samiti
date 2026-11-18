@@ -15,6 +15,7 @@ import FinanceManagement from "./FinanceManagement";
 import TempleInfoManagement from "./TempleInfoManagement";
 import MessagesManagement from "./MessagesManagement";
 import HighlightsManagement from "./HighlightsManagement";
+import SmritiStambhaManagement from './SmritiStambhaManagement';
 
 import ApprovalsManagement from "./ApprovalsManagement";
 import MyRequests from "./MyRequests";
@@ -24,7 +25,7 @@ import "./AdminDashboard.css";
 import BackToTopButton from "../components/BackToTopButton";
 
 // Which dashboard sections each role sees.
-const CONTENT_PANELS = ["temple", "events", "gallery", "announcements", "catalog", "worship", "info", "highlights"];
+const CONTENT_PANELS = ["temple", "events", "gallery", "announcements", "catalog", "worship", "info", "highlights", "smriti"];
 const ACCOUNTS_PANELS = ["donations", "subscriptions", "finance"];
 const PANELS_BY_ROLE = {
   admin: [...CONTENT_PANELS, ...ACCOUNTS_PANELS, "messages", "approvals", "staff"],
@@ -188,7 +189,7 @@ const AdminDashboard = () => {
       {notice && <p className="role-notice" role="status">{notice}</p>}
 
       <section className="admin-management-selector" id="admin-menu" aria-label="Management sections">
-        {[['temple', '🏛️ Temple Content', 'Update temple information'], ['events', '📅 Events', 'Add, edit, publish, and delete events'], ['gallery', '🖼️ Gallery', 'Manage gallery images'], ['announcements', '📢 Announcements', 'Manage temple notices'], ['catalog', '📋 Yearly Event List', 'Names used in the Events drop-down'], ['donations', '💰 Donations', 'Office entry, verify online donations'], ['subscriptions', '🔁 Monthly Subscriptions', 'Subscribers and monthly payments'], ['worship', '🕉️ Worship Schedule', 'Daily / weekly worship and temple hours'], ['finance', '📊 Income & Expenditure', 'Ledger, expenses, reports'], ['info', '📇 Temple Info & Contacts', 'Banner message, address, Panjika, committee'], ['highlights', '🪔 Mission & Deities', 'About section cards'], ['messages', '✉️ Messages', 'Messages from the website'], ['approvals', '✅ Approvals / অনুমোদন', 'Approve or reject requests from the secretary'], ['myrequests', '📨 My Requests / আমার অনুরোধ', 'Changes you sent for approval'], ['staff', '👥 Staff & Roles / কর্মী ও ভূমিকা', 'Who can use this panel, and how']].filter(([key]) => (PANELS_BY_ROLE[role] || []).includes(key)).map(([key, label, description]) => <button type="button" className={activePanel === key ? 'management-selector-btn active' : 'management-selector-btn'} onClick={() => setActivePanel(activePanel === key ? null : key)} key={key} aria-expanded={activePanel === key}><strong>{label}</strong><span>{description}</span></button>)}
+        {[['temple', '🏛️ Temple Content', 'Update temple information'], ['events', '📅 Events', 'Add, edit, publish, and delete events'], ['gallery', '🖼️ Gallery', 'Manage gallery images'], ['announcements', '📢 Announcements', 'Manage temple notices'], ['catalog', '📋 Yearly Event List', 'Names used in the Events drop-down'], ['donations', '💰 Donations', 'Office entry, verify online donations'], ['subscriptions', '🔁 Monthly Subscriptions', 'Subscribers and monthly payments'], ['worship', '🕉️ Worship Schedule', 'Daily / weekly worship and temple hours'], ['finance', '📊 Income & Expenditure', 'Ledger, expenses, reports'], ['info', '📇 Temple Info & Contacts', 'Banner message, address, Panjika, committee'], ['highlights', '🪔 Mission & Deities', 'About section cards'], ['smriti', '🕯️ Smriti Stambha / স্মৃতিস্তম্ভ', 'People who built the Samiti'], ['messages', '✉️ Messages', 'Messages from the website'], ['approvals', '✅ Approvals / অনুমোদন', 'Approve or reject requests from the secretary'], ['myrequests', '📨 My Requests / আমার অনুরোধ', 'Changes you sent for approval'], ['staff', '👥 Staff & Roles / কর্মী ও ভূমিকা', 'Who can use this panel, and how']].filter(([key]) => (PANELS_BY_ROLE[role] || []).includes(key)).map(([key, label, description]) => <button type="button" className={activePanel === key ? 'management-selector-btn active' : 'management-selector-btn'} onClick={() => setActivePanel(activePanel === key ? null : key)} key={key} aria-expanded={activePanel === key}><strong>{label}</strong><span>{description}</span></button>)}
       </section>
 
       {activePanel === 'temple' && <section className="admin-dashboard-section" id="temple-content"><div className="admin-section-heading"><h2>🏛️ Temple Content Management</h2><p>Update temple information in English and Bengali.</p></div><TempleContent /></section>}
@@ -204,6 +205,7 @@ const AdminDashboard = () => {
       {activePanel === 'finance' && <section className="admin-dashboard-section" id="finance-management"><div className="admin-section-heading"><h2>📊 Income & Expenditure / আয়-ব্যয়</h2><p>Every taka and dollar in one ledger: donations, subscriptions, other income and expenses.</p></div><FinanceManagement /></section>}
       {activePanel === 'info' && <section className="admin-dashboard-section" id="info-management"><div className="admin-section-heading"><h2>📇 Temple Info & Contacts / মন্দিরের তথ্য</h2><p>Address, phone, email, Panjika link and committee contacts.</p></div><TempleInfoManagement /></section>}
       {activePanel === 'highlights' && <section className="admin-dashboard-section" id="highlights-management"><div className="admin-section-heading"><h2>🪔 Mission & Deities / লক্ষ্য ও দেবদেবী</h2><p>Cards shown in the About part of the website.</p></div><HighlightsManagement /></section>}
+      {activePanel === 'smriti' && <section className="admin-dashboard-section" id="smriti-management"><div className="admin-section-heading"><h2>🕯️ Smriti Stambha / স্মৃতিস্তম্ভ</h2><p>Add the names of the people who gave their time and dedication to build the Samiti.</p></div><SmritiStambhaManagement /></section>}
       {activePanel === 'messages' && <section className="admin-dashboard-section" id="messages-management"><div className="admin-section-heading"><h2>✉️ Messages / বার্তা</h2><p>Messages sent from the website contact form.</p></div><MessagesManagement /></section>}
 
       {activePanel === 'approvals' && role !== 'secretary' && <section className="admin-dashboard-section" id="approvals-management"><div className="admin-section-heading"><h2>✅ Approvals / অনুমোদন</h2><p>{role === 'accounts_admin' ? 'Accounts changes requested by the secretary.' : 'Website content changes requested by the secretary.'} Check the details, then approve or reject.</p></div><ApprovalsManagement /></section>}

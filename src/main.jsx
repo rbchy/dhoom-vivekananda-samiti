@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
+import StambhaPillar from './components/StambhaPillar'
+import SmritiStambhaPage from './pages/SmritiStambhaPage'
+import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
+import './smriti.css'
 import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse, Sunrise, Sunset } from 'lucide-react'
+import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse, Sunrise, Sunset, ArrowRight } from 'lucide-react'
 import './styles.css'
 import './language.css'
 import './organisations.css'
@@ -110,6 +114,8 @@ function App() {
   const [galleryOrg, setGalleryOrg] = useState('all')
   const [lightbox, setLightbox] = useState(null)
   const [mapOpen, setMapOpen] = useState(false)
+  const [smriti, setSmriti] = useState([])
+  useEffect(() => { loadSmritiNames().then(setSmriti) }, [])
 
   const t = key => translate(language, key)
 
@@ -322,7 +328,17 @@ function App() {
         <p className="donate-office-note">{t('donate_office_note')}</p>
       </section>
       {openForm === 'donate' && <Modal title={t('donate_online_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><OnlineDonationForm t={t} language={language} /></Modal>}
-      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}<section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
+      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}{smriti.length > 0 && <section className="smriti-teaser" id="smriti" aria-labelledby="smriti-title">
+        <StambhaPillar compact label={t('smriti_title')} />
+        <div className="smriti-teaser-text">
+          <span className="section-eyebrow">{t('smriti_eyebrow')}</span>
+          <h2 id="smriti-title">{t('smriti_title')}</h2>
+          <p>{t('smriti_p')}</p>
+          <ul className="smriti-chips">{smriti.slice(0, 6).map(person => <li key={person.id} className={person.is_late ? 'late' : undefined}>{pickSmriti(person, 'name', language)}</li>)}{smriti.length > 6 && <li>+{smriti.length - 6}</li>}</ul>
+          <Link to="/smriti-stambha" className="smriti-back">{t('smriti_btn')} <ArrowRight size={17} /></Link>
+        </div>
+      </section>}
+      <section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
         <div className="contact-grid">
           {address && <div className="contact-item"><span className="contact-icon"><MapPin size={20} /></span><div><small>{t('contact_address')}</small><p>{address}</p>{mapUrl && <a className="contact-link" href={mapUrl} target="_blank" rel="noopener noreferrer">{t('directions')} <ExternalLink size={14} /></a>}</div></div>}
           {(setting('temple_phone') || committee.some(c => c.phone)) && <div className="contact-item"><span className="contact-icon"><Phone size={20} /></span><div><small>{t('contact_phone')}</small>
@@ -337,7 +353,7 @@ function App() {
     </main><footer className="site-footer">
       <div className="footer-grid">
         <div><img className="footer-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><strong className="footer-brand">{t('brand_name')}</strong><p>{t('footer_nonprofit')}</p>{address && <p>{address}</p>}<SocialLinks links={socialLinks} t={t} variant="dark" /></div>
-        <div><h4>{t('footer_links')}</h4><ul>{navigation.map(([key, section]) => <li key={section}><a href={`#${section}`}>{t(key)}</a></li>)}</ul></div>
+        <div><h4>{t('footer_links')}</h4><ul>{navigation.map(([key, section]) => <li key={section}><a href={`#${section}`}>{t(key)}</a></li>)}<li><Link to="/smriti-stambha">{t('smriti_title')}</Link></li></ul></div>
         <div className="footer-hours"><h4>{t('footer_hours')}</h4>{hoursByDay.length === 0 ? <p>{t('hours_none')}</p> : <table className="footer-hours-table">
           <thead><tr><th scope="col">{t('hours_day')}</th><th scope="col"><Sunrise size={14} aria-hidden="true" /> {t('hours_morning')}</th><th scope="col"><Sunset size={14} aria-hidden="true" /> {t('hours_evening')}</th></tr></thead>
           <tbody>{hoursByDay.map(group => <tr key={group.key} className={group.key === todayKey ? 'today' : undefined}>
@@ -366,4 +382,4 @@ function App() {
 
 // The demo build (npm run build:demo) is one HTML file opened from disk, so it keeps the route in memory
 const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
-createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)

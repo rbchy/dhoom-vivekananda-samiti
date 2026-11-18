@@ -70,5 +70,78 @@ export const DEMO_TABLES = {
   site_settings: [
     { key: 'festival_hours_note', value_en: 'Hours may change on festival days.', value_bn: 'উৎসবের দিনে সময় বদলাতে পারে।' }
   ],
-  committee_contacts: []
+  committee_contacts: [],
+  // Same five sample names as supabase/smriti-stambha.sql
+  smriti_stambha: [
+      {
+          "id": "5a3b1e00-0000-4000-8000-000000000001",
+          "name_en": "Sri Haripada Chowdhury",
+          "name_bn": "শ্রী হরিপদ চৌধুরী",
+          "role_en": "Founder President",
+          "role_bn": "প্রতিষ্ঠাতা সভাপতি",
+          "years": "1985 – 2004",
+          "tribute_en": "Gave the first land and gathered the villagers to start daily worship. (Sample entry)",
+          "tribute_bn": "প্রথম জমি দান করে গ্রামবাসীদের নিয়ে নিত্যপূজা শুরু করেন। (নমুনা)",
+          "is_late": true,
+          "sort_order": 10,
+          "photo_url": null,
+          "is_published": true
+      },
+      {
+          "id": "5a3b1e00-0000-4000-8000-000000000002",
+          "name_en": "Smt. Sabitri Devi",
+          "name_bn": "শ্রীমতী সাবিত্রী দেবী",
+          "role_en": "Founder Member",
+          "role_bn": "প্রতিষ্ঠাতা সদস্য",
+          "years": "1985 – 2010",
+          "tribute_en": "Looked after the bhog kitchen and the women's prayer circle for twenty-five years. (Sample entry)",
+          "tribute_bn": "পঁচিশ বছর ভোগঘর আর মহিলাদের প্রার্থনাসভা দেখাশোনা করেছেন। (নমুনা)",
+          "is_late": true,
+          "sort_order": 20,
+          "photo_url": null,
+          "is_published": true
+      },
+      {
+          "id": "5a3b1e00-0000-4000-8000-000000000003",
+          "name_en": "Sri Gopal Chandra Nath",
+          "name_bn": "শ্রী গোপাল চন্দ্র নাথ",
+          "role_en": "First Secretary",
+          "role_bn": "প্রথম সম্পাদক",
+          "years": "1987 – 2015",
+          "tribute_en": "Kept the first accounts book and built the Durga Mandir with volunteers. (Sample entry)",
+          "tribute_bn": "প্রথম হিসাবের খাতা রাখেন এবং স্বেচ্ছাসেবকদের নিয়ে দুর্গা মন্দির গড়ে তোলেন। (নমুনা)",
+          "is_late": true,
+          "sort_order": 30,
+          "photo_url": null,
+          "is_published": true
+      },
+      {
+          "id": "5a3b1e00-0000-4000-8000-000000000004",
+          "name_en": "Dr. Ashok Kumar Das",
+          "name_bn": "ডা. অশোক কুমার দাশ",
+          "role_en": "Founder, Community Clinic",
+          "role_bn": "কমিউনিটি ক্লিনিকের প্রতিষ্ঠাতা",
+          "years": "1995 – present",
+          "tribute_en": "Started the free clinic and still sees patients every Sunday. (Sample entry)",
+          "tribute_bn": "বিনামূল্যের ক্লিনিক শুরু করেন, এখনও প্রতি রবিবার রোগী দেখেন। (নমুনা)",
+          "is_late": false,
+          "sort_order": 40,
+          "photo_url": null,
+          "is_published": true
+      },
+      {
+          "id": "5a3b1e00-0000-4000-8000-000000000005",
+          "name_en": "Sri Nitai Mitra",
+          "name_bn": "শ্রী নিতাই মিত্র",
+          "role_en": "Gita Teacher",
+          "role_bn": "গীতা শিক্ষক",
+          "years": "2001 – present",
+          "tribute_en": "Teaches the Gita to the children of the village every Friday evening. (Sample entry)",
+          "tribute_bn": "প্রতি শুক্রবার সন্ধ্যায় গ্রামের শিশুদের গীতা শেখান। (নমুনা)",
+          "is_late": false,
+          "sort_order": 50,
+          "photo_url": null,
+          "is_published": true
+      }
+  ]
 }
