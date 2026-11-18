@@ -172,7 +172,8 @@ select pg_temp.check((select count(*) from public.smriti_stambha where name_en =
 reset role;
 insert into public.temple_highlights (kind, title_en, sort_order) values
   ('deity', 'Sri Ramakrishna', 1), ('deity', 'Holy Mother Sri Sarada Devi', 2), ('deity', 'Swami Vivekananda', 3),
-  ('deity', 'Ma Kali', 4), ('deity', 'Goddess Durga', 5), ('deity', 'Lord Shiva', 6), ('mission', 'Service', 7);
+  ('deity', 'Ma Kali', 4), ('deity', 'Goddess Durga', 5), ('deity', 'Lord Shiva', 6), ('mission', 'Service', 7),
+  ('deity', 'Ma Ganga', 3), ('deity', 'Ma Saraswati', 3);
 insert into public.temple_highlights (kind, title_en, pranam_bn, sort_order) values ('deity', 'Kali (own mantra)', 'নিজের মন্ত্র', 8);
 \ir ../pranam-mantra.sql
 select pg_temp.check((select pranam_bn like 'ওঁ স্থাপকায়%' from public.temple_highlights where title_en = 'Sri Ramakrishna'), 'Sri Ramakrishna gets his pranam mantra');
@@ -180,7 +181,8 @@ select pg_temp.check((select pranam_bn like 'ওঁ জননীং সারদ
 select pg_temp.check((select count(*) from public.temple_highlights where kind = 'deity' and title_en in ('Swami Vivekananda', 'Ma Kali', 'Goddess Durga', 'Lord Shiva') and pranam_bn is not null and pranam_en is not null) = 4, 'Swamiji, Kali, Durga and Shiva get mantras in Bangla and Roman script');
 select pg_temp.check((select pranam_bn from public.temple_highlights where title_en = 'Kali (own mantra)') = 'নিজের মন্ত্র', 'a mantra the admin wrote is never overwritten');
 select pg_temp.check((select pranam_bn is null from public.temple_highlights where kind = 'mission'), 'mission cards get no mantra');
+select pg_temp.check((select pranam_bn like 'ওঁ সদ্যঃ%' from public.temple_highlights where title_en = 'Ma Ganga') and (select pranam_bn like 'ওঁ সরস্বতী%' from public.temple_highlights where title_en = 'Ma Saraswati'), 'Ma Ganga and Ma Saraswati get their mantras');
 select pg_temp.login('anon');
 select pg_temp.check((select count(*) from public.temple_highlights where pranam_bn is not null) >= 6, 'visitors can read the pranam mantras');
 reset role;
-delete from public.temple_highlights where sort_order between 1 and 8 and title_en in ('Sri Ramakrishna', 'Holy Mother Sri Sarada Devi', 'Swami Vivekananda', 'Ma Kali', 'Goddess Durga', 'Lord Shiva', 'Service', 'Kali (own mantra)');
+delete from public.temple_highlights where sort_order between 1 and 8 and title_en in ('Sri Ramakrishna', 'Holy Mother Sri Sarada Devi', 'Swami Vivekananda', 'Ma Kali', 'Goddess Durga', 'Lord Shiva', 'Service', 'Kali (own mantra)', 'Ma Ganga', 'Ma Saraswati');
