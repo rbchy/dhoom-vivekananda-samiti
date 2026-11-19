@@ -11,6 +11,7 @@ do $$
 declare
   c int; c2 int; t text;
   has_table boolean;
+  tbl text;
 begin
   -- 1. Roles and approvals (accounts admin, secretary)
   if to_regprocedure('public.is_staff()') is not null and to_regclass('public.pending_changes') is not null then
@@ -63,7 +64,7 @@ begin
   select exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'events' and column_name = 'mantra_bn') into has_table;
   if has_table then
     select count(*) into c from public.events where title_en ilike '%saraswati%' or title_en ilike '%gita jayanti%';
-    insert into setup_status values (7, 'Saraswati Puja & Gita Jayanti / উৎসব', case when c >= 2 then '✅' else '⚠️' end, c || ' of 2 festivals found.');
+    insert into setup_status values (7, 'Saraswati Puja & Gita Jayanti / উৎসব', case when c = 2 then '✅' else '⚠️' end, c || ' festival event(s) found (expected 2).' || case when c > 2 then ' More than 2 — check for duplicates.' else '' end);
   else
     insert into setup_status values (7, 'Saraswati Puja & Gita Jayanti / উৎসব', '❌', 'Run event-extras.sql.');
   end if;
@@ -86,13 +87,23 @@ begin
     insert into setup_status values (10, 'Committee contacts / কমিটির যোগাযোগ', case when c > 0 then '✅' else '⚠️' end, c || ' contact(s).');
   end if;
 
-  -- 11. Test data left from development (created on 1 Jan 2000)
-  select 0 into c;
-  if to_regclass('public.events') is not null then
-    execute $q$select count(*) from public.events where created_at >= '2000-01-01' and created_at < '2000-01-02'$q$ into c;
-  end if;
-  insert into setup_status values (11, 'Test data / পরীক্ষার তথ্য', case when c = 0 then '✅' else '⚠️' end,
-    case when c = 0 then 'No test events.' else c || ' test event(s) — run remove-test-data.sql.' end);
+  -- 11. Test data left from development (ids 7e570000-… or created on 1 Jan 2000), table by table
+  t := null;
+  for tbl in select unnest(array['subscription_payments', 'subscriptions', 'donations', 'income_entries', 'expense_entries', 'contact_messages',
+                                 'committee_contacts', 'worship_schedule', 'temple_highlights', 'account_heads', 'event_catalog']) loop
+    if to_regclass('public.' || tbl) is not null then
+      execute format('select count(*) from public.%I where id::text like %L', tbl, '7e570000-0000-4000-8000-%') into c;
+      if c > 0 then t := coalesce(t || ', ', '') || tbl || ' ' || c; end if;
+    end if;
+  end loop;
+  for tbl in select unnest(array['events', 'gallery', 'announcements']) loop
+    if to_regclass('public.' || tbl) is not null then
+      execute format('select count(*) from public.%I where created_at >= %L and created_at < %L', tbl, '2000-01-01', '2000-01-02') into c;
+      if c > 0 then t := coalesce(t || ', ', '') || tbl || ' ' || c; end if;
+    end if;
+  end loop;
+  insert into setup_status values (11, 'Test data / পরীক্ষার তথ্য', case when t is null then '✅' else '⚠️' end,
+    coalesce('Test rows: ' || t || ' — run remove-test-data.sql, then run this report again.', 'No test data.'));
 
   -- 12. Upload buckets: size and type limits
   for t in select id from storage.buckets order by id loop
