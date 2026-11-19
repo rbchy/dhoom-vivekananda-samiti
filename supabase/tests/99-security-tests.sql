@@ -190,3 +190,10 @@ delete from public.temple_highlights where sort_order between 1 and 8 and title_
 -- Sri Surya Dev card: added once even when the file is run twice, with picture and mantra
 select pg_temp.check((select count(*) from public.temple_highlights where title_en = 'Sri Surya Dev') = 1, 'Sri Surya Dev is added once');
 select pg_temp.check((select image_url like '%/images/deities/surya-dev.webp' and pranam_bn like 'ওঁ জবাকুসুম%' and body_bn is not null from public.temple_highlights where title_en = 'Sri Surya Dev'), 'Sri Surya Dev has picture, mantra and description');
+
+-- Yearly festivals: Saraswati Puja and Gita Jayanti added once each, with subtitle, mantra and picture; visitors see them
+select pg_temp.check((select count(*) from public.events where title_en in ('Sri Sri Saraswati Puja', 'Sri Sri Gita Jayanti')) = 2, 'Saraswati Puja and Gita Jayanti are added once each');
+select pg_temp.check((select bool_and(mantra_bn is not null and subtitle_bn is not null and image_url like '%/images/events/%') from public.events where title_en in ('Sri Sri Saraswati Puja', 'Sri Sri Gita Jayanti')), 'both festivals have subtitle, mantra and picture');
+select pg_temp.login('anon');
+select pg_temp.check((select count(*) from public.events where title_en in ('Sri Sri Saraswati Puja', 'Sri Sri Gita Jayanti')) = 2, 'visitors can see both festivals');
+reset role;

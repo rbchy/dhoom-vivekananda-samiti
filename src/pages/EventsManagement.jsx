@@ -31,6 +31,10 @@ const emptyForm = {
   puja_starts_at: '',
   closes_at: '',
   location: '',
+  subtitle_en: '',
+  subtitle_bn: '',
+  mantra_bn: '',
+  mantra_en: '',
   is_published: false
 }
 
@@ -299,6 +303,10 @@ export default function EventsManagement() {
         is_published: form.is_published
       }
 
+      // Subtitle and mantra columns come from supabase/event-extras.sql; send them only when they exist or were filled in
+      const extras = { subtitle_en: form.subtitle_en.trim() || null, subtitle_bn: form.subtitle_bn.trim() || null, mantra_bn: form.mantra_bn.trim() || null, mantra_en: form.mantra_en.trim() || null }
+      if (events.some(item => 'mantra_bn' in item) || Object.values(extras).some(Boolean)) Object.assign(payload, extras)
+
       const previousEvent = events.find(
         item => item.id === editingId
       )
@@ -347,7 +355,7 @@ export default function EventsManagement() {
           .remove([uploadedPath])
       }
 
-      setMessage('Error: ' + error.message)
+      setMessage('Error: ' + error.message + (/subtitle|mantra/i.test(error.message || '') ? ' (The subtitle and mantra fields are not set up yet — run supabase/event-extras.sql once in Supabase → SQL Editor.)' : ''))
 
     } finally {
       setSaving(false)
@@ -368,6 +376,10 @@ export default function EventsManagement() {
       puja_starts_at: (item.puja_starts_at || '').slice(0, 5),
       closes_at: (item.closes_at || '').slice(0, 5),
       location: item.location || '',
+      subtitle_en: item.subtitle_en || '',
+      subtitle_bn: item.subtitle_bn || '',
+      mantra_bn: item.mantra_bn || '',
+      mantra_en: item.mantra_en || '',
       is_published: item.is_published ?? false
     })
 
@@ -562,6 +574,17 @@ export default function EventsManagement() {
         />
         <small className="field-hint">{form.description_bn.length}/{LIMITS.description}</small>
         <FieldError id="event-description_bn-error" message={errors.description_bn} />
+
+        <label htmlFor="event-subtitle_en">Subtitle (English, optional)</label>
+        <input id="event-subtitle_en" name="subtitle_en" value={form.subtitle_en} onChange={handleChange} maxLength={120} placeholder="e.g. Annual festival · Vasant Panchami" />
+        <label htmlFor="event-subtitle_bn">উপশিরোনাম (বাংলা)</label>
+        <input id="event-subtitle_bn" name="subtitle_bn" value={form.subtitle_bn} onChange={handleChange} maxLength={120} placeholder="যেমন বার্ষিক উৎসব · বসন্ত পঞ্চমী" />
+
+        <label htmlFor="event-mantra_bn">মন্ত্র (বাংলা হরফে, ঐচ্ছিক)</label>
+        <textarea id="event-mantra_bn" name="mantra_bn" value={form.mantra_bn} onChange={handleChange} rows="3" maxLength={500} placeholder={'ওঁ ভদ্রকাল্যৈ নমো নিত্যং সরস্বত্যৈ নমো নমঃ।\nবেদ-বেদাঙ্গ-বেদান্ত-বিদ্যাস্থানেভ্য এব চ॥'} />
+        <label htmlFor="event-mantra_en">Mantra (Roman letters, for other languages)</label>
+        <textarea id="event-mantra_en" name="mantra_en" value={form.mantra_en} onChange={handleChange} rows="3" maxLength={500} placeholder="Om bhadrakālyai namo nityaṁ…" />
+        <small className="field-hint">The mantra is shown on the event card. Press Enter for a new line; a last line starting with “—” is shown as the source (e.g. — Bhagavad Gita 4.7).</small>
 
         <label htmlFor="event-event_date">Event Date *</label>
 

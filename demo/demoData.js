@@ -14,6 +14,8 @@ import sqRamakrishna from './images/sq-ramakrishna.webp'
 import sqSarada from './images/sq-sarada.webp'
 import sqVivekananda from './images/sq-vivekananda.webp'
 import sqSurya from './images/sq-surya.webp'
+import evSaraswati from '../public/images/events/saraswati-puja.webp'
+import evGita from '../public/images/events/gita-jayanti.webp'
 // Original placeholder tone made for the demo; the real site plays the recording set in Admin → Temple info
 import demoTone from './audio/demo-tanpura.mp3'
 
@@ -42,6 +44,9 @@ export const DEMO_TABLES = {
     hours(0, '17:30:00', '18:30:00', 80), hours(0, '19:00:00', '22:00:00', 81)
   ],
   events: [
+  { id: id(), is_published: true, title_en: "Sri Sri Saraswati Puja", title_bn: "শ্রীশ্রী সরস্বতী পূজা", subtitle_en: "Annual festival \u00b7 Vasant Panchami", subtitle_bn: "বার্ষিক উৎসব · বসন্ত পঞ্চমী", description_en: "On the holy day of Vasant Panchami the temple worships Sri Sri Saraswati, the goddess of learning, wisdom, music and the arts. The puja is performed with the chanting of Vedic mantras, followed by pushpanjali (flower offering) and the distribution of prasad. Students, parents and all devotees are warmly invited with their families.", description_bn: "বসন্ত পঞ্চমীর পুণ্য তিথিতে বিদ্যা, জ্ঞান, সংগীত ও শিল্পকলার দেবী শ্রীশ্রী সরস্বতীর পূজা অনুষ্ঠিত হবে। বৈদিক মন্ত্রোচ্চারণে দেবীর আরাধনা, তারপর পুষ্পাঞ্জলি ও প্রসাদ বিতরণ করা হবে। ছাত্রছাত্রী, অভিভাবক ও সকল ভক্তকে সপরিবারে সাদর আমন্ত্রণ জানানো হচ্ছে।", event_date: '2027-02-11', image_url: evSaraswati, mantra_bn: "ওঁ ভদ্রকাল্যৈ নমো নিত্যং সরস্বত্যৈ নমো নমঃ।\nবেদ-বেদাঙ্গ-বেদান্ত-বিদ্যাস্থানেভ্য এব চ॥\n— পুষ্পাঞ্জলি মন্ত্র", mantra_en: "Om bhadrakālyai namo nityaṁ Sarasvatyai namo namaḥ,\nveda-vedāṅga-vedānta-vidyā-sthānebhya eva ca.\n— Pushpanjali mantra", created_at: created(0) },
+  { id: id(), is_published: true, title_en: "Sri Sri Gita Jayanti", title_bn: "শ্রীশ্রী গীতা জয়ন্তী", subtitle_en: "Annual festival \u00b7 Mokshada Ekadashi", subtitle_bn: "বার্ষিক উৎসব · মোক্ষদা একাদশী", description_en: "Gita Jayanti falls on Mokshada Ekadashi, the bright eleventh day of Agrahayan (Margashirsha), the day on which Sri Krishna spoke the Srimad Bhagavad Gita to Arjuna on the field of Kurukshetra. The day is observed with Gita path (reading of the Gita), puja, a discussion on its teachings and the distribution of prasad. All devotees are warmly invited.", description_bn: "অগ্রহায়ণ মাসের শুক্লা একাদশী, মোক্ষদা একাদশীর পুণ্য তিথিতে শ্রীশ্রী গীতা জয়ন্তী পালিত হবে। এই দিনেই কুরুক্ষেত্রের রণাঙ্গনে ভগবান শ্রীকৃষ্ণ অর্জুনকে শ্রীমদ্ভগবদ্গীতার অমৃতবাণী শুনিয়েছিলেন। গীতাপাঠ, পূজা-অর্চনা, গীতার শিক্ষা নিয়ে আলোচনা ও প্রসাদ বিতরণের মাধ্যমে দিনটি উদযাপিত হবে। সকল ভক্তকে সাদর আমন্ত্রণ।", event_date: '2026-12-20', image_url: evGita, mantra_bn: "যদা যদা হি ধর্মস্য গ্লানির্ভবতি ভারত।\nঅভ্যুত্থানমধর্মস্য তদাত্মানং সৃজাম্যহম্‌॥\n— শ্রীমদ্ভগবদ্গীতা ৪।৭", mantra_en: "Yadā yadā hi dharmasya glānir bhavati bhārata,\nabhyutthānam adharmasya tadātmānaṁ sṛjāmy aham.\n— Bhagavad Gita 4.7", created_at: created(0) },
+    ...[
     { title_en: 'Holy Mother Sri Sarada Devi Janmatithi', title_bn: 'শ্রীশ্রী মা সারদা দেবীর জন্মতিথি', image: evSarada, days: 14 },
     { title_en: 'Kalpataru Utsav', title_bn: 'কল্পতরু উৎসব', image: evKalpataru, days: 30 },
     { title_en: 'Swami Vivekananda Janmatithi', title_bn: 'স্বামী বিবেকানন্দের জন্মতিথি', image: evVivekananda, days: 50 },
@@ -52,7 +57,8 @@ export const DEMO_TABLES = {
     description_bn: 'বিশেষ পূজা, আরতি, ভজন ও প্রসাদ বিতরণ। সকলে আমন্ত্রিত। (নমুনা অনুষ্ঠান: তারিখটি শুধু দেখানোর জন্য।)',
     opens_at: '06:30:00', puja_starts_at: i % 2 ? '10:00:00' : '09:30:00', closes_at: '21:00:00',
     location: 'Dhoom Vivekananda Samiti', created_at: created(i)
-  })),
+  }))
+  ].sort((a, b) => a.event_date.localeCompare(b.event_date)),
   gallery: [
     [pandal, 'Durga Puja pandal', 'দুর্গাপূজার মণ্ডপ', 'festivals', 'durga'],
     [shrine, 'Temple shrine', 'মন্দিরের গর্ভগৃহ', 'temple', 'shiv'],

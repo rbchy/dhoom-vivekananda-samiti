@@ -110,3 +110,8 @@
 @keyframes bhajan-nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){.welcome-bhajan.waiting button,.welcome-bhajan-bars i{animation:none}}
 @media(max-width:600px){.welcome-bhajan{right:10px;bottom:76px}.welcome-bhajan button{max-width:230px}}
+
+/* Event card: subtitle and mantra */
+.event-subtitle{display:inline-block;margin:2px 0 8px!important;padding:2px 10px;border-radius:999px;background:#fbefd9;color:#9a3a24!important;font-size:12.5px!important;font-weight:700}
+.event-mantra{margin:8px 0 10px}
+.pranam blockquote span.mantra-source{margin-top:4px;font-size:12px;font-weight:600;font-style:normal;color:#9a3a24}
