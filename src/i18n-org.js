@@ -5,7 +5,9 @@
 // type: 'temple' | 'clinic' | 'cremation' — decides the icon and the small label on each card.
 export const ORGANISATIONS = [
   { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির' },
-  { id: 'durga', type: 'temple', name_en: 'Sree Sree Durga Mandir', name_bn: 'শ্রীশ্রী দুর্গা মন্দির' },
+  { id: 'durga', type: 'temple', name_en: 'Sree Sree Basanti Durga Mandir', name_bn: 'শ্রীশ্রী বাসন্তী দুর্গা মন্দির', established: '2010-03-22',
+    desc_en: 'Established on 22 March 2010, the mandap holds the ten-armed Mother Durga with Lakshmi, Saraswati, Kartik, Ganesh and Lord Shiva. Basanti Puja, the worship of the Mother in spring, is the temple\'s main festival.',
+    desc_bn: '২০১০ সালের ২২ মার্চ প্রতিষ্ঠিত এই মন্দিরের মণ্ডপে লক্ষ্মী, সরস্বতী, কার্তিক, গণেশ ও দেবাদিদেব মহাদেবসহ দশভুজা মা দুর্গা অধিষ্ঠিত। বসন্তকালে মায়ের আরাধনা, বাসন্তী পূজা, এই মন্দিরের প্রধান উৎসব।' },
   { id: 'clinic', type: 'clinic', name_en: 'Dhoom Vivekananda Samiti Community Clinic', name_bn: 'ধুম বিবেকানন্দ সমিতি কমিউনিটি ক্লিনিক' },
   { id: 'shiv', type: 'temple', name_en: 'Sree Sree Shiv Mandir', name_bn: 'শ্রীশ্রী শিব মন্দির' },
   { id: 'ramakrishna', type: 'temple', name_en: 'Sree Sree Ramakrishna Mandir', name_bn: 'শ্রীশ্রী রামকৃষ্ণ মন্দির' },

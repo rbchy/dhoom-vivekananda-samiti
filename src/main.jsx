@@ -276,6 +276,7 @@ function App() {
           <div className="org-card-body">
             <span className="org-icon"><Icon size={30} strokeWidth={1.5} /></span>
             <div><span className="org-type">{t(`org_type_${org.type}`)}</span><h3 lang={language === 'bn' ? 'bn' : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</h3>{language !== 'bn' && <p className="org-bengali" lang="bn">{org.name_bn}</p>}
+              {(org.desc_en || org.desc_bn) && <p className="org-desc">{language === 'bn' ? org.desc_bn || org.desc_en : org.desc_en || org.desc_bn}</p>}
               {photos.length > 0 ? <button type="button" className="org-photos-link" onClick={() => showOrgPhotos(org.id)}><Images size={15} /> {t('org_view_photos')} ({photos.length})</button> : <p className="org-no-photos">{t('org_no_photos')}</p>}
             </div>
           </div>
