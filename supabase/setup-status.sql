@@ -55,9 +55,9 @@ begin
     select count(*) into c from public.temple_highlights where kind = 'deity' and (title_en ilike '%surya%' or title_en ilike '%surjya%');
     insert into setup_status values (5, 'Sri Surya Dev card / সূর্যদেব', case when c > 0 then '✅' else '❌' end,
       case when c > 0 then 'Present.' else 'Run add-surya-dev.sql (after pranam-mantra.sql).' end);
-    select count(*) into c from public.temple_highlights where kind = 'deity' and (title_en ilike '%ganga%' or title_en ilike '%saras_ati%' or title_en ilike '%swaraswati%');
-    insert into setup_status values (6, 'Ma Ganga / Ma Saraswati cards', case when c >= 2 then '✅' else '⚠️' end,
-      c || ' of 2 found. Add them in Admin → Mission & Deities, then run pranam-mantra.sql again for their mantras.');
+    select count(*) into c from public.temple_highlights where kind = 'deity' and title_en ilike '%ganga%';
+    insert into setup_status values (6, 'Ma Ganga card / গঙ্গা দেবী', case when c > 0 then '✅' else '❌' end,
+      case when c > 0 then 'Present.' else 'Run add-ganga-devi.sql (after pranam-mantra.sql).' end);
   end if;
 
   -- 7. Event subtitle/mantra and the two yearly festivals

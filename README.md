@@ -5,7 +5,7 @@
 <!-- ============ STATUS BAR ============ -->
 [![CI](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml)
 [![Deploy](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml)
-![Security tests](https://img.shields.io/badge/DB%20security%20checks-69-22c55e?style=flat-square&logo=postgresql&logoColor=white)
+![Security tests](https://img.shields.io/badge/DB%20security%20checks-71-22c55e?style=flat-square&logo=postgresql&logoColor=white)
 ![Languages](https://img.shields.io/badge/UI%20languages-10-0d9488?style=flat-square&logo=googletranslate&logoColor=white)
 ![Roles](https://img.shields.io/badge/staff%20roles-3%20%2B%20approvals-155e75?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Pre--launch-f59e0b?style=flat-square)
@@ -47,7 +47,7 @@ where changes by the secretary wait for **approval** by the right admin.
 | 🌐 **Languages** | 10 (incl. Bangla, Arabic RTL) |
 | 👥 **Staff roles** | Main Admin · Accounts Admin · Secretary |
 | 🗄️ **Database** | Supabase PostgreSQL, RLS on every table |
-| ✅ **CI** | build + 14 unit tests + 69 database security checks |
+| ✅ **CI** | build + 14 unit tests + 71 database security checks |
 | 🚀 **CD** | GitHub Pages after green CI |
 | 📱 **Apps** | Android / iOS via Capacitor |
 | 📖 **Help** | [docs/ADMIN-HELP.md](docs/ADMIN-HELP.md) (Bangla) |
@@ -287,7 +287,7 @@ online `donations`, `subscriptions`.
 flowchart LR
   DEV["💻 commit on main<br/>or pull request"] --> CI{"CI<br/>ci.yml"}
   CI --> J1["🔨 Build website<br/>npm ci · vite build<br/>app code present · no secrets"]
-  CI --> J2["🐘 Database & security<br/>PostgreSQL 16 service<br/>all SQL files + 69 checks"]
+  CI --> J2["🐘 Database & security<br/>PostgreSQL 16 service<br/>all SQL files + 71 checks"]
   J1 & J2 -->|all green on main| CD["🚀 Deploy<br/>deploy.yml"]
   CD --> PAGES(["GitHub Pages<br/>rbchy.github.io/dhoom-vivekananda-samiti"])
   J1 & J2 -->|any red| STOP["⛔ no deploy"]
@@ -298,7 +298,7 @@ flowchart LR
 | [`ci.yml`](.github/workflows/ci.yml) | every push to `main`, every pull request, manual | **Build:** installs packages, runs 14 unit tests of the social-post function against a fake Graph API, builds the site, checks the app code is in the bundle and no secret key leaked. **Database:** runs every file in `supabase/` on a fresh PostgreSQL 16 (twice where re-runs must be safe), seeds and removes test data, then [`99-security-tests.sql`](supabase/tests/99-security-tests.sql) |
 | [`deploy.yml`](.github/workflows/deploy.yml) | after CI succeeds on `main`, manual | Builds with repository **variables** (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, donation details) and publishes to GitHub Pages; skipped until the variables are set |
 
-**What the 69 database checks prove** (excerpt)
+**What the 71 database checks prove** (excerpt)
 
 | Area | Examples |
 |---|---|
@@ -400,7 +400,7 @@ dhoom-vivekananda-samiti/
 │   ├── test-data-seed.sql / remove-test-data.sql
 │   ├── social-posts-schema.sql  log of Facebook / Instagram posts
 │   ├── functions/social-post/   Edge Function + unit tests (Meta Graph API)
-│   └── tests/                   CI-only Supabase mock, 69 checks, runner
+│   └── tests/                   CI-only Supabase mock, 71 checks, runner
 ├── docs/
 │   ├── ADMIN-HELP.md            full help guide (Bangla)
 │   ├── SOCIAL-AUTOPOST.md       Facebook / Instagram auto-post setup (Bangla)

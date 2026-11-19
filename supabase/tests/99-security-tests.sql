@@ -197,3 +197,7 @@ select pg_temp.check((select bool_and(mantra_bn is not null and subtitle_bn is n
 select pg_temp.login('anon');
 select pg_temp.check((select count(*) from public.events where title_en in ('Sri Sri Saraswati Puja', 'Sri Sri Gita Jayanti')) = 2, 'visitors can see both festivals');
 reset role;
+
+-- Sri Sri Ganga Devi card: added once, with picture and mantra
+select pg_temp.check((select count(*) from public.temple_highlights where title_en = 'Sri Sri Ganga Devi') = 1, 'Ganga Devi is added once');
+select pg_temp.check((select image_url like '%/images/deities/ganga-devi.webp' and pranam_bn like 'ওঁ সদ্যঃ%' from public.temple_highlights where title_en = 'Sri Sri Ganga Devi'), 'Ganga Devi has picture and mantra');

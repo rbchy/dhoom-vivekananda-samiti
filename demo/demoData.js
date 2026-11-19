@@ -14,6 +14,7 @@ import sqRamakrishna from './images/sq-ramakrishna.webp'
 import sqSarada from './images/sq-sarada.webp'
 import sqVivekananda from './images/sq-vivekananda.webp'
 import sqSurya from './images/sq-surya.webp'
+import sqGanga from '../public/images/deities/ganga-devi.webp'
 import evSaraswati from '../public/images/events/saraswati-puja.webp'
 import evGita from '../public/images/events/gita-jayanti.webp'
 // Original placeholder tone made for the demo; the real site plays the recording set in Admin → Temple info
@@ -29,6 +30,7 @@ const hours = (day, start, end, sort) => ({ id: id(), day_of_week: day, title_en
 
 // Same pranam mantras as supabase/pranam-mantra.sql
 const PRANAM = {
+  "Sri Sri Ganga Devi": { pranam_bn: "ওঁ সদ্যঃ পাতকসংহন্ত্রী সদ্যোদুঃখবিনাশিনী।\nসুখদা মোক্ষদা গঙ্গা গঙ্গৈব পরমা গতিঃ॥", pranam_en: "Om sadyaḥ pātaka-saṁhantrī sadyo-duḥkha-vināśinī,\nsukhadā mokṣadā Gaṅgā Gaṅgaiva paramā gatiḥ." },
   "Sri Surya Dev": { pranam_bn: "ওঁ জবাকুসুমসঙ্কাশং কাশ্যপেয়ং মহাদ্যুতিম্‌।\nধ্বান্তারিং সর্বপাপঘ্নং প্রণতোঽস্মি দিবাকরম্‌॥", pranam_en: "Om japā-kusuma-saṅkāśaṁ kāśyapeyaṁ mahā-dyutim,\ndhvāntāriṁ sarva-pāpaghnaṁ praṇato'smi divākaram." },
   "Sri Ramakrishna": { pranam_bn: "ওঁ স্থাপকায় চ ধর্মস্য সর্বধর্মস্বরূপিণে।\nঅবতারবরিষ্ঠায় রামকৃষ্ণায় তে নমঃ॥", pranam_en: "Om sthāpakāya cha dharmasya sarva-dharma-svarūpiṇe,\navatāra-variṣṭhāya Rāmakṛṣṇāya te namaḥ." },
   "Holy Mother Sri Sarada Devi": { pranam_bn: "ওঁ জননীং সারদাং দেবীং রামকৃষ্ণং জগদ্‌গুরুম্‌।\nপাদপদ্মে তয়োঃ শ্রিত্বা প্রণমামি মুহুর্মুহুঃ॥", pranam_en: "Om jananīṁ Sāradāṁ devīṁ Rāmakṛṣṇaṁ jagad-gurum,\npāda-padme tayoḥ śritvā praṇamāmi muhur-muhuḥ." },
@@ -84,6 +86,7 @@ export const DEMO_TABLES = {
     ['deity', 'Holy Mother Sri Sarada Devi', 'শ্রীশ্রী মা সারদা দেবী', null, null, sqSarada],
     ['deity', 'Swami Vivekananda', 'স্বামী বিবেকানন্দ', null, null, sqVivekananda],
     ['deity', 'Ma Kali', 'মা কালী', null, null, kaliDeity],
+    ['deity', 'Sri Sri Ganga Devi', 'শ্রীশ্রী গঙ্গা দেবী', 'Worshipped every morning from 7 to 8 AM with Vedic mantras, flowers, incense, lamps and aarti.', 'প্রতিদিন সকাল ৭টা–৮টা বৈদিক মন্ত্রোচ্চারণ, পুষ্পার্ঘ্য, ধূপ-দীপ ও আরতির মাধ্যমে মায়ের পূজা হয়।', sqGanga],
     ['deity', 'Sri Surya Dev', 'শ্রীশ্রী সূর্যদেব', 'Once a year the temple holds a special puja of Lord Surya, the giver of light, life and health, with arghya, red flowers, incense, lamps and aarti.', 'বছরে একবার আলো, প্রাণ ও আরোগ্যের দেবতা শ্রীশ্রী সূর্যদেবের বিশেষ পূজা হয়: অর্ঘ্য নিবেদন, রক্তপুষ্প, ধূপ-দীপ ও আরতি।', sqSurya]
   ].map(([kind, title_en, title_bn, body_en, body_bn, image_url], i) => ({ id: id(), kind, title_en, title_bn, body_en, body_bn, image_url: image_url || null, sort_order: i, is_active: true, ...(PRANAM[title_en] || {}) })),
   site_settings: [
