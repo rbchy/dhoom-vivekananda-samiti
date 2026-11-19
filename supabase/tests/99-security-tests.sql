@@ -186,3 +186,7 @@ select pg_temp.login('anon');
 select pg_temp.check((select count(*) from public.temple_highlights where pranam_bn is not null) >= 6, 'visitors can read the pranam mantras');
 reset role;
 delete from public.temple_highlights where sort_order between 1 and 8 and title_en in ('Sri Ramakrishna', 'Holy Mother Sri Sarada Devi', 'Swami Vivekananda', 'Ma Kali', 'Goddess Durga', 'Lord Shiva', 'Service', 'Kali (own mantra)', 'Ma Ganga', 'Ma Saraswati');
+
+-- Sri Surya Dev card: added once even when the file is run twice, with picture and mantra
+select pg_temp.check((select count(*) from public.temple_highlights where title_en = 'Sri Surya Dev') = 1, 'Sri Surya Dev is added once');
+select pg_temp.check((select image_url like '%/images/deities/surya-dev.webp' and pranam_bn like 'ওঁ জবাকুসুম%' and body_bn is not null from public.temple_highlights where title_en = 'Sri Surya Dev'), 'Sri Surya Dev has picture, mantra and description');

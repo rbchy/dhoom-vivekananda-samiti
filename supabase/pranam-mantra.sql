@@ -39,6 +39,12 @@ with mantras(pattern, bn, en) as (values
   ('%swaraswati%',
    E'ওঁ সরস্বতী মহাভাগে বিদ্যে কমললোচনে।\nবিশ্বরূপে বিশালাক্ষি বিদ্যাং দেহি নমোঽস্তু তে॥',
    E'Om Sarasvatī mahābhāge vidye kamala-locane,\nviśva-rūpe viśālākṣi vidyāṁ dehi namo''stu te.'),
+  ('%surya%',
+   E'ওঁ জবাকুসুমসঙ্কাশং কাশ্যপেয়ং মহাদ্যুতিম্‌।\nধ্বান্তারিং সর্বপাপঘ্নং প্রণতোঽস্মি দিবাকরম্‌॥',
+   E'Om japā-kusuma-saṅkāśaṁ kāśyapeyaṁ mahā-dyutim,\ndhvāntāriṁ sarva-pāpaghnaṁ praṇato''smi divākaram.'),
+  ('%surjya%',
+   E'ওঁ জবাকুসুমসঙ্কাশং কাশ্যপেয়ং মহাদ্যুতিম্‌।\nধ্বান্তারিং সর্বপাপঘ্নং প্রণতোঽস্মি দিবাকরম্‌॥',
+   E'Om japā-kusuma-saṅkāśaṁ kāśyapeyaṁ mahā-dyutim,\ndhvāntāriṁ sarva-pāpaghnaṁ praṇato''smi divākaram.'),
   ('%shiv%',
    E'ওঁ নমস্তুভ্যং বিরূপাক্ষ নমস্তে দিব্যচক্ষুষে।\nনমঃ পিনাকহস্তায় বজ্রহস্তায় বৈ নমঃ॥',
    E'Om namas-tubhyaṁ virūpākṣa namaste divya-cakṣuṣe,\nnamaḥ pināka-hastāya vajra-hastāya vai namaḥ.')

@@ -13,6 +13,7 @@ import evVivekananda from './images/ev-vivekananda.webp'
 import sqRamakrishna from './images/sq-ramakrishna.webp'
 import sqSarada from './images/sq-sarada.webp'
 import sqVivekananda from './images/sq-vivekananda.webp'
+import sqSurya from './images/sq-surya.webp'
 // Original placeholder tone made for the demo; the real site plays the recording set in Admin → Temple info
 import demoTone from './audio/demo-tanpura.mp3'
 
@@ -26,6 +27,7 @@ const hours = (day, start, end, sort) => ({ id: id(), day_of_week: day, title_en
 
 // Same pranam mantras as supabase/pranam-mantra.sql
 const PRANAM = {
+  "Sri Surya Dev": { pranam_bn: "ওঁ জবাকুসুমসঙ্কাশং কাশ্যপেয়ং মহাদ্যুতিম্‌।\nধ্বান্তারিং সর্বপাপঘ্নং প্রণতোঽস্মি দিবাকরম্‌॥", pranam_en: "Om japā-kusuma-saṅkāśaṁ kāśyapeyaṁ mahā-dyutim,\ndhvāntāriṁ sarva-pāpaghnaṁ praṇato'smi divākaram." },
   "Sri Ramakrishna": { pranam_bn: "ওঁ স্থাপকায় চ ধর্মস্য সর্বধর্মস্বরূপিণে।\nঅবতারবরিষ্ঠায় রামকৃষ্ণায় তে নমঃ॥", pranam_en: "Om sthāpakāya cha dharmasya sarva-dharma-svarūpiṇe,\navatāra-variṣṭhāya Rāmakṛṣṇāya te namaḥ." },
   "Holy Mother Sri Sarada Devi": { pranam_bn: "ওঁ জননীং সারদাং দেবীং রামকৃষ্ণং জগদ্‌গুরুম্‌।\nপাদপদ্মে তয়োঃ শ্রিত্বা প্রণমামি মুহুর্মুহুঃ॥", pranam_en: "Om jananīṁ Sāradāṁ devīṁ Rāmakṛṣṇaṁ jagad-gurum,\npāda-padme tayoḥ śritvā praṇamāmi muhur-muhuḥ." },
   "Swami Vivekananda": { pranam_bn: "ওঁ নমঃ শ্রীযতিরাজায় বিবেকানন্দসূরয়ে।\nসচ্চিৎসুখস্বরূপায় স্বামিনে তাপহারিণে॥", pranam_en: "Om namaḥ śrī-yatirājāya Vivekānanda-sūraye,\nsac-cit-sukha-svarūpāya svāmine tāpa-hāriṇe." },
@@ -75,7 +77,8 @@ export const DEMO_TABLES = {
     ['deity', 'Sri Ramakrishna', 'শ্রীশ্রী রামকৃষ্ণদেব', null, null, sqRamakrishna],
     ['deity', 'Holy Mother Sri Sarada Devi', 'শ্রীশ্রী মা সারদা দেবী', null, null, sqSarada],
     ['deity', 'Swami Vivekananda', 'স্বামী বিবেকানন্দ', null, null, sqVivekananda],
-    ['deity', 'Ma Kali', 'মা কালী', null, null, kaliDeity]
+    ['deity', 'Ma Kali', 'মা কালী', null, null, kaliDeity],
+    ['deity', 'Sri Surya Dev', 'শ্রীশ্রী সূর্যদেব', 'Once a year the temple holds a special puja of Lord Surya, the giver of light, life and health, with arghya, red flowers, incense, lamps and aarti.', 'বছরে একবার আলো, প্রাণ ও আরোগ্যের দেবতা শ্রীশ্রী সূর্যদেবের বিশেষ পূজা হয়: অর্ঘ্য নিবেদন, রক্তপুষ্প, ধূপ-দীপ ও আরতি।', sqSurya]
   ].map(([kind, title_en, title_bn, body_en, body_bn, image_url], i) => ({ id: id(), kind, title_en, title_bn, body_en, body_bn, image_url: image_url || null, sort_order: i, is_active: true, ...(PRANAM[title_en] || {}) })),
   site_settings: [
     { key: 'festival_hours_note', value_en: 'Hours may change on festival days.', value_bn: 'উৎসবের দিনে সময় বদলাতে পারে।' },
