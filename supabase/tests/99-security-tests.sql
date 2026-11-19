@@ -201,3 +201,6 @@ reset role;
 -- Sri Sri Ganga Devi card: added once, with picture and mantra
 select pg_temp.check((select count(*) from public.temple_highlights where title_en = 'Sri Sri Ganga Devi') = 1, 'Ganga Devi is added once');
 select pg_temp.check((select image_url like '%/images/deities/ganga-devi.webp' and pranam_bn like 'ওঁ সদ্যঃ%' from public.temple_highlights where title_en = 'Sri Sri Ganga Devi'), 'Ganga Devi has picture and mantra');
+
+-- Basanti Durga Mandir photo: added once to the gallery under the Durga Mandir
+select pg_temp.check((select count(*) from public.gallery where image_url like '%/images/gallery/basanti-durga-mandir.webp' and organisation = 'durga') = 1, 'Durga Mandir photo is in the gallery once');

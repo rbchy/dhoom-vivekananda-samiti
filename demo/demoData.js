@@ -15,6 +15,7 @@ import sqSarada from './images/sq-sarada.webp'
 import sqVivekananda from './images/sq-vivekananda.webp'
 import sqSurya from './images/sq-surya.webp'
 import sqGanga from '../public/images/deities/ganga-devi.webp'
+import durgaMandir from '../public/images/gallery/basanti-durga-mandir.webp'
 import evSaraswati from '../public/images/events/saraswati-puja.webp'
 import evGita from '../public/images/events/gita-jayanti.webp'
 // Original placeholder tone made for the demo; the real site plays the recording set in Admin → Temple info
@@ -62,6 +63,7 @@ export const DEMO_TABLES = {
   }))
   ].sort((a, b) => a.event_date.localeCompare(b.event_date)),
   gallery: [
+    [durgaMandir, 'Sri Sri Basanti Durga Mandir', 'শ্রী শ্রী বাসন্তী দুর্গা মন্দির', 'temple', 'durga'],
     [pandal, 'Durga Puja pandal', 'দুর্গাপূজার মণ্ডপ', 'festivals', 'durga'],
     [shrine, 'Temple shrine', 'মন্দিরের গর্ভগৃহ', 'temple', 'shiv'],
     [shivaLinga, 'Shiva Linga', 'শিবলিঙ্গ', 'worship', 'shiv'],
