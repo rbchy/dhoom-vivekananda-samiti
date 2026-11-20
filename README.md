@@ -6,6 +6,7 @@
 [![CI](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/ci.yml)
 [![Deploy](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml/badge.svg)](https://github.com/rbchy/dhoom-vivekananda-samiti/actions/workflows/deploy.yml)
 ![Security tests](https://img.shields.io/badge/DB%20security%20checks-72-22c55e?style=flat-square&logo=postgresql&logoColor=white)
+![E2E tests](https://img.shields.io/badge/Playwright%20E2E-76%20passed-2EAD33?style=flat-square&logo=playwright&logoColor=white)
 ![Languages](https://img.shields.io/badge/UI%20languages-10-0d9488?style=flat-square&logo=googletranslate&logoColor=white)
 ![Roles](https://img.shields.io/badge/staff%20roles-3%20%2B%20approvals-155e75?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Pre--launch-f59e0b?style=flat-square)
@@ -47,7 +48,7 @@ where changes by the secretary wait for **approval** by the right admin.
 | 🌐 **Languages** | 10 (incl. Bangla, Arabic RTL) |
 | 👥 **Staff roles** | Main Admin · Accounts Admin · Secretary |
 | 🗄️ **Database** | Supabase PostgreSQL, RLS on every table |
-| ✅ **CI** | build + 14 unit tests + 72 database security checks |
+| ✅ **CI** | build + 14 unit tests + 76 Playwright end-to-end tests + 72 database security checks |
 | 🚀 **CD** | GitHub Pages after green CI |
 | 📱 **Apps** | Android / iOS via Capacitor |
 | 📖 **Help** | [docs/ADMIN-HELP.md](docs/ADMIN-HELP.md) (Bangla) |
@@ -287,15 +288,16 @@ online `donations`, `subscriptions`.
 flowchart LR
   DEV["💻 commit on main<br/>or pull request"] --> CI{"CI<br/>ci.yml"}
   CI --> J1["🔨 Build website<br/>npm ci · vite build<br/>app code present · no secrets"]
+  CI --> J3["🎭 End-to-end<br/>Playwright · Chromium<br/>desktop + phone · 76 tests"]
   CI --> J2["🐘 Database & security<br/>PostgreSQL 16 service<br/>all SQL files + 72 checks"]
-  J1 & J2 -->|all green on main| CD["🚀 Deploy<br/>deploy.yml"]
+  J1 & J2 & J3 -->|all green on main| CD["🚀 Deploy<br/>deploy.yml"]
   CD --> PAGES(["GitHub Pages<br/>rbchy.github.io/dhoom-vivekananda-samiti"])
-  J1 & J2 -->|any red| STOP["⛔ no deploy"]
+  J1 & J2 & J3 -->|any red| STOP["⛔ no deploy"]
 ```
 
 | Workflow | When | What it does |
 |---|---|---|
-| [`ci.yml`](.github/workflows/ci.yml) | every push to `main`, every pull request, manual | **Build:** installs packages, runs 14 unit tests of the social-post function against a fake Graph API, builds the site, checks the app code is in the bundle and no secret key leaked. **Database:** runs every file in `supabase/` on a fresh PostgreSQL 16 (twice where re-runs must be safe), seeds and removes test data, then [`99-security-tests.sql`](supabase/tests/99-security-tests.sql) |
+| [`ci.yml`](.github/workflows/ci.yml) | every push to `main`, every pull request, manual | **Build:** installs packages, runs 14 unit tests of the social-post function against a fake Graph API, builds the site, checks the app code is in the bundle and no secret key leaked. **End-to-end:** builds the site against a fake Supabase and runs 76 Playwright tests in Chromium on a desktop and a Pixel 7 screen; the report is kept as an artifact when a test fails. **Database:** runs every file in `supabase/` on a fresh PostgreSQL 16 (twice where re-runs must be safe), seeds and removes test data, then [`99-security-tests.sql`](supabase/tests/99-security-tests.sql) |
 | [`deploy.yml`](.github/workflows/deploy.yml) | after CI succeeds on `main`, manual | Builds with repository **variables** (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, donation details) and publishes to GitHub Pages; skipped until the variables are set |
 
 **What the 72 database checks prove** (excerpt)
@@ -314,6 +316,44 @@ Run the same checks locally:
 
 ```bash
 PGHOST=localhost PGUSER=postgres PGDATABASE=postgres bash supabase/tests/run-db-tests.sh
+```
+
+### 🎭 End-to-end tests (Playwright)
+
+The real website is built and opened in Chromium. Every request the real `supabase-js` client makes goes to a
+**fake Supabase** inside the test ([`tests/e2e/support/fakeSupabase.js`](tests/e2e/support/fakeSupabase.js)):
+it answers the REST tables from fixed sample rows, signs in known test accounts, and **records every write**, so a
+test can check exactly what the site sent. The browser clock is frozen at 20 Nov 2026 and every other internet
+request is blocked, so a run gives the same result every day and needs no real database. An uncaught JavaScript
+error on any page fails the test.
+
+```mermaid
+flowchart LR
+  T["🎭 Playwright test"] -->|clicks, types| SITE["🌐 built website<br/>vite preview"]
+  SITE -->|supabase-js REST + Auth| FAKE["🧪 fake Supabase<br/>page.route()"]
+  FAKE -->|sample rows · sessions| SITE
+  FAKE -. records writes .-> T
+```
+
+| Spec | Tests | What it proves |
+|---|---:|---|
+| [`home`](tests/e2e/home.spec.js) | 5 × 2 | six institutions; only active worship rows, today marked; only published, upcoming events, soonest first; gallery filters by category and institution; notices |
+| [`search`](tests/e2e/search.spec.js) | 6 + 5 | `/` and Ctrl+K open it; English **and** Bangla words find the same temple; Enter jumps to it; drafts are not searchable; "no results"; Escape |
+| [`org-pages`](tests/e2e/org-pages.spec.js) | 11 × 2 | each of the six `/org/<id>` pages; full text and pranam mantra; only its own photos; a draft never shows; Bangla; unknown id goes home |
+| [`menu`](tests/e2e/menu.spec.js) | 2 × 2 | Institutions dropdown (accordion on a phone); Smriti Stambha order, drafts hidden |
+| [`language`](tests/e2e/language.spec.js) | 12 | all 10 languages without raw translation keys; Bangla kept after reload; Arabic right-to-left |
+| [`calendar`](tests/e2e/calendar.spec.js) | 4 | current month; yearly festivals "date to be announced"; dated festival not listed twice; month and year navigation; **.ics download** with the right date |
+| [`forms`](tests/e2e/forms.spec.js) | 6 | contact and donation validation (nothing sent on errors); the exact row sent: trimmed, `status: new` / `pending`, no "verified"; server error keeps the text |
+| [`admin`](tests/e2e/admin.spec.js) | 5 | `/admin` and the dashboard need a login; password checks; wrong password; **an account without a staff role is refused and signed out**; the main admin gets in |
+| [`resilience`](tests/e2e/resilience.spec.js) | 2 | one table down: the rest of the page still works |
+
+Desktop runs all 53; the phone (Pixel 7) runs the 23 that depend on screen size. Checked by breaking the app on
+purpose: showing unpublished events and sending an untrimmed message both turn tests red.
+
+```bash
+npx playwright install chromium   # once
+npm run test:e2e                  # all tests, desktop + phone
+npm run test:e2e:ui               # watch them run, step by step
 ```
 
 ---
@@ -401,6 +441,8 @@ dhoom-vivekananda-samiti/
 │   ├── social-posts-schema.sql  log of Facebook / Instagram posts
 │   ├── functions/social-post/   Edge Function + unit tests (Meta Graph API)
 │   └── tests/                   CI-only Supabase mock, 72 checks, runner
+├── tests/e2e/                   Playwright specs, fake Supabase, sample data
+├── playwright.config.js         desktop + phone projects, builds and serves the site
 ├── docs/
 │   ├── ADMIN-HELP.md            full help guide (Bangla)
 │   ├── SOCIAL-AUTOPOST.md       Facebook / Instagram auto-post setup (Bangla)
@@ -427,6 +469,7 @@ npm run dev                   # http://localhost:5173  ·  admin: /admin/login
 | `npm run dev` | Local development server (also on your Wi-Fi, with a QR code) |
 | `npm run build` / `npm run preview` | Production build in `dist/` and a local preview |
 | `npm run app:android` / `app:ios` | Build and open the mobile app project |
+| `npm run test:e2e` | Playwright end-to-end tests (desktop + phone) |
 | `bash supabase/tests/run-db-tests.sh` | Database and security checks |
 
 **Database setup (Supabase → SQL Editor, in this order):**
@@ -450,6 +493,8 @@ Then turn off public sign-up, add staff logins and give roles in **Staff & Roles
 | 15 Nov 2026 | CI (build + 42 DB checks) and GitHub Pages deploy; sub-path aware build; manifest icons fixed |
 | 15 Nov 2026 | Bangla help guide; Belur Math photo on the home page |
 | 16 Nov 2026 | Home banner with Sri Ramakrishna and Belur Math; Facebook Page / Instagram auto-posting (Edge Function, log table, 14 unit + 7 DB tests) |
+| 20 Nov 2026 | Dropdown menu, site search, a page per institution, festival calendar (72 DB checks) |
+| 20 Nov 2026 | Playwright end-to-end tests: 76 tests on desktop and phone against a fake Supabase; new `e2e` job in CI, deploy waits for it |
 
 ## 📈 Roadmap
 
@@ -460,9 +505,11 @@ Then turn off public sign-up, add staff logins and give roles in **Staff & Roles
 - [ ] Real address, hours, donation numbers and committee details from the Samiti
 - [ ] Custom domain and `VITE_SITE_URL`; Google Search Console and Google Business Profile
 - [ ] `og:image` tags, `sitemap.xml`, `robots.txt`, 404 page
-- [ ] Separate page per institution; community clinic page with doctor schedule
+- [x] Separate page per institution
+- [ ] Community clinic page with doctor schedule
 - [ ] PDF donation receipts and a public yearly accounts summary
-- [ ] Playwright end-to-end tests for donation, contact, login and approvals
+- [x] Playwright end-to-end tests for public pages, search, calendar, donation, contact and login
+- [ ] Playwright tests for the admin dashboard: secretary request → admin approval
 - [x] Automatic posting to the Facebook Page and Instagram (level 3) — needs the Meta setup in [docs/SOCIAL-AUTOPOST.md](docs/SOCIAL-AUTOPOST.md)
 
 ## 🔗 Related

@@ -22,3 +22,8 @@ Thumbs.db
 .vscode/
 .idea/
 dist-demo/
+
+# Playwright end-to-end tests
+dist-e2e/
+test-results/
+playwright-report/
