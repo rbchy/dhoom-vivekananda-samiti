@@ -11,7 +11,9 @@
     "app:android": "vite build && npx cap sync android && npx cap open android",
     "app:ios": "vite build && npx cap sync ios && npx cap open ios",
     "app:icons": "npx @capacitor/assets generate --iconBackgroundColor '#54121a' --splashBackgroundColor '#54121a'",
-    "build:demo": "vite build --mode demo && node demo/inline-public.mjs"
+    "build:demo": "vite build --mode demo && node demo/inline-public.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
@@ -23,6 +25,7 @@
     "vite": "latest"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "vite-plugin-singlefile": "^2.3.4"
   }
 }
