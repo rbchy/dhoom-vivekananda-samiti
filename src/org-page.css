@@ -1,0 +1,48 @@
+/* ---------- Institution page: /org/<id> ---------- */
+.org-page{min-height:100vh;background:#fbf8f2;color:#302a29}
+.org-bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px clamp(16px,5vw,80px);padding-top:max(10px,env(safe-area-inset-top));background:#fcfaf5;border-bottom:1px solid #dfd5c7}
+.org-bar-brand{display:flex;align-items:center;gap:12px;font-family:'Playfair Display','Noto Serif Bengali',serif;font-weight:700;color:#6d1822;font-size:clamp(16px,2vw,22px)}
+.org-bar-brand img{width:48px;height:48px;border-radius:50%}
+.org-bar-actions{display:flex;align-items:center;gap:12px}
+.org-back{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid #cba775;border-radius:6px;color:#811d29;font-weight:600;font-size:14px;white-space:nowrap}
+.org-back:hover{background:#fbefdc}
+.org-hero{min-height:clamp(260px,42vw,460px);display:flex;align-items:flex-end;background:#3a2418 center/cover no-repeat;padding:clamp(24px,5vw,60px) clamp(16px,6vw,96px)}
+.org-hero-text{color:#fff;max-width:900px}
+.org-hero-type{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,243,214,.92);color:#54121a;font-weight:700;font-size:13px}
+.org-hero h1{margin:12px 0 0;font-family:'Playfair Display','Noto Serif Bengali',serif;font-size:clamp(30px,4.6vw,56px);line-height:1.15;text-shadow:0 3px 14px rgba(0,0,0,.5)}
+.org-hero-bn{margin:6px 0 0;font-size:clamp(18px,2.2vw,26px);color:#f2c063}
+.org-switch{display:flex;gap:8px;overflow-x:auto;padding:12px clamp(16px,6vw,96px);background:#54121a;scrollbar-width:thin}
+.org-switch a{flex:none;padding:7px 14px;border-radius:999px;border:1px solid rgba(255,243,214,.35);color:#fff3d6;font-size:14px;white-space:nowrap}
+.org-switch a:hover{background:rgba(255,243,214,.12)}
+.org-switch a.active{background:#f2c063;border-color:#f2c063;color:#54121a;font-weight:700}
+.org-main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:clamp(24px,4vw,56px);max-width:1240px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(16px,5vw,60px)}
+.org-article h2{margin:0 0 18px;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#811d29;font-size:clamp(26px,3vw,38px)}
+.org-article>p{font-size:17px;line-height:1.8;color:#3f3936;margin:0 0 16px}
+.org-loading{color:#9a8f86}
+.org-mantra{margin:28px 0;padding:22px 26px;border-radius:10px;background:linear-gradient(135deg,#fff7e6,#fdeccf);border:1px solid #ecd2a0;border-left:5px solid #c76a00;text-align:center}
+.org-mantra figcaption{font-weight:700;color:#8a4a12;margin-bottom:10px}
+.org-mantra blockquote{margin:0;font-family:'Noto Serif Bengali','Playfair Display',serif;font-size:clamp(17px,1.9vw,21px);line-height:1.9;color:#54121a;font-style:normal}
+.org-mantra blockquote span{display:block}
+.org-photos h3{display:flex;align-items:center;gap:8px;margin:36px 0 14px;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#811d29;font-size:22px}
+.org-photos h3 small{color:#9a8f86;font-size:15px}
+.org-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.org-photo-grid figure{margin:0;background:#fff;padding:6px;border-radius:8px;box-shadow:0 6px 18px rgba(57,37,19,.08)}
+.org-photo-grid button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.org-photo-grid img{display:block;width:100%;height:180px;object-fit:cover;border-radius:5px}
+.org-photo-grid figcaption{padding:8px 4px 2px;font-size:14px;color:#4e1720;line-height:1.4}
+.org-side{display:flex;flex-direction:column;gap:18px;align-self:start;position:sticky;top:96px}
+.org-card-box{background:#fff;border:1px solid #ecdcbf;border-top:3px solid #d97a2b;border-radius:10px;padding:18px}
+.org-card-box h3{margin:0 0 10px;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:19px}
+.org-card-box .org-sub-h{margin-top:16px}
+.org-side-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px;color:#3a2a25;font-weight:600}
+.org-side-link:hover{background:#fbefdc;color:#811d29}
+.org-side-link.donate{margin-top:6px;background:#811d29;color:#fff;justify-content:center}
+.org-side-link.donate:hover{background:#5f1520;color:#fff}
+.org-others{list-style:none;margin:0;padding:0}
+.org-others a{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:6px;color:#4e1720;font-size:15px;line-height:1.35}
+.org-others a:hover{background:#fbefdc}
+.org-others svg{flex:none;color:#b4531b}
+.org-foot{padding:24px;text-align:center;background:#251d1b;color:#e7ddd5;font-size:13px}
+.org-foot span{color:#d4a056;padding:0 7px}
+@media(max-width:900px){.org-main{grid-template-columns:1fr}.org-side{position:static}}
+@media(max-width:560px){.org-bar-brand span{display:none}.org-back{padding:7px 10px;font-size:13px}.org-photo-grid{grid-template-columns:1fr 1fr}.org-photo-grid img{height:140px}}

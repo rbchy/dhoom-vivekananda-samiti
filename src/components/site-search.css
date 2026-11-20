@@ -1,0 +1,34 @@
+/* ---------- Site search ---------- */
+.search-link{background:none;border:0;padding:4px;color:inherit;cursor:pointer;display:grid;place-items:center}
+.search-link:hover{color:var(--maroon,#811d29)}
+.search-backdrop{position:fixed;inset:0;z-index:200;background:rgba(30,10,8,.55);backdrop-filter:blur(2px);display:flex;justify-content:center;align-items:flex-start;padding:8vh 16px 16px}
+.search-panel{width:100%;max-width:680px;max-height:80vh;display:flex;flex-direction:column;background:#fffdf8;border-radius:12px;border-top:4px solid var(--maroon,#811d29);box-shadow:0 30px 70px rgba(0,0,0,.35);overflow:hidden;font-family:'DM Sans','Noto Serif Bengali',sans-serif}
+.search-input-row{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #eadcc4;color:#8a5a1f}
+.search-input-row input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:18px;color:#2f2420}
+.search-input-row input::-webkit-search-cancel-button{display:none}
+.search-close{border:0;background:#f4ead8;color:#54121a;border-radius:50%;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}
+.search-results{overflow-y:auto;padding:8px 10px 12px}
+.search-group h3{display:flex;align-items:center;gap:6px;margin:10px 8px 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#a9762e}
+.search-group ul{list-style:none;margin:0;padding:0}
+.search-group button{display:flex;align-items:center;gap:12px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:none;text-align:start;font:inherit;color:#2f2420;cursor:pointer}
+.search-group li[data-active="true"] button{background:#fbefdc}
+.search-group button img{width:46px;height:46px;object-fit:cover;border-radius:6px;flex:none}
+.search-dot{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#fdf0e1;color:#b4531b}
+.search-group strong{display:block;font-weight:700;color:#4e1720;line-height:1.35}
+.search-group small{display:block;margin-top:2px;color:#6b6460;font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.search-group mark{background:#ffe2a3;color:inherit;border-radius:3px;padding:0 1px}
+.search-none{padding:24px 10px;text-align:center;color:#6b6460}
+.search-quick{padding:8px 6px}
+.search-quick p{margin:4px 4px 12px;color:#6b6460;font-size:14px}
+.search-quick div{display:flex;flex-wrap:wrap;gap:8px}
+.search-quick button{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid #e6d5b8;border-radius:999px;background:#fff;color:#54121a;font:inherit;font-size:14px;cursor:pointer}
+.search-quick button:hover{background:#fbefdc}
+.search-foot{padding:8px 16px;border-top:1px solid #eadcc4;font-size:12px;color:#8a7f78;background:#fbf6ec}
+.search-foot kbd{display:inline-block;min-width:20px;padding:1px 6px;border:1px solid #d8c8ad;border-bottom-width:2px;border-radius:4px;background:#fff;font:inherit;font-size:11px;text-align:center}
+@media(max-width:560px){.search-backdrop{padding:0}.search-panel{max-width:none;max-height:100vh;height:100%;border-radius:0}.search-foot{display:none}}
+/* the item the visitor jumped to glows for a moment */
+.search-flash{animation:search-flash 2.2s ease-out}
+@keyframes search-flash{0%,35%{box-shadow:0 0 0 4px #f2c063,0 0 30px rgba(242,192,99,.8)}100%{box-shadow:0 0 0 0 transparent}}
+/* On phones the search button sits next to the ☰ button (the one inside the menu is hidden there) */
+.header .search-mobile{display:none}
+@media(max-width:850px){.header .search-mobile{display:grid!important;color:var(--maroon,#811d29);padding:7px}}

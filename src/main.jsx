@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, Fragment } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
 import StambhaPillar from './components/StambhaPillar'
 import WelcomeBhajan from './components/WelcomeBhajan'
 import SmritiStambhaPage from './pages/SmritiStambhaPage'
+import OrgPage from './pages/OrgPage'
+import CalendarPage from './pages/CalendarPage'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
 import './smriti.css'
 import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
@@ -17,6 +19,8 @@ import Modal from './components/Modal'
 import { OnlineDonationForm, SubscriptionForm } from './components/PublicDonationForms'
 import PublicContactForm from './components/PublicContactForm'
 import BackToTopButton from './components/BackToTopButton'
+import MainMenu from './components/MainMenu'
+import SiteSearch from './components/SiteSearch'
 import PhotoSlideshow from './components/PhotoSlideshow'
 import SocialLinks from './components/SocialLinks'
 import PostShare from './components/PostShare'
@@ -114,6 +118,22 @@ function App() {
   const [galleryFilter, setGalleryFilter] = useState('all')
   const [galleryOrg, setGalleryOrg] = useState('all')
   const [lightbox, setLightbox] = useState(null)
+  const [searchOpen, setSearchOpen] = useState(false)
+  useEffect(() => {
+    const hash = window.location.hash
+    if (!hash || hash.length < 2) return
+    const timer = setTimeout(() => document.querySelector(hash)?.scrollIntoView({ block: 'start' }), 700)
+    return () => clearTimeout(timer)
+  }, [])
+  // Open the search with "/" or Ctrl+K (⌘K on Mac), unless the visitor is typing in a form
+  useEffect(() => {
+    function shortcut(event) {
+      const typing = /^(input|textarea|select)$/i.test(event.target.tagName) || event.target.isContentEditable
+      if ((event.key === '/' && !typing) || (event.key.toLowerCase() === 'k' && (event.ctrlKey || event.metaKey))) { event.preventDefault(); setSearchOpen(true) }
+    }
+    document.addEventListener('keydown', shortcut)
+    return () => document.removeEventListener('keydown', shortcut)
+  }, [])
   const [mapOpen, setMapOpen] = useState(false)
   const [smriti, setSmriti] = useState([])
   useEffect(() => { loadSmritiNames().then(setSmriti) }, [])
@@ -231,17 +251,18 @@ function App() {
     <header className="header">
       <a className="brand" href="#home" onClick={closeMenu} aria-label={t('brand_name')}><span className="brand-seal"><img src={`${import.meta.env.BASE_URL}emblem.svg`} alt="" /></span><span><strong>{t('brand_name')}</strong><em>{t('tag_worship')} <b>•</b> {t('tag_service')} <b>•</b> {t('tag_harmony')}</em></span></a>
       <LanguageSwitcher language={language} onChange={code => { setLanguage(code); closeMenu() }} label={t('choose_language')} />
+      <button type="button" className="search-link search-mobile" onClick={() => { closeMenu(); setSearchOpen(true) }} aria-label={t('search_label')}><Search size={22} /></button>
       <button className="menu-toggle" type="button" onClick={() => setMenuOpen(open => !open)} aria-label={t('toggle_nav')} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
       <nav className={menuOpen ? 'nav nav-open' : 'nav'} aria-label="Main navigation">
-        {navigation.map(([key, section], index) => <Fragment key={section}><a className={index === 0 ? 'active' : ''} href={`#${section}`} onClick={closeMenu}>{t(key)}</a>{section === 'about' && <Link to="/smriti-stambha" onClick={closeMenu}>{t('smriti_title')}</Link>}</Fragment>)}
-        <Link className="admin-link" to="/admin/login" onClick={closeMenu}>{t('admin_login')}</Link><a className="search-link" href="#events" onClick={closeMenu} aria-label={t('search_aria')}><Search size={20} /></a>
+        <MainMenu t={t} language={language} onNavigate={closeMenu} has={{ story: Boolean(story && (pick(story, 'body', language) || pick(story, 'title', language))), mission: missions.length > 0, deities: deities.length > 0, notices: announcements.length > 0, slideshow: gallery.length > 0 }} />
+        <Link className="admin-link" to="/admin/login" onClick={closeMenu}>{t('admin_login')}</Link><button type="button" className="search-link" onClick={() => { closeMenu(); setSearchOpen(true) }} aria-label={t('search_label')} title={`${t('search_label')} ( / )`}><Search size={20} /></button>
       </nav>
     </header>
     <main>
       <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={bhajanAutoplay ? '' : setting('ticker_audio_url')} t={t} /><div className="hero-copy sr-only"><p>{t('quote_1')} {t('quote_2')}</p><span>{t('quote_by')}</span></div></section>
       {language !== 'en' && <p className="hero-caption">{t('quote_1')} {t('quote_2')}<span>{t('quote_by')}</span></p>}
       <div className="hero-orgs" aria-label={t('nav_orgs')}>
-        <div className="hero-orgs-track">{[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 ? true : undefined}>{ORGANISATIONS.map(org => <li key={org.id}><a href="#organisations" tabIndex={copy === 1 ? -1 : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</a></li>)}</ul>)}</div>
+        <div className="hero-orgs-track">{[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 ? true : undefined}>{ORGANISATIONS.map(org => <li key={org.id}><Link to={`/org/${org.id}`} tabIndex={copy === 1 ? -1 : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</Link></li>)}</ul>)}</div>
       </div>
       <div className="hero-actions">
         <a className="hero-btn primary" href="#worship"><Clock size={18} /> {t('hero_btn_hours')}</a>
@@ -255,7 +276,7 @@ function App() {
       <section className="feature-grid" aria-label={t('nav_about')}>{featureCards.map(({ key, href, Icon }) => <a href={href} className="feature-card" key={key}><span className="feature-icon"><Icon size={33} strokeWidth={1.55} /></span><h2>{t(`${key}_t`)}</h2><p>{t(`${key}_c`)}</p><span className="feature-action">{t(`${key}_a`)} <b>→</b></span></a>)}</section>
       <section className="content-section welcome-section" id="about"><div><span className="section-eyebrow">{t('welcome_eyebrow')}</span><h1>{t('welcome_title')}</h1><p>{t('welcome_p1')}</p>
         <h3 className="acts-title">{t('acts_title')}</h3>
-        <ul className="acts-grid">{ACTIVITIES.map(act => { const Icon = ORG_ICONS[act.icon] || Landmark; const org = ORGANISATIONS.find(o => o.id === act.id); const name = org ? (language === 'bn' ? org.name_bn : org.name_en) : t(`act_${act.id}_t`); return <li key={act.id} className={`act-item act-${act.icon}`}><span className="act-icon"><Icon size={20} strokeWidth={1.8} /></span><div><strong>{name}</strong><small>{t(`act_${act.id}_d`)}</small></div></li> })}</ul>
+        <ul className="acts-grid" id="services">{ACTIVITIES.map(act => { const Icon = ORG_ICONS[act.icon] || Landmark; const org = ORGANISATIONS.find(o => o.id === act.id); const name = org ? (language === 'bn' ? org.name_bn : org.name_en) : t(`act_${act.id}_t`); return <li key={act.id} id={`act-${act.id}`} className={`act-item act-${act.icon}`}><span className="act-icon"><Icon size={20} strokeWidth={1.8} /></span><div><strong>{name}</strong><small>{t(`act_${act.id}_d`)}</small></div></li> })}</ul>
         <p>{t('welcome_p2')}</p>
         <a className="donate-btn welcome-visit-btn" href="#contact"><MapPinHouse size={18} /> {t('visit_btn')}</a><img className="welcome-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><blockquote>{t('blessing')}</blockquote></div><figure className="welcome-photo"><picture><source srcSet={`${import.meta.env.BASE_URL}images/belur-math-front.webp`} type="image/webp" /><img src={`${import.meta.env.BASE_URL}images/belur-math-front.jpg`} alt={t('belur_alt')} width="820" height="1016" loading="lazy" /></picture><figcaption>{t('belur_caption')}</figcaption></figure></section>
       {smriti.length > 0 && <section className="smriti-teaser" id="smriti" aria-labelledby="smriti-title">
@@ -271,13 +292,14 @@ function App() {
       <PhotoSlideshow photos={gallery} t={t} getTitle={item => pick(item, 'title', language) || t('gallery_title')} getOrg={item => (item.organisation ? orgName(item.organisation) : '')} />
       <section className="org-section" id="organisations">
         <span className="section-eyebrow">{t('orgs_eyebrow')}</span><h2>{t('orgs_title')}</h2><p className="org-intro">{t('orgs_p')}</p>
-        <div className="org-grid">{ORGANISATIONS.map(org => { const Icon = ORG_ICONS[org.type] || Landmark; const photos = orgPhotos(org.id); return <article className={`org-card org-${org.type}`} key={org.id}>
+        <div className="org-grid">{ORGANISATIONS.map(org => { const Icon = ORG_ICONS[org.type] || Landmark; const photos = orgPhotos(org.id); return <article className={`org-card org-${org.type}`} id={`org-${org.id}`} key={org.id}>
           {photos[0] && <button type="button" className="org-cover" onClick={() => showOrgPhotos(org.id)} aria-label={`${t('org_view_photos')} — ${org.name_en}`}><img src={photos[0].image_url} alt={pick(photos[0], 'title', language) || org.name_en} loading="lazy" /></button>}
           <div className="org-card-body">
             <span className="org-icon"><Icon size={30} strokeWidth={1.5} /></span>
             <div><span className="org-type">{t(`org_type_${org.type}`)}</span><h3 lang={language === 'bn' ? 'bn' : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</h3>{language !== 'bn' && <p className="org-bengali" lang="bn">{org.name_bn}</p>}
               {(org.desc_en || org.desc_bn) && <p className="org-desc">{language === 'bn' ? org.desc_bn || org.desc_en : org.desc_en || org.desc_bn}</p>}
-              {photos.length > 0 ? <button type="button" className="org-photos-link" onClick={() => showOrgPhotos(org.id)}><Images size={15} /> {t('org_view_photos')} ({photos.length})</button> : <p className="org-no-photos">{t('org_no_photos')}</p>}
+              <div className="org-card-actions"><Link className="org-page-link" to={`/org/${org.id}`}>{t('org_details')} →</Link>
+              {photos.length > 0 ? <button type="button" className="org-photos-link" onClick={() => showOrgPhotos(org.id)}><Images size={15} /> {t('org_view_photos')} ({photos.length})</button> : <p className="org-no-photos">{t('org_no_photos')}</p>}</div>
             </div>
           </div>
         </article> })}</div>
@@ -287,11 +309,11 @@ function App() {
         <h2>{pick(story, 'title', language)}</h2>
         <div className="story-body">{pick(story, 'body', language)}</div>
       </section>}
-      {missions.length > 0 && <section className="highlight-section mission-section">
+      {missions.length > 0 && <section className="highlight-section mission-section" id="mission">
         <span className="section-eyebrow">{t('mission_eyebrow')}</span><h2>{t('mission_title')}</h2>
         <div className="mission-grid">{missions.map(item => <article className="mission-card" key={item.id}><h3>{pick(item, 'title', language)}</h3><p>{pick(item, 'body', language)}</p></article>)}</div>
       </section>}
-      {deities.length > 0 && <section className="highlight-section deity-section">
+      {deities.length > 0 && <section className="highlight-section deity-section" id="deities">
         <span className="section-eyebrow">{t('deities_eyebrow')}</span><h2>{t('deities_title')}</h2>
         <div className="deity-grid">{deities.map(item => <article className="deity-card" key={item.id}>
           {item.image_url ? <img src={item.image_url} alt={pick(item, 'title', language)} loading="lazy" /> : <div className="deity-placeholder"><Landmark size={34} /></div>}
@@ -318,7 +340,7 @@ function App() {
         {setting('festival_hours_note') && <p className="hours-festival">{setting('festival_hours_note')}</p>}
         {setting('panjika_url') && <a className="panjika-link" href={setting('panjika_url')} target="_blank" rel="noopener noreferrer">{t('panjika_btn')} <ExternalLink size={16} /></a>}
       </section>
-      <section className="events-section" id="events"><div className="section-heading"><div><span className="section-eyebrow">{t('events_eyebrow')}</span><h2>{t('events_title')}</h2></div><p>{t('events_p')}</p></div>{eventsStatus === 'loading' && <p className="events-message">{t('events_loading')}</p>}{eventsStatus === 'unavailable' && <p className="events-message">{t('events_unavailable')}</p>}{eventsStatus === 'ready' && events.length === 0 && <p className="events-message">{t('events_none')}</p>}{events.length > 0 && <div className="events-grid">{events.map(event => { const title = pick(event, 'title', language); return <article className="event-card" id={`event-${event.id}`} key={event.id}>{event.image_url ? <img src={event.image_url} alt={title || t('events_title')} /> : <div className="event-photo-fallback"><CalendarDays size={34} /></div>}<div><time dateTime={event.event_date ? String(event.event_date).slice(0, 10) : undefined}>{formatEventDate(event.event_date, currentLanguage.locale, t('date_tba'))}</time><h3>{title}</h3>{language !== 'bn' && event.title_bn && event.title_bn !== event.title_en && <p className="event-bengali" lang="bn">{event.title_bn}</p>}{pick(event, 'subtitle', language) && <p className="event-subtitle">{pick(event, 'subtitle', language)}</p>}
+      <section className="events-section" id="events"><div className="section-heading"><div><span className="section-eyebrow">{t('events_eyebrow')}</span><h2>{t('events_title')}</h2></div><p>{t('events_p')}<Link className="events-cal-link" to="/calendar"><CalendarDays size={17} /> {t('cal_open')} →</Link></p></div>{eventsStatus === 'loading' && <p className="events-message">{t('events_loading')}</p>}{eventsStatus === 'unavailable' && <p className="events-message">{t('events_unavailable')}</p>}{eventsStatus === 'ready' && events.length === 0 && <p className="events-message">{t('events_none')}</p>}{events.length > 0 && <div className="events-grid">{events.map(event => { const title = pick(event, 'title', language); return <article className="event-card" id={`event-${event.id}`} key={event.id}>{event.image_url ? <img src={event.image_url} alt={title || t('events_title')} /> : <div className="event-photo-fallback"><CalendarDays size={34} /></div>}<div><time dateTime={event.event_date ? String(event.event_date).slice(0, 10) : undefined}>{formatEventDate(event.event_date, currentLanguage.locale, t('date_tba'))}</time><h3>{title}</h3>{language !== 'bn' && event.title_bn && event.title_bn !== event.title_en && <p className="event-bengali" lang="bn">{event.title_bn}</p>}{pick(event, 'subtitle', language) && <p className="event-subtitle">{pick(event, 'subtitle', language)}</p>}
               {(event.opens_at || event.puja_starts_at || event.closes_at) && <ul className="event-times">
                 {event.opens_at && <li><span>{t('ev_opens')}</span><b>{formatTime(event.opens_at, currentLanguage.locale)}</b></li>}
                 {event.puja_starts_at && <li><span>{t('ev_puja')}</span><b>{formatTime(event.puja_starts_at, currentLanguage.locale)}</b></li>}
@@ -333,6 +355,10 @@ function App() {
         {usedOrgFilters.length > 2 && <div className="gallery-filters org-filters" role="group" aria-label={t('nav_orgs')}>{usedOrgFilters.map(id => <button type="button" key={id} className={galleryOrg === id ? 'active' : ''} aria-pressed={galleryOrg === id} onClick={() => { setGalleryOrg(id); setGalleryFilter('all') }}>{orgName(id)}</button>)}</div>}
         {usedGalleryFilters.length > 2 && <div className="gallery-filters" role="group" aria-label={t('gallery_title')}>{usedGalleryFilters.map(f => <button type="button" key={f} className={galleryFilter === f ? 'active' : ''} aria-pressed={galleryFilter === f} onClick={() => setGalleryFilter(f)}>{t(`gallery_${f}`)}</button>)}</div>}</div>
         {gallery.length > 0 ? <div className="gallery-grid">{shownGallery.map(item => { const title = pick(item, 'title', language); return <figure className="gallery-item" key={item.id}><button type="button" className="gallery-open" onClick={() => setLightbox(item)} aria-label={title || t('gallery_title')}><img src={item.image_url} alt={title || t('gallery_title')} loading="lazy" /></button><figcaption>{title}{item.organisation && galleryOrg === 'all' && <small>{orgName(item.organisation)}</small>}</figcaption></figure> })}</div> : <img src={`${import.meta.env.BASE_URL}temple-photo.jpg`} alt={t('welcome_img_alt')} />}</section>
+      {searchOpen && <SiteSearch t={t} language={language} pick={pick} orgName={orgName}
+        data={{ events, gallery, schedule, highlights, announcements }}
+        scheduleLabel={row => [row.day_of_week === null || row.day_of_week === undefined ? t('hours_daily') : weekdayName(row.day_of_week, currentLanguage.locale), row.is_closed ? t('hours_closed') : [formatTime(row.start_time, currentLanguage.locale), formatTime(row.end_time, currentLanguage.locale)].filter(Boolean).join(' – ')].filter(Boolean).join(' · ')}
+        onOpenPhoto={photo => setLightbox(photo)} onClose={() => setSearchOpen(false)} />}
       {lightbox && <Modal title={pick(lightbox, 'title', language) || t('gallery_title')} closeLabel={t('close')} onClose={() => setLightbox(null)}><figure className="lightbox"><img src={lightbox.image_url} alt={pick(lightbox, 'title', language) || t('gallery_title')} />{(lightbox.organisation || pick(lightbox, 'description', language)) && <figcaption>{lightbox.organisation && <b>{orgName(lightbox.organisation)}</b>}{pick(lightbox, 'description', language) && <span>{pick(lightbox, 'description', language)}</span>}</figcaption>}</figure></Modal>}
       {announcements.length > 0 && <section className="announcements-section" id="notices"><span className="section-eyebrow">{t('notices_eyebrow')}</span><h2>{t('notices_title')}</h2><div className="announcements-grid">{announcements.map(item => <article className="announcement-card" id={`notice-${item.id}`} key={item.id}><h3>{pick(item, 'title', language)}</h3><p>{pick(item, 'message', language)}</p><PostShare kind="notice" item={item} language={language} t={t} /></article>)}</div></section>}
       <section className="donate-section" id="donate"><HeartHandshake size={34} /><h2>{t('donate_title')}</h2><p>{t('donate_p')}</p>
@@ -388,4 +414,4 @@ function App() {
 
 // The demo build (npm run build:demo) is one HTML file opened from disk, so it keeps the route in memory
 const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
-createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)

@@ -3,18 +3,22 @@ import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
+import { ORGANISATIONS } from '../i18n-org'
 
-const LIMITS = { title: 150, body: 5000 }
+// Pages that can be edited here: the main story, and one page per institution (/org/<id>)
+const PAGES = [
+  { slug: 'about-temple', label: 'Our Story (home page) / আমাদের ইতিহাস' },
+  ...ORGANISATIONS.map(org => ({ slug: `org-${org.id}`, label: `${org.name_en} / ${org.name_bn}`, org }))
+]
+const emptyPage = slug => ({ slug, title_en: '', title_bn: '', body_en: '', body_bn: '', mantra_bn: '', mantra_en: '', is_published: false })
+
+const LIMITS = { title: 150, body: 5000, mantra: 600 }
 
 export default function TempleContent() {
-  const [form, setForm] = useState({
-    slug: 'about-temple',
-    title_en: '',
-    title_bn: '',
-    body_en: '',
-    body_bn: '',
-    is_published: false
-  })
+  const [slug, setSlug] = useState('about-temple')
+  const [form, setForm] = useState(emptyPage('about-temple'))
+  const page = PAGES.find(p => p.slug === slug)
+  const isOrgPage = Boolean(page?.org)
 
   const [savedForm, setSavedForm] = useState(null)
   const [errors, setErrors] = useState({})
@@ -25,15 +29,20 @@ export default function TempleContent() {
 
   useEffect(() => {
     loadContent()
-  }, [])
+  }, [slug])
 
   async function loadContent() {
     setLoading(true)
+    setMessage('')
+    setErrors({})
+    setRecordId(null)
+    setSavedForm(null)
+    setForm(emptyPage(slug))
 
     const { data, error } = await supabase
       .from('temple_content')
       .select('*')
-      .eq('slug', 'about-temple')
+      .eq('slug', slug)
       .maybeSingle()
 
     if (error) {
@@ -46,6 +55,8 @@ export default function TempleContent() {
         title_bn: data.title_bn || '',
         body_en: data.body_en || '',
         body_bn: data.body_bn || '',
+        mantra_bn: data.mantra_bn || '',
+        mantra_en: data.mantra_en || '',
         is_published: data.is_published ?? false
       }
       setForm(loaded)
@@ -70,7 +81,9 @@ export default function TempleContent() {
       title_en: checkText(form.title_en, { label: 'English title', required: true, min: 3, max: LIMITS.title }),
       title_bn: checkText(form.title_bn, { label: 'Bangla title', required: true, min: 2, max: LIMITS.title, bengali: true }),
       body_en: checkText(form.body_en, { label: 'English description', required: form.is_published, min: 20, max: LIMITS.body }),
-      body_bn: checkText(form.body_bn, { label: 'Bangla description', min: 10, max: LIMITS.body, bengali: true })
+      body_bn: checkText(form.body_bn, { label: 'Bangla description', min: 10, max: LIMITS.body, bengali: true }),
+      mantra_bn: isOrgPage ? checkText(form.mantra_bn, { label: 'Pranam mantra (Bangla)', max: LIMITS.mantra, bengali: true }) : '',
+      mantra_en: isOrgPage ? checkText(form.mantra_en, { label: 'Pranam mantra (Roman letters)', max: LIMITS.mantra }) : ''
     })
     setErrors(found)
     return Object.keys(found).length === 0
@@ -82,12 +95,16 @@ export default function TempleContent() {
     if (!validate()) return
     setSaving(true)
 
+    const { mantra_bn, mantra_en, ...rest } = form
     const payload = {
-      ...form,
+      ...rest,
+      slug,
       title_en: form.title_en.trim(),
       title_bn: form.title_bn.trim(),
       body_en: form.body_en.trim(),
       body_bn: form.body_bn.trim(),
+      // the mantra columns exist only after supabase/organisation-pages.sql has been run
+      ...(isOrgPage ? { mantra_bn: mantra_bn.trim() || null, mantra_en: mantra_en.trim() || null } : {}),
       updated_at: new Date().toISOString()
     }
 
@@ -101,30 +118,33 @@ export default function TempleContent() {
           .single()
 
     if (result.error) {
-      setMessage('Error: ' + result.error.message)
+      setMessage('Error: ' + result.error.message + (/mantra/i.test(result.error.message) ? ' — run supabase/organisation-pages.sql once in Supabase → SQL Editor.' : ''))
     } else {
       if (result.data?.id) setRecordId(result.data.id)
       setSavedForm(form)
-      setMessage('Temple content saved successfully!')
+      setMessage(isOrgPage ? `Saved. ${form.is_published ? 'The page is live at' : 'Tick "Publish" to show it at'} /org/${page.org.id}` : 'Temple content saved successfully!')
     }
 
     setSaving(false)
   }
-
-  if (loading) return <p>Loading temple content...</p>
 
   const dirty = savedForm ? JSON.stringify(savedForm) !== JSON.stringify(form) : Boolean(form.title_en || form.title_bn || form.body_en || form.body_bn)
 
   return (
     <div className="temple-content-editor">
       <h2>Temple Content Management</h2>
-      <p>Edit temple information in English and Bengali.</p>
+      <p>Edit the home-page story and the page of each institution in English and Bengali.</p>
+
+      <label htmlFor="temple-page">Which page / কোন পেজ</label>
+      <select id="temple-page" value={slug} onChange={event => { if (!dirty || window.confirm('You have unsaved changes. Switch page without saving?')) setSlug(event.target.value) }}>
+        {PAGES.map(p => <option key={p.slug} value={p.slug}>{p.label}</option>)}
+      </select>
+      {isOrgPage && <p className="field-hint">Shown on the website at <a href={`${import.meta.env.BASE_URL}org/${page.org.id}`} target="_blank" rel="noopener noreferrer">/org/{page.org.id}</a>. Until it is published, the page shows the short description of the institution.</p>}
+      {loading && <p>Loading…</p>}
 
       <form onSubmit={handleSave} noValidate>
         <ErrorSummary errors={errors} />
 
-        <label htmlFor="temple-slug">Content Slug</label>
-        <input id="temple-slug" value={form.slug} disabled />
 
         <label htmlFor="temple-title_en">English Title *</label>
         <input
@@ -176,6 +196,15 @@ export default function TempleContent() {
         <small className="field-hint">{form.body_bn.length}/{LIMITS.body}</small>
         <FieldError id="temple-body_bn-error" message={errors.body_bn} />
 
+        {isOrgPage && <>
+          <label htmlFor="temple-mantra_bn">প্রণাম মন্ত্র (বাংলা) — optional</label>
+          <textarea id="temple-mantra_bn" name="mantra_bn" value={form.mantra_bn} onChange={handleChange} rows="3" maxLength={LIMITS.mantra} placeholder="প্রতিটি চরণ আলাদা লাইনে" {...invalidProps(errors, 'mantra_bn', 'temple')} />
+          <FieldError id="temple-mantra_bn-error" message={errors.mantra_bn} />
+          <label htmlFor="temple-mantra_en">Pranam mantra in Roman letters (for other languages) — optional</label>
+          <textarea id="temple-mantra_en" name="mantra_en" value={form.mantra_en} onChange={handleChange} rows="3" maxLength={LIMITS.mantra} placeholder="One line per verse" {...invalidProps(errors, 'mantra_en', 'temple')} />
+          <FieldError id="temple-mantra_en-error" message={errors.mantra_en} />
+        </>}
+
         <label className="publish-option">
           <input
             type="checkbox"
@@ -183,7 +212,7 @@ export default function TempleContent() {
             checked={form.is_published}
             onChange={handleChange}
           />
-          Publish this content
+          {isOrgPage ? 'Publish this page' : 'Publish this content'}
         </label>
 
         <div className="form-actions">

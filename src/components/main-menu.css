@@ -1,0 +1,31 @@
+/* ---------- Main menu with dropdowns ---------- */
+.main-menu{display:flex;align-items:center;gap:inherit}
+.nav-dd{position:relative}
+.nav-dd-btn{display:inline-flex;align-items:center;gap:4px;padding:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer;white-space:nowrap}
+.nav-dd-btn svg{transition:transform .2s;opacity:.7}
+.nav-dd.open>.nav-dd-btn,.nav-dd-btn:hover,.nav-dd-btn:focus-visible{color:var(--maroon,#811d29)}
+.nav-dd.open>.nav-dd-btn svg{transform:rotate(180deg)}
+.nav-dd-menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);z-index:60;min-width:250px;margin:0;padding:8px;list-style:none;background:#fffdf8;border:1px solid #e6d5b8;border-top:3px solid var(--maroon,#811d29);border-radius:8px;box-shadow:0 16px 36px rgba(57,25,15,.18);font-family:'DM Sans','Noto Serif Bengali',sans-serif;font-size:14.5px;text-align:start}
+.nav-dd-menu[hidden]{display:none}
+/* invisible bridge so the menu does not close while the mouse moves down to it */
+.nav-dd-menu::before{content:'';position:absolute;left:0;right:0;top:-17px;height:17px}
+.nav-dd-menu li.divider{margin-top:6px;padding-top:6px;border-top:1px solid #eee2cc}
+.nav-dd-menu a{display:block;padding:9px 12px;border-radius:6px;color:#3a2a25;white-space:nowrap}
+.nav-dd-menu a:hover,.nav-dd-menu a:focus-visible{background:#fbefdc;color:var(--maroon,#811d29)}
+.nav-dd-menu li.divider a{font-weight:700;color:var(--maroon,#811d29)}
+[dir="rtl"] .nav-dd-menu{left:auto;right:50%;transform:translateX(50%)}
+
+/* Phones and small tablets: inside the ☰ menu the groups open like an accordion */
+@media(max-width:850px){
+  .main-menu{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%}
+  .nav-dd-btn{width:100%;justify-content:space-between;padding:12px 4px;border-bottom:1px solid #e8dfd3}
+  .nav-dd-menu{position:static;transform:none;min-width:0;padding:4px 0 8px 14px;border:0;border-left:3px solid #f2c063;border-radius:0;box-shadow:none;background:#fdf6ea}
+  .nav-dd-menu::before{display:none}
+  .nav-dd-menu a{white-space:normal;padding:10px 8px;border-bottom:0!important}
+  [dir="rtl"] .nav-dd-menu{transform:none;padding:4px 14px 8px 0;border-left:0;border-right:3px solid #f2c063}
+}
+/* keep menu targets clear of the sticky header */
+section[id],.org-card[id],.act-item[id]{scroll-margin-top:110px}
+/* Mid-size screens: the logo and name already lead home, so the separate Home button is hidden to make room */
+@media(min-width:851px) and (max-width:1199px){.main-menu>a.active{display:none}}
+@media(min-width:851px) and (max-width:960px){.nav-dd-btn svg{display:none}.main-menu{gap:9px}}

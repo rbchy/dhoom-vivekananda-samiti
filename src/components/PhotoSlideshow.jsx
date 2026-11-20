@@ -31,7 +31,7 @@ export default function PhotoSlideshow({ photos, t, getTitle, getOrg }) {
   if (!count) return null
   const go = step => setIndex(i => (i + step + count) % count)
 
-  return <section className="slideshow-section" aria-label={t('slides_title')}>
+  return <section className="slideshow-section" id="slideshow" aria-label={t('slides_title')}>
     <span className="section-eyebrow">{t('slides_eyebrow')}</span>
     <h2>{t('slides_title')}</h2>
     <div className="slideshow" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>

@@ -125,3 +125,9 @@
   .visit-qr{flex-direction:column;text-align:center;gap:14px;padding:20px 18px;margin-inline:4px}
   .visit-qr-code{width:220px;height:220px}
 }
+
+/* Organisation card: link to the institution's own page */
+.org-card-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.org-card-actions .org-photos-link,.org-card-actions .org-no-photos{margin-top:0}
+.org-page-link{display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;background:#811d29;color:#fff;font-weight:700;font-size:13px}
+.org-page-link:hover{background:#5f1520}
