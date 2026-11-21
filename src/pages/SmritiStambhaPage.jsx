@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Flame } from 'lucide-react'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { StambhaMonument, localDigits } from '../components/StambhaPillar'
-import { getInitialLanguage, getLanguage, saveLanguage, translate } from '../i18n'
+import { getInitialLanguage, getLanguage, saveLanguage, translate, TRANSLATIONS } from '../i18n'
 import { initials, loadSmritiNames, pickText } from '../lib/smriti'
 import '../smriti.css'
 
@@ -42,6 +42,11 @@ export default function SmritiStambhaPage() {
         {people?.length > 0 && <p className="smriti-count"><Flame size={18} /> {localDigits(people.length, current.locale)}</p>}
       </div>
     </section>
+
+    {TRANSLATIONS[language]?.smriti_story && <section className="smriti-story">
+      {TRANSLATIONS[language].smriti_story.split('\n\n').map((para, i) => <p key={i}>{para}</p>)}
+      <p className="smriti-story-blessing">{t('visit_blessing')}</p>
+    </section>}
 
     <main className="smriti-wall">
       {people === null ? <p className="smriti-empty">…</p> : people.length === 0 ? <p className="smriti-empty">{t('smriti_none')}</p> :

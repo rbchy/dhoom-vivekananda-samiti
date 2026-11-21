@@ -171,7 +171,7 @@ function AddOrgForm({ t, existing, onClose }) {
       {field('address', t('bd_f_address'), { maxLength: 300 })}
       <div className="form-row">{field('website', t('bd_f_website'), { type: 'url', maxLength: 300, placeholder: 'https://' })}{field('email', t('bd_f_org_email'), { type: 'email', maxLength: 254 })}</div>
       <div className="form-row">{field('phone', t('bd_f_org_phone'), { type: 'tel', maxLength: 30 })}<div /></div>
-      <div className="form-row">{field('about_en', `${t('bd_f_about')} — English`, { rows: 3, maxLength: 1000 })}{field('about_bn', `${t('bd_f_about')} — বাংলা`, { rows: 3, maxLength: 1000, lang: 'bn' })}</div>
+      <div className="form-row">{field('about_en', `${t('bd_f_about')} — English`, { rows: 3, maxLength: 3000 })}{field('about_bn', `${t('bd_f_about')} — বাংলা`, { rows: 3, maxLength: 3000, lang: 'bn' })}</div>
       <fieldset className="bd-you"><legend>{t('bd_f_you')}</legend>
         <div className="form-row">{field('your_name', `${t('bd_f_your_name')} *`, { maxLength: 100, autoComplete: 'name' })}{field('your_email', `${t('bd_f_your_email')} *`, { type: 'email', maxLength: 254, autoComplete: 'email' })}</div>
       </fieldset>

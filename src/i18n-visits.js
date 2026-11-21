@@ -4,6 +4,8 @@ export const BHAVADHARA_TYPES = ['rkm_branch', 'vedanta_society', 'sarada_math',
 
 export const VISITS_TEXT = {
   en: {
+    footer_about: "A religious, non-profit humanitarian organisation inspired by Sri Ramakrishna, Holy Mother Sri Sarada Devi and Swami Vivekananda. Through five temples, a community clinic and its service work, it lives Swamiji's ideal of “serving God in every being”.",
+    footer_address: "Dhoom, Mohazanhat-4328, Mirsharai, Chattogram, Bangladesh",
     menu_visits: 'Holy Visits',
     menu_bhavadhara: 'Bhavadhara Worldwide',
     hv_title: 'Holy Visits',
@@ -113,6 +115,8 @@ export const VISITS_TEXT = {
     hero_swamiji_by: '— Swami Vivekananda'
   },
   bn: {
+    footer_about: "শ্রীরামকৃষ্ণ, শ্রীশ্রী মা সারদা দেবী ও স্বামী বিবেকানন্দের আদর্শে পরিচালিত একটি ধর্মীয়, অলাভজনক মানবকল্যাণমূলক প্রতিষ্ঠান। পাঁচটি মন্দির, একটি কমিউনিটি ক্লিনিক ও নানা সেবাকাজের মাধ্যমে “শিবজ্ঞানে জীবসেবা”-ই আমাদের ব্রত।",
+    footer_address: "ধূম, মহাজনহাট-৪৩২৮, মীরসরাই, চট্টগ্রাম, বাংলাদেশ",
     menu_visits: 'পুণ্য আগমন',
     menu_bhavadhara: 'বিশ্বজুড়ে ভাবধারা',
     hv_title: 'পুণ্য আগমন',
@@ -223,6 +227,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   hi: {
+    footer_about: "श्री रामकृष्ण, श्री माँ सारदा देवी और स्वामी विवेकानन्द के आदर्शों पर चलने वाली एक धार्मिक, गैर-लाभकारी मानव-कल्याणकारी संस्था। पाँच मंदिरों, एक सामुदायिक चिकित्सालय और विभिन्न सेवा-कार्यों के माध्यम से “शिव भाव से जीव सेवा” ही हमारा व्रत है।",
     hero_slides_label: "बैनर के चित्र",
     hero_name_ramakrishna: "श्री रामकृष्ण",
     hero_name_sarada: "श्री माँ सारदा देवी",
@@ -236,6 +241,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   ko: {
+    footer_about: "스리 라마크리슈나, 성모 스리 사라다 데비, 스와미 비베카난다의 가르침을 따르는 종교적·비영리 인도주의 단체입니다. 다섯 사원과 지역 진료소, 여러 봉사 활동을 통해 “모든 존재 안의 시바를 섬기라”는 이상을 실천합니다.",
     hero_slides_label: "배너 사진",
     hero_name_ramakrishna: "스리 라마크리슈나",
     hero_name_sarada: "스리 사라다 데비",
@@ -249,6 +255,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   ja: {
+    footer_about: "シュリー・ラーマクリシュナ、聖母シュリー・サーラダー・デーヴィー、スワーミー・ヴィヴェーカーナンダの理想に導かれた、宗教的・非営利の人道支援団体です。五つの寺院、地域診療所、さまざまな奉仕活動を通じて「すべての命にシヴァを見て仕える」という理想を実践しています。",
     hero_slides_label: "バナーの写真",
     hero_name_ramakrishna: "シュリー・ラーマクリシュナ",
     hero_name_sarada: "シュリー・サーラダー・デーヴィー",
@@ -262,6 +269,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   zh: {
+    footer_about: "一个秉承室利·罗摩克里希那、圣母室利·萨拉达·戴维和斯瓦米·维韦卡南达理想的宗教性、非营利人道主义组织。通过五座神庙、一家社区诊所和多项服务工作，践行“在众生中侍奉湿婆”的理念。",
     hero_slides_label: "横幅图片",
     hero_name_ramakrishna: "室利·罗摩克里希那",
     hero_name_sarada: "室利·萨拉达·戴维",
@@ -275,6 +283,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   es: {
+    footer_about: "Organización religiosa, humanitaria y sin fines de lucro inspirada en Sri Ramakrishna, la Santa Madre Sri Sarada Devi y Swami Vivekananda. A través de cinco templos, una clínica comunitaria y su labor de servicio, vive el ideal de Swamiji de «servir a Dios en cada ser».",
     hero_slides_label: "Imágenes del encabezado",
     hero_name_ramakrishna: "Sri Ramakrishna",
     hero_name_sarada: "Sri Sarada Devi",
@@ -288,6 +297,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   fr: {
+    footer_about: "Organisation religieuse, humanitaire et à but non lucratif inspirée par Sri Ramakrishna, la Sainte Mère Sri Sarada Devi et Swami Vivekananda. Par ses cinq temples, son dispensaire communautaire et ses œuvres de service, elle vit l’idéal de Swamiji : « servir Dieu en chaque être ».",
     hero_slides_label: "Images de la bannière",
     hero_name_ramakrishna: "Sri Ramakrishna",
     hero_name_sarada: "Sri Sarada Devi",
@@ -301,6 +311,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   ar: {
+    footer_about: "منظمة دينية وإنسانية غير ربحية مستوحاة من سري راماكريشنا والأم المقدسة سري سارادا ديفي وسوامي فيفيكاناندا. ومن خلال خمسة معابد وعيادة مجتمعية وأعمال خدمة متنوعة، تجسّد مبدأ سواميجي «خدمة الله في كل كائن».",
     hero_slides_label: "صور الشعار",
     hero_name_ramakrishna: "سري راماكريشنا",
     hero_name_sarada: "سري سارادا ديفي",
@@ -314,6 +325,7 @@ export const VISITS_TEXT = {
   },
   // Banner sayings only; the rest of these pages falls back to English
   ru: {
+    footer_about: "Религиозная некоммерческая гуманитарная организация, вдохновлённая Шри Рамакришной, Святой Матерью Шри Сарадой Деви и Свами Вивеканандой. Через пять храмов, общинную клинику и служение людям она воплощает идеал Свамиджи — «служить Богу в каждом существе».",
     hero_slides_label: "Изображения баннера",
     hero_name_ramakrishna: "Шри Рамакришна",
     hero_name_sarada: "Шри Сарада Деви",

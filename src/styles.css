@@ -11,3 +11,4 @@
 /* "Full festival calendar" button in the home page's Events section */
 .events-cal-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;border-radius:999px;background:#811d29;color:#fff!important;font-weight:700;font-size:14px}
 .events-cal-link:hover{background:#5f1520}
+.site-footer .footer-address{display:flex;gap:6px;align-items:flex-start;color:#e9c98f}.site-footer .footer-address svg{flex:none;margin-top:4px}

@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
-import StambhaPillar from './components/StambhaPillar'
+import StambhaPillar, { localDigits } from './components/StambhaPillar'
 import WelcomeBhajan from './components/WelcomeBhajan'
 import HeroSlides, { HERO_SLIDES, useHeroSlide } from './components/HeroSlides'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
@@ -23,7 +23,7 @@ import PhotoSlideshow from './components/PhotoSlideshow'
 import SocialLinks from './components/SocialLinks'
 import PostShare from './components/PostShare'
 import { supabase } from './lib/supabaseClient'
-import { getInitialLanguage, getLanguage, saveLanguage, translate } from './i18n'
+import { getInitialLanguage, getLanguage, saveLanguage, translate, TRANSLATIONS } from './i18n'
 import { MAP_LOCATION, ORGANISATIONS, locationFromMapsLink, ACTIVITIES } from './i18n-org'
 import PageLoading from './components/PageLoading'
 
@@ -220,7 +220,8 @@ function App() {
   const setting = key => (settings[key] ? (language === 'bn' ? settings[key].value_bn || settings[key].value_en : settings[key].value_en || settings[key].value_bn) : '')
   // Admin → Temple info: "play the song when the website opens"
   const bhajanAutoplay = settings.bhajan_autoplay?.value_en === 'on' && Boolean(setting('ticker_audio_url'))
-  const address = setting('address')
+  // Bangla digits in the address on the Bangla page (মহাজনহাট-৪৩২৮)
+  const address = language === 'bn' ? localDigits(setting('address'), 'bn-BD') : setting('address')
   const socialLinks = Object.fromEntries(['facebook', 'youtube', 'instagram', 'whatsapp', 'tiktok'].map(name => [name, setting(`${name}_url`)]))
   const missions = highlights.filter(h => h.kind === 'mission')
   const deities = highlights.filter(h => h.kind === 'deity')
@@ -291,6 +292,8 @@ function App() {
       </div>
       <section className="feature-grid" aria-label={t('nav_about')}>{featureCards.map(({ key, href, Icon }) => <a href={href} className="feature-card" key={key}><span className="feature-icon"><Icon size={33} strokeWidth={1.55} /></span><h2>{t(`${key}_t`)}</h2><p>{t(`${key}_c`)}</p><span className="feature-action">{t(`${key}_a`)} <b>→</b></span></a>)}</section>
       <section className="content-section welcome-section" id="about"><div><span className="section-eyebrow">{t('welcome_eyebrow')}</span><h1>{t('welcome_title')}</h1><p>{t('welcome_p1')}</p>
+        {TRANSLATIONS[language]?.welcome_history && <p>{TRANSLATIONS[language].welcome_history}</p>}
+        {TRANSLATIONS[language]?.welcome_heritage && <p>{TRANSLATIONS[language].welcome_heritage}</p>}
         <h3 className="acts-title">{t('acts_title')}</h3>
         <ul className="acts-grid" id="services">{ACTIVITIES.map(act => { const Icon = ORG_ICONS[act.icon] || Landmark; const org = ORGANISATIONS.find(o => o.id === act.id); const name = org ? (language === 'bn' ? org.name_bn : org.name_en) : t(`act_${act.id}_t`); return <li key={act.id} id={`act-${act.id}`} className={`act-item act-${act.icon}`}><span className="act-icon"><Icon size={20} strokeWidth={1.8} /></span><div><strong>{name}</strong><small>{t(`act_${act.id}_d`)}</small></div></li> })}</ul>
         <p>{t('welcome_p2')}</p>
@@ -399,7 +402,7 @@ function App() {
       {openForm === 'contact' && <Modal title={t('contact_form_title')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><Suspense fallback={<PageLoading inline />}><PublicContactForm t={t} /></Suspense></Modal>}
     </main><footer className="site-footer">
       <div className="footer-grid">
-        <div><img className="footer-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><strong className="footer-brand">{t('brand_name')}</strong><p>{t('footer_nonprofit')}</p>{address && <p>{address}</p>}<SocialLinks links={socialLinks} t={t} variant="dark" /></div>
+        <div><img className="footer-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><strong className="footer-brand">{t('brand_name')}</strong><p>{t('footer_about')}</p><p className="footer-address"><MapPin size={14} aria-hidden="true" /> {address || t('footer_address')}</p><SocialLinks links={socialLinks} t={t} variant="dark" /></div>
         <div><h4>{t('footer_links')}</h4><ul>{navigation.map(([key, section]) => <li key={section}><a href={`#${section}`}>{t(key)}</a></li>)}<li><Link to="/smriti-stambha">{t('smriti_title')}</Link></li><li><Link to="/visits">{t('menu_visits')}</Link></li><li><Link to="/bhavadhara">{t('menu_bhavadhara')}</Link></li><li><Link to="/committee">{t('menu_committee')}</Link></li><li><Link to="/donors">{t('menu_donors')}</Link></li></ul></div>
         <div className="footer-hours"><h4>{t('footer_hours')}</h4>{hoursByDay.length === 0 ? <p>{t('hours_none')}</p> : <table className="footer-hours-table">
           <thead><tr><th scope="col">{t('hours_day')}</th><th scope="col"><Sunrise size={14} aria-hidden="true" /> {t('hours_morning')}</th><th scope="col"><Sunset size={14} aria-hidden="true" /> {t('hours_evening')}</th></tr></thead>

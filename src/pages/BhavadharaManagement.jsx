@@ -65,8 +65,8 @@ export default function BhavadharaManagement() {
       email: form.email.trim() && !EMAIL_PATTERN.test(form.email.trim()) ? 'Enter a valid email address.' : '',
       phone: checkPhone(form.phone),
       founded_year: year && (!/^\d{4}$/.test(year) || +year < 1850 || +year > new Date().getFullYear()) ? 'Year founded must be between 1850 and this year.' : '',
-      about_en: checkText(form.about_en, { label: 'About (English)', max: 1000 }),
-      about_bn: checkText(form.about_bn, { label: 'About (Bangla)', max: 1000, bengali: true }),
+      about_en: checkText(form.about_en, { label: 'About (English)', max: 3000 }),
+      about_bn: checkText(form.about_bn, { label: 'About (Bangla)', max: 3000, bengali: true }),
       photo: errors.photo || '',
       photo_url: photoFile ? '' : checkUrl(form.photo_url, { label: 'Photo link' }),
       sort_order: !/^\d{1,4}$/.test(String(form.sort_order).trim()) ? 'Display order must be a whole number from 0 to 9999.' : ''
@@ -140,7 +140,7 @@ export default function BhavadharaManagement() {
       {input('address', 'Address', { maxLength: 300 })}
       <div className="form-row">{input('website', 'Website', { type: 'url', maxLength: 300, placeholder: 'https://' })}{input('email', 'Email (shown on the website)', { type: 'email', maxLength: 254 })}</div>
       <div className="form-row">{input('phone', 'Phone (shown on the website)', { type: 'tel', maxLength: 30 })}{input('sort_order', 'Order within the country', { inputMode: 'numeric', maxLength: 4 })}</div>
-      <div className="form-row">{input('about_en', 'About (English)', { rows: 3, maxLength: 1000 })}{input('about_bn', 'পরিচিতি (বাংলা)', { rows: 3, maxLength: 1000 })}</div>
+      <div className="form-row">{input('about_en', 'About (English)', { rows: 3, maxLength: 3000 })}{input('about_bn', 'পরিচিতি (বাংলা)', { rows: 3, maxLength: 3000 })}</div>
       <ImagePicker id="bdm-photo" label="Photo (optional) / ছবি" file={photoFile} onFileChange={file => { setPhotoFile(file); setErrors(p => ({ ...p, photo: '', photo_url: '' })) }} currentUrl={!photoFile && form.photo_url && !checkUrl(form.photo_url, { label: 'x' }) ? form.photo_url : ''} error={errors.photo} onError={problem => setErrors(p => ({ ...p, photo: problem }))} />
       <details className="link-option" open={Boolean(form.photo_url) && !photoFile}>
         <summary>…or paste a photo link instead / অথবা ছবির লিংক দিন</summary>
