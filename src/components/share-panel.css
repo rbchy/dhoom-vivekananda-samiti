@@ -1,0 +1,17 @@
+/* Share panel opened by the round Share button */
+.social-share-wrap{position:relative}
+.share-panel{position:absolute;z-index:60;top:calc(100% + 10px);left:50%;transform:translateX(-50%);width:230px;padding:8px;background:#fff;color:#302a29;border:1px solid #e6d5bb;border-radius:12px;box-shadow:0 14px 40px rgba(40,15,10,.28);text-align:left}
+.share-panel-up{top:auto;bottom:calc(100% + 10px)}
+.share-panel-head{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 8px;border-bottom:1px solid #f0e3cc;margin-bottom:4px;font-size:14px;color:#4e1720}
+.share-panel-close{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:#6b5a50;cursor:pointer}
+.share-panel-close:hover{background:#f6ecdc}
+.share-panel-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 8px;border:0;border-radius:8px;background:transparent;color:#302a29;font:inherit;font-size:15px;text-decoration:none;cursor:pointer;text-align:left}
+.share-panel-item:hover,.share-panel-item:focus-visible{background:#fbefdc;outline:none}
+.share-panel-icon{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;color:#fff;background:#811d29}
+.share-whatsapp .share-panel-icon{background:#25d366}
+.share-facebook .share-panel-icon{background:#1877f2}
+.share-messenger .share-panel-icon{background:#7b4dff}
+.share-email .share-panel-icon{background:#a8451f}
+.share-copy .share-panel-icon{background:#d97a2b}
+.share-panel-manual{display:block;padding:6px 8px 4px;font-size:13px;color:#6b5a50}
+.share-panel-manual input{display:block;width:100%;margin-top:4px;padding:6px 8px;border:1px solid #d5c8b8;border-radius:6px;font:inherit;font-size:13px}

@@ -98,7 +98,19 @@ export const VISITS_TEXT = {
     cm_current: 'Current committee',
     cm_term: 'Term',
     cm_former: 'Earlier committees',
-    cm_empty: 'The committee list will appear here as soon as the Samiti adds it.'
+    cm_empty: 'The committee list will appear here as soon as the Samiti adds it.',
+    share_email: 'Email',
+    share_copy_manual: 'Copying is blocked in this browser. Select the link and copy it:',
+    hero_slides_label: 'Banner pictures',
+    hero_name_ramakrishna: 'Sri Ramakrishna',
+    hero_name_sarada: 'Sri Sarada Devi',
+    hero_name_vivekananda: 'Swami Vivekananda',
+    hero_sarada_1: '“The whole world is your own;',
+    hero_sarada_2: 'no one is a stranger.”',
+    hero_sarada_by: '— Sri Sarada Devi',
+    hero_swamiji_1: '“Arise, awake, and stop not',
+    hero_swamiji_2: 'till the goal is reached.”',
+    hero_swamiji_by: '— Swami Vivekananda'
   },
   bn: {
     menu_visits: 'পুণ্য আগমন',
@@ -195,6 +207,122 @@ export const VISITS_TEXT = {
     cm_current: 'বর্তমান কমিটি',
     cm_term: 'মেয়াদ',
     cm_former: 'পূর্ববর্তী কমিটি',
-    cm_empty: 'সমিতি কমিটির তালিকা যোগ করলেই এখানে দেখা যাবে।'
+    cm_empty: 'সমিতি কমিটির তালিকা যোগ করলেই এখানে দেখা যাবে।',
+    share_email: 'ইমেইল',
+    share_copy_manual: 'এই ব্রাউজারে কপি বন্ধ আছে। লিংকটি নির্বাচন করে কপি করুন:',
+    hero_slides_label: 'ব্যানারের ছবি',
+    hero_name_ramakrishna: 'শ্রীরামকৃষ্ণ',
+    hero_name_sarada: 'শ্রীশ্রী মা সারদা দেবী',
+    hero_name_vivekananda: 'স্বামী বিবেকানন্দ',
+    hero_sarada_1: '“কেউ পর নয়, মা,',
+    hero_sarada_2: 'জগৎ তোমার।”',
+    hero_sarada_by: '— শ্রীশ্রী মা সারদা দেবী',
+    hero_swamiji_1: '“ওঠো, জাগো,',
+    hero_swamiji_2: 'লক্ষ্যে না পৌঁছানো পর্যন্ত থেমো না।”',
+    hero_swamiji_by: '— স্বামী বিবেকানন্দ'
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  hi: {
+    hero_slides_label: "बैनर के चित्र",
+    hero_name_ramakrishna: "श्री रामकृष्ण",
+    hero_name_sarada: "श्री माँ सारदा देवी",
+    hero_name_vivekananda: "स्वामी विवेकानन्द",
+    hero_sarada_1: "“कोई पराया नहीं है, बेटी;",
+    hero_sarada_2: "सारा संसार तुम्हारा अपना है।”",
+    hero_sarada_by: "— श्री माँ सारदा देवी",
+    hero_swamiji_1: "“उठो, जागो,",
+    hero_swamiji_2: "और लक्ष्य प्राप्त होने तक मत रुको।”",
+    hero_swamiji_by: "— स्वामी विवेकानन्द"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  ko: {
+    hero_slides_label: "배너 사진",
+    hero_name_ramakrishna: "스리 라마크리슈나",
+    hero_name_sarada: "스리 사라다 데비",
+    hero_name_vivekananda: "스와미 비베카난다",
+    hero_sarada_1: "“누구도 남이 아니란다;",
+    hero_sarada_2: "온 세상이 너의 것이란다.”",
+    hero_sarada_by: "— 스리 사라다 데비",
+    hero_swamiji_1: "“일어나라, 깨어나라,",
+    hero_swamiji_2: "목표에 이를 때까지 멈추지 마라.”",
+    hero_swamiji_by: "— 스와미 비베카난다"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  ja: {
+    hero_slides_label: "バナーの写真",
+    hero_name_ramakrishna: "シュリー・ラーマクリシュナ",
+    hero_name_sarada: "シュリー・サーラダー・デーヴィー",
+    hero_name_vivekananda: "スワーミー・ヴィヴェーカーナンダ",
+    hero_sarada_1: "“誰も他人ではありません。",
+    hero_sarada_2: "世界はすべてあなたのものです。”",
+    hero_sarada_by: "— シュリー・サーラダー・デーヴィー",
+    hero_swamiji_1: "“起きよ、目覚めよ、",
+    hero_swamiji_2: "目標に達するまで止まるな。”",
+    hero_swamiji_by: "— スワーミー・ヴィヴェーカーナンダ"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  zh: {
+    hero_slides_label: "横幅图片",
+    hero_name_ramakrishna: "室利·罗摩克里希那",
+    hero_name_sarada: "室利·萨拉达·戴维",
+    hero_name_vivekananda: "斯瓦米·维韦卡南达",
+    hero_sarada_1: "“没有人是陌生人，",
+    hero_sarada_2: "整个世界都是你自己的。”",
+    hero_sarada_by: "— 室利·萨拉达·戴维",
+    hero_swamiji_1: "“起来，醒来，",
+    hero_swamiji_2: "不达目标，决不停步。”",
+    hero_swamiji_by: "— 斯瓦米·维韦卡南达"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  es: {
+    hero_slides_label: "Imágenes del encabezado",
+    hero_name_ramakrishna: "Sri Ramakrishna",
+    hero_name_sarada: "Sri Sarada Devi",
+    hero_name_vivekananda: "Swami Vivekananda",
+    hero_sarada_1: "“Nadie es un extraño;",
+    hero_sarada_2: "el mundo entero es tuyo.”",
+    hero_sarada_by: "— Sri Sarada Devi",
+    hero_swamiji_1: "“Levántate, despierta",
+    hero_swamiji_2: "y no te detengas hasta alcanzar la meta.”",
+    hero_swamiji_by: "— Swami Vivekananda"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  fr: {
+    hero_slides_label: "Images de la bannière",
+    hero_name_ramakrishna: "Sri Ramakrishna",
+    hero_name_sarada: "Sri Sarada Devi",
+    hero_name_vivekananda: "Swami Vivekananda",
+    hero_sarada_1: "“Personne n’est un étranger ;",
+    hero_sarada_2: "le monde entier est à toi.”",
+    hero_sarada_by: "— Sri Sarada Devi",
+    hero_swamiji_1: "“Lève-toi, éveille-toi",
+    hero_swamiji_2: "et ne t’arrête pas avant d’avoir atteint le but.”",
+    hero_swamiji_by: "— Swami Vivekananda"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  ar: {
+    hero_slides_label: "صور الشعار",
+    hero_name_ramakrishna: "سري راماكريشنا",
+    hero_name_sarada: "سري سارادا ديفي",
+    hero_name_vivekananda: "سوامي فيفيكاناندا",
+    hero_sarada_1: "“لا أحد غريب؛",
+    hero_sarada_2: "العالم كله لك.”",
+    hero_sarada_by: "— سري سارادا ديفي",
+    hero_swamiji_1: "“انهض، استيقظ،",
+    hero_swamiji_2: "ولا تتوقف حتى تبلغ الهدف.”",
+    hero_swamiji_by: "— سوامي فيفيكاناندا"
+  },
+  // Banner sayings only; the rest of these pages falls back to English
+  ru: {
+    hero_slides_label: "Изображения баннера",
+    hero_name_ramakrishna: "Шри Рамакришна",
+    hero_name_sarada: "Шри Сарада Деви",
+    hero_name_vivekananda: "Свами Вивекананда",
+    hero_sarada_1: "“Никто не чужой;",
+    hero_sarada_2: "весь мир — твой.”",
+    hero_sarada_by: "— Шри Сарада Деви",
+    hero_swamiji_1: "“Встань, пробудись",
+    hero_swamiji_2: "и не останавливайся, пока не достигнешь цели.”",
+    hero_swamiji_by: "— Свами Вивекананда"
   }
 }

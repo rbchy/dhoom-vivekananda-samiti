@@ -6,7 +6,7 @@ import { describeDbError } from '../lib/dbErrors'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import ImagePicker from '../components/ImagePicker'
 import { checkImageFile, removeImage, storagePathFromUrl, uploadImage } from '../lib/storage'
-import { enhanceImage } from '../lib/imageEnhance'
+import { enhanceImage, shrinkImage } from '../lib/imageEnhance'
 import { ORGANISATIONS } from '../i18n-org'
 import '../admin-directory.css'
 
@@ -57,7 +57,8 @@ export default function VisitsManagement() {
   function addPhotos(event) {
     const files = [...event.target.files]
     event.target.value = ''
-    const problem = files.map(checkImageFile).find(Boolean)
+    // Photos straight from a camera may be large: each one is made a light WebP (at most 1600 px) before upload
+    const problem = files.map(f => !['image/jpeg', 'image/png', 'image/webp'].includes(f.type) ? 'Photos must be JPG, PNG or WebP images.' : f.size > 25 * 1024 * 1024 ? `"${f.name}" is larger than 25 MB.` : '').find(Boolean)
     if (problem) { setErrors(p => ({ ...p, photos: problem })); return }
     if (form.photos.length + newPhotos.length + files.length > MAX_PHOTOS) { setErrors(p => ({ ...p, photos: `At most ${MAX_PHOTOS} photos per visit.` })); return }
     setErrors(p => ({ ...p, photos: '' }))
@@ -99,7 +100,11 @@ export default function VisitsManagement() {
       for (const [i, item] of newPhotos.entries()) {
         setMessage(`Improving and uploading photo ${i + 1} of ${newPhotos.length}...`)
         let file = item.file
-        try { file = await enhanceImage(item.file, { name: item.file.name }) } catch { /* keep the original */ }
+        try { file = await enhanceImage(item.file, { name: item.file.name }) } catch {
+          try { file = await shrinkImage(item.file) } catch { /* keep the original */ }
+        }
+        const tooBig = checkImageFile(file)
+        if (tooBig) throw new Error(tooBig)
         const up = await uploadImage(file, 'visits'); uploaded.push(up.path); extra.push(up.url)
       }
       const previous = items.find(i => i.id === editingId)
@@ -195,7 +200,7 @@ export default function VisitsManagement() {
       <div>
         <label htmlFor="hv-photos">Photos of the visit / আগমনের ছবি ({form.photos.length + newPhotos.length} of {MAX_PHOTOS})</label>
         <input id="hv-photos" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={addPhotos} {...invalidProps(errors, 'photos', 'hv')} />
-        <p className="field-hint">JPG, PNG or WebP, up to 5 MB each. Each photo is cleaned and sharpened automatically before upload.</p>
+        <p className="field-hint">JPG, PNG or WebP, up to 25 MB each. Each photo is cleaned, sharpened and saved as a light WebP picture (at most 1600 px wide) before upload.</p>
         <FieldError id="hv-photos-error" message={errors.photos} />
         {(form.photos.length > 0 || newPhotos.length > 0) && <div className="admin-thumbs">
           {form.photos.map(url => <figure key={url}><img src={url} alt="" /><button type="button" onClick={() => setForm(p => ({ ...p, photos: p.photos.filter(x => x !== url) }))}>Remove</button></figure>)}

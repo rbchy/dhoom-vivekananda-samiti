@@ -26,7 +26,7 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], launchOptions } },
-    { name: 'phone', use: { ...devices['Pixel 7'], launchOptions }, testMatch: /(home|search|menu|org-pages|visits-bhavadhara|donors-committee)\.spec\.js/, grepInvert: /@desktop-only/ }
+    { name: 'phone', use: { ...devices['Pixel 7'], launchOptions }, testMatch: /(home|search|menu|org-pages|visits-bhavadhara|donors-committee|hero|images)\.spec\.js/, grepInvert: /@desktop-only/ }
   ],
   webServer: {
     command: `npx vite build --outDir dist-e2e && npx vite preview --outDir dist-e2e --port ${PORT} --strictPort`,

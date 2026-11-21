@@ -59,5 +59,3 @@
 @media(max-width:600px){.cal-month{padding:10px}.cal-cell{min-height:58px;padding:3px}.cal-day{font-size:12px;min-width:22px;height:22px}
   .cal-chip{font-size:0;height:8px;padding:0;border-radius:4px}.cal-toolbar .cal-today-btn{padding:0 10px}}
 /* link from the Events section on the home page */
-.events-cal-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;border-radius:999px;background:#811d29;color:#fff!important;font-weight:700;font-size:14px}
-.events-cal-link:hover{background:#5f1520}

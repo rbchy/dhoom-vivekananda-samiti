@@ -49,7 +49,7 @@ export default function OrgPage() {
   if (!org) return <Navigate to="/" replace />
 
   const Icon = ICONS[org.type] || Landmark
-  const cover = photos[0]?.image_url || `${home}temple-photo.jpg`
+  const cover = photos[0]?.image_url || `${home}temple-photo.webp`
   // Text: the published page from Admin, otherwise the short description we already have
   const title = pick(content, 'title', language) || name
   const shortText = pick(org, 'desc', language) || t(`act_${org.id}_d`)

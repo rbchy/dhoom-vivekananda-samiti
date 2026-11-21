@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Share2 } from 'lucide-react'
 import './social-links.css'
 import QrCodeButton, { siteAddress } from './QrCodeButton'
+import SharePanel from './SharePanel'
+import { isPhone } from '../lib/share'
 
 // Simple brand glyphs (24×24) for the follow buttons
 const ICONS = {
@@ -26,18 +28,19 @@ function linkFor(name, value) {
 
 // Follow buttons (only for links the admin has filled in) plus a Share button for this page
 export default function SocialLinks({ links, t, variant = 'light', showTitle = true }) {
-  const [copied, setCopied] = useState(false)
+  const [panel, setPanel] = useState(null) // null, or { upward } while the share panel is open
   const items = Object.keys(LABELS).map(name => [name, linkFor(name, links[name])]).filter(([, url]) => url)
+  // Inside the phone app the page address is a local one, so the public website address is shared instead (set VITE_SITE_URL in .env)
+  const shareData = () => ({ title: document.title, url: siteAddress() || window.location.href })
 
-  async function share() {
-    // Inside the phone app the page address is a local one, so the public website address is shared instead (set VITE_SITE_URL in .env)
-    const data = { title: document.title, url: siteAddress() || window.location.href }
-    try {
-      if (navigator.share) { await navigator.share(data); return }
-      await navigator.clipboard.writeText(data.url)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
-    } catch { /* the visitor closed the share window */ }
+  async function share(event) {
+    if (panel) { setPanel(null); return }
+    const upward = event.currentTarget.getBoundingClientRect().top > window.innerHeight * 0.55
+    // Phones with a share window use it; everything else (and a share window that fails) gets our own panel
+    if (isPhone() && navigator.share) {
+      try { await navigator.share(shareData()); return } catch (error) { if (error?.name === 'AbortError') return }
+    }
+    setPanel({ upward })
   }
 
   return <div className={`social-links social-${variant}`}>
@@ -45,8 +48,10 @@ export default function SocialLinks({ links, t, variant = 'light', showTitle = t
     <ul>
       {items.map(([name, url]) => <li key={name}><a className={`social-btn social-${name}`} href={url} target="_blank" rel="noopener noreferrer" aria-label={LABELS[name]} title={LABELS[name]}><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">{ICONS[name]}</svg></a></li>)}
       <li><QrCodeButton t={t} /></li>
-      <li><button type="button" className="social-btn social-share" onClick={share} aria-label={t('social_share')} title={t('social_share')}><Share2 size={19} /></button></li>
+      <li className="social-share-wrap">
+        <button type="button" className="social-btn social-share" onClick={share} aria-label={t('social_share')} title={t('social_share')} aria-expanded={Boolean(panel)} aria-haspopup="dialog"><Share2 size={19} /></button>
+        {panel && <SharePanel {...shareData()} t={t} upward={panel.upward} onClose={() => setPanel(null)} />}
+      </li>
     </ul>
-    {copied && <span className="social-copied" role="status">{t('social_copied')}</span>}
   </div>
 }

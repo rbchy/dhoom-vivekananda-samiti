@@ -1,15 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
 import StambhaPillar from './components/StambhaPillar'
 import WelcomeBhajan from './components/WelcomeBhajan'
-import SmritiStambhaPage from './pages/SmritiStambhaPage'
-import VisitsPage from './pages/VisitsPage'
-import BhavadharaPage from './pages/BhavadharaPage'
-import DonorsPage from './pages/DonorsPage'
-import CommitteePage from './pages/CommitteePage'
-import OrgPage from './pages/OrgPage'
-import CalendarPage from './pages/CalendarPage'
+import HeroSlides, { HERO_SLIDES, useHeroSlide } from './components/HeroSlides'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
 import './smriti.css'
 import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
@@ -17,22 +11,37 @@ import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Image
 import './styles.css'
 import './language.css'
 import './organisations.css'
+// Needed by the home page itself (hero buttons, forms in pop-ups, the phone search button), so they load with it
+import './forms.css'
+import './components/site-search.css'
 import ProtectedRoute from './components/ProtectedRoute'
 import LanguageSwitcher from './components/LanguageSwitcher'
 import Modal from './components/Modal'
-import { OnlineDonationForm, SubscriptionForm } from './components/PublicDonationForms'
-import PublicContactForm from './components/PublicContactForm'
 import BackToTopButton from './components/BackToTopButton'
 import MainMenu from './components/MainMenu'
-import SiteSearch from './components/SiteSearch'
 import PhotoSlideshow from './components/PhotoSlideshow'
 import SocialLinks from './components/SocialLinks'
 import PostShare from './components/PostShare'
-import AdminDashboard from './pages/AdminDashboard'
-import AdminLogin from './pages/AdminLogin'
 import { supabase } from './lib/supabaseClient'
 import { getInitialLanguage, getLanguage, saveLanguage, translate } from './i18n'
 import { MAP_LOCATION, ORGANISATIONS, locationFromMapsLink, ACTIVITIES } from './i18n-org'
+import PageLoading from './components/PageLoading'
+
+// Code splitting: the home page loads first; every other page, the admin, the search box and the
+// forms come in their own small files, downloaded only when a visitor opens them.
+const SmritiStambhaPage = lazy(() => import('./pages/SmritiStambhaPage'))
+const VisitsPage = lazy(() => import('./pages/VisitsPage'))
+const BhavadharaPage = lazy(() => import('./pages/BhavadharaPage'))
+const DonorsPage = lazy(() => import('./pages/DonorsPage'))
+const CommitteePage = lazy(() => import('./pages/CommitteePage'))
+const OrgPage = lazy(() => import('./pages/OrgPage'))
+const CalendarPage = lazy(() => import('./pages/CalendarPage'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
+const AdminLogin = lazy(() => import('./pages/AdminLogin'))
+const SiteSearch = lazy(() => import('./components/SiteSearch'))
+const PublicContactForm = lazy(() => import('./components/PublicContactForm'))
+const OnlineDonationForm = lazy(() => import('./components/PublicDonationForms').then(m => ({ default: m.OnlineDonationForm })))
+const SubscriptionForm = lazy(() => import('./components/PublicDonationForms').then(m => ({ default: m.SubscriptionForm })))
 
 const ORG_ICONS = { temple: Landmark, clinic: Stethoscope, cremation: Flame, clothes: Shirt, gita: BookOpen }
 
@@ -144,6 +153,9 @@ function App() {
 
   const t = key => translate(language, key)
 
+  // Banner slideshow: Thakur, Ma, Swamiji (the caption under the banner follows the slide)
+  const [heroSlide, setHeroSlide] = useHeroSlide()
+  const heroQuote = HERO_SLIDES[heroSlide]
   // A shared link (?event=<id> or ?notice=<id>) scrolls to that post and highlights it once
   const [sharedPostDone, setSharedPostDone] = useState(false)
   useEffect(() => {
@@ -263,8 +275,8 @@ function App() {
       </nav>
     </header>
     <main>
-      <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={bhajanAutoplay ? '' : setting('ticker_audio_url')} t={t} /><div className="hero-copy sr-only"><p>{t('quote_1')} {t('quote_2')}</p><span>{t('quote_by')}</span></div></section>
-      {language !== 'en' && <p className="hero-caption">{t('quote_1')} {t('quote_2')}<span>{t('quote_by')}</span></p>}
+      <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={bhajanAutoplay ? '' : setting('ticker_audio_url')} t={t} /><HeroSlides index={heroSlide} setIndex={setHeroSlide} t={t} /><div className="hero-copy sr-only"><p>{t(heroQuote.q1)} {t(heroQuote.q2)}</p><span>{t(heroQuote.by)}</span></div></section>
+      {language !== 'en' && <p className="hero-caption" key={heroQuote.id}>{t(heroQuote.q1)} {t(heroQuote.q2)}<span>{t(heroQuote.by)}</span></p>}
       <div className="hero-orgs" aria-label={t('nav_orgs')}>
         <div className="hero-orgs-track">{[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 ? true : undefined}>{ORGANISATIONS.map(org => <li key={org.id}><Link to={`/org/${org.id}`} tabIndex={copy === 1 ? -1 : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</Link></li>)}</ul>)}</div>
       </div>
@@ -358,11 +370,11 @@ function App() {
       <section className="content-section gallery-section" id="gallery"><div><span className="section-eyebrow">{t('gallery_eyebrow')}</span><h2>{galleryOrg === 'all' ? t('gallery_title') : orgName(galleryOrg)}</h2><p>{t('gallery_p')}</p>
         {usedOrgFilters.length > 2 && <div className="gallery-filters org-filters" role="group" aria-label={t('nav_orgs')}>{usedOrgFilters.map(id => <button type="button" key={id} className={galleryOrg === id ? 'active' : ''} aria-pressed={galleryOrg === id} onClick={() => { setGalleryOrg(id); setGalleryFilter('all') }}>{orgName(id)}</button>)}</div>}
         {usedGalleryFilters.length > 2 && <div className="gallery-filters" role="group" aria-label={t('gallery_title')}>{usedGalleryFilters.map(f => <button type="button" key={f} className={galleryFilter === f ? 'active' : ''} aria-pressed={galleryFilter === f} onClick={() => setGalleryFilter(f)}>{t(`gallery_${f}`)}</button>)}</div>}</div>
-        {gallery.length > 0 ? <div className="gallery-grid">{shownGallery.map(item => { const title = pick(item, 'title', language); return <figure className="gallery-item" key={item.id}><button type="button" className="gallery-open" onClick={() => setLightbox(item)} aria-label={title || t('gallery_title')}><img src={item.image_url} alt={title || t('gallery_title')} loading="lazy" /></button><figcaption>{title}{item.organisation && galleryOrg === 'all' && <small>{orgName(item.organisation)}</small>}</figcaption></figure> })}</div> : <img src={`${import.meta.env.BASE_URL}temple-photo.jpg`} alt={t('welcome_img_alt')} />}</section>
-      {searchOpen && <SiteSearch t={t} language={language} pick={pick} orgName={orgName}
+        {gallery.length > 0 ? <div className="gallery-grid">{shownGallery.map(item => { const title = pick(item, 'title', language); return <figure className="gallery-item" key={item.id}><button type="button" className="gallery-open" onClick={() => setLightbox(item)} aria-label={title || t('gallery_title')}><img src={item.image_url} alt={title || t('gallery_title')} loading="lazy" /></button><figcaption>{title}{item.organisation && galleryOrg === 'all' && <small>{orgName(item.organisation)}</small>}</figcaption></figure> })}</div> : <img src={`${import.meta.env.BASE_URL}temple-photo.webp`} alt={t('welcome_img_alt')} />}</section>
+      {searchOpen && <Suspense fallback={null}><SiteSearch t={t} language={language} pick={pick} orgName={orgName}
         data={{ events, gallery, schedule, highlights, announcements }}
         scheduleLabel={row => [row.day_of_week === null || row.day_of_week === undefined ? t('hours_daily') : weekdayName(row.day_of_week, currentLanguage.locale), row.is_closed ? t('hours_closed') : [formatTime(row.start_time, currentLanguage.locale), formatTime(row.end_time, currentLanguage.locale)].filter(Boolean).join(' – ')].filter(Boolean).join(' · ')}
-        onOpenPhoto={photo => setLightbox(photo)} onClose={() => setSearchOpen(false)} />}
+        onOpenPhoto={photo => setLightbox(photo)} onClose={() => setSearchOpen(false)} /></Suspense>}
       {lightbox && <Modal title={pick(lightbox, 'title', language) || t('gallery_title')} closeLabel={t('close')} onClose={() => setLightbox(null)}><figure className="lightbox"><img src={lightbox.image_url} alt={pick(lightbox, 'title', language) || t('gallery_title')} />{(lightbox.organisation || pick(lightbox, 'description', language)) && <figcaption>{lightbox.organisation && <b>{orgName(lightbox.organisation)}</b>}{pick(lightbox, 'description', language) && <span>{pick(lightbox, 'description', language)}</span>}</figcaption>}</figure></Modal>}
       {announcements.length > 0 && <section className="announcements-section" id="notices"><span className="section-eyebrow">{t('notices_eyebrow')}</span><h2>{t('notices_title')}</h2><div className="announcements-grid">{announcements.map(item => <article className="announcement-card" id={`notice-${item.id}`} key={item.id}><h3>{pick(item, 'title', language)}</h3><p>{pick(item, 'message', language)}</p><PostShare kind="notice" item={item} language={language} t={t} /></article>)}</div></section>}
       <section className="donate-section" id="donate"><HeartHandshake size={34} /><h2>{t('donate_title')}</h2><p>{t('donate_p')}</p>
@@ -372,8 +384,8 @@ function App() {
         </div>
         <p className="donate-office-note">{t('donate_office_note')}</p>
       </section>
-      {openForm === 'donate' && <Modal title={t('donate_online_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><OnlineDonationForm t={t} language={language} /></Modal>}
-      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><SubscriptionForm t={t} /></Modal>}      <section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
+      {openForm === 'donate' && <Modal title={t('donate_online_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><Suspense fallback={<PageLoading inline />}><OnlineDonationForm t={t} language={language} /></Suspense></Modal>}
+      {openForm === 'monthly' && <Modal title={t('donate_monthly_btn')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><Suspense fallback={<PageLoading inline />}><SubscriptionForm t={t} /></Suspense></Modal>}      <section className="contact-section" id="contact"><span className="section-eyebrow visit-eyebrow">{t('visit_eyebrow')}</span><h2>{t('visit_title')}</h2><p className="visit-text">{t('visit_p')}</p><p className="visit-blessing">{t('visit_blessing')}</p><VisitQr t={t} /><p>{t('contact_p')}</p>
         <div className="contact-grid">
           {address && <div className="contact-item"><span className="contact-icon"><MapPin size={20} /></span><div><small>{t('contact_address')}</small><p>{address}</p>{mapUrl && <a className="contact-link" href={mapUrl} target="_blank" rel="noopener noreferrer">{t('directions')} <ExternalLink size={14} /></a>}</div></div>}
           {(setting('temple_phone') || committee.some(c => c.phone)) && <div className="contact-item"><span className="contact-icon"><Phone size={20} /></span><div><small>{t('contact_phone')}</small>
@@ -384,7 +396,7 @@ function App() {
         </div>
         {address && <iframe className="contact-map" title={t('map_title')} src={mapEmbedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />}
       </section>
-      {openForm === 'contact' && <Modal title={t('contact_form_title')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><PublicContactForm t={t} /></Modal>}
+      {openForm === 'contact' && <Modal title={t('contact_form_title')} closeLabel={t('close')} onClose={() => setOpenForm(null)}><Suspense fallback={<PageLoading inline />}><PublicContactForm t={t} /></Suspense></Modal>}
     </main><footer className="site-footer">
       <div className="footer-grid">
         <div><img className="footer-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><strong className="footer-brand">{t('brand_name')}</strong><p>{t('footer_nonprofit')}</p>{address && <p>{address}</p>}<SocialLinks links={socialLinks} t={t} variant="dark" /></div>
@@ -418,4 +430,4 @@ function App() {
 
 // The demo build (npm run build:demo) is one HTML file opened from disk, so it keeps the route in memory
 const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
-createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/donors" element={<DonorsPage />} /><Route path="/committee" element={<CommitteePage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Suspense fallback={<PageLoading />}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/donors" element={<DonorsPage />} /><Route path="/committee" element={<CommitteePage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Suspense></Router>)

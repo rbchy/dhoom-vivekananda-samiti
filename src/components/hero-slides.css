@@ -1,0 +1,10 @@
+/* Ma and Swamiji fade in over the Thakur banner (the banner's own background) */
+.hero-slides{position:absolute;inset:0;z-index:1;pointer-events:none}
+.hero-slide{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transition:opacity 1.4s ease-in-out}
+.hero-slide.active{opacity:1}
+.hero-dots{position:absolute;z-index:3;right:clamp(10px,2vw,24px);bottom:clamp(8px,1.4vw,16px);display:flex;gap:8px}
+.hero-dots button{width:11px;height:11px;padding:0;border-radius:50%;border:1.5px solid rgba(255,243,214,.95);background:rgba(40,15,10,.35);cursor:pointer;transition:background .3s,transform .3s}
+.hero-dots button.active{background:#f2c063;border-color:#f2c063;transform:scale(1.2)}
+.hero-dots button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:560px){.hero-slide{background-size:100% auto;background-position:center 30px}.hero-dots{bottom:6px;gap:6px}.hero-dots button{width:9px;height:9px}}
+@media(prefers-reduced-motion:reduce){.hero-slide{transition:none}}

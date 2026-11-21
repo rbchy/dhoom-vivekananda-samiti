@@ -28,6 +28,20 @@ export default defineConfig(({ command, mode }) => mode === 'demo' ? demoConfig(
   // '/' normally; '/dhoom-vivekananda-samiti/' when the GitHub Pages workflow builds the site
   base: process.env.VITE_BASE_PATH || '/',
   server: { host: true, port: 5173 },
+  build: {
+    rolldownOptions: {
+      output: {
+        // Libraries in their own files: they rarely change, so browsers keep them cached between website updates
+        codeSplitting: {
+          groups: [
+            { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/ },
+            { name: 'supabase', test: /node_modules[\\/]@supabase[\\/]/ },
+            { name: 'icons', test: /node_modules[\\/]lucide-react[\\/]/ }
+          ]
+        }
+      }
+    }
+  },
   define: {
     __DEV_LAN_URL__: JSON.stringify(command === 'serve' ? lanAddress(5173) : '')
   }

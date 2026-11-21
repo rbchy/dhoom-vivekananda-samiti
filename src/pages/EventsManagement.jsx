@@ -6,12 +6,14 @@ import SocialPostButton from '../components/SocialPostButton'
 import { checkText, checkUrl, cleanErrors, todayISO } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import { describeDbError } from '../lib/dbErrors'
+import { shrinkImage } from '../lib/imageEnhance'
 
 const SPECIAL = 'special'
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 const BUCKET = 'event-photos'
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // after preparing (WebP 80%, at most 1600 px)
+const MAX_ORIGINAL_SIZE = 25 * 1024 * 1024 // a photo straight from a phone camera
 const LIMITS = { title: 150, description: 2000 }
 
 const ALLOWED_TYPES = [
@@ -198,8 +200,8 @@ export default function EventsManagement() {
       return
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      setErrors(previous => ({ ...previous, photo: 'Event photo must not exceed 5 MB.' }))
+    if (file.size > MAX_ORIGINAL_SIZE) {
+      setErrors(previous => ({ ...previous, photo: 'Event photo must not exceed 25 MB.' }))
       event.target.value = ''
       return
     }
@@ -281,9 +283,13 @@ export default function EventsManagement() {
 
       // Upload new image when selected
       if (selectedFile) {
+        setMessage('Preparing event photo...')
+        // Saved as a light WebP picture (80%, at most 1600 px wide)
+        const ready = await shrinkImage(selectedFile).catch(() => selectedFile)
+        if (ready.size > MAX_FILE_SIZE) throw new Error('The photo is still larger than 5 MB after preparing it. Please choose a smaller photo.')
         setMessage('Uploading event photo...')
 
-        const uploaded = await uploadEventImage(selectedFile)
+        const uploaded = await uploadEventImage(ready)
 
         uploadedPath = uploaded.path
         imageUrl = uploaded.url
@@ -636,7 +642,7 @@ export default function EventsManagement() {
           />
 
           <small>
-            JPG, PNG or WebP. Maximum file size: 5 MB.
+            JPG, PNG or WebP, up to 25 MB. It is saved as a light WebP picture (at most 1600 px wide).
           </small>
           <FieldError id="event-photo-error" message={errors.photo} />
 

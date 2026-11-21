@@ -1,12 +1,14 @@
 // Cleans and improves a photo in the browser before it is uploaded:
-//  1. enlarges small photos (long side at least 1400 px) and shrinks huge ones (long side at most 2000 px)
+//  1. enlarges small photos (long side at least 1400 px) and shrinks huge ones (long side at most 1600 px)
 //  2. light noise clean-up (soft blur that keeps edges)
 //  3. balanced brightness and contrast (auto levels on brightness only, so colours do not shift)
 //  4. gentle sharpening
-// The result is a JPEG File, ready for uploadImage().
+// The result is a WebP File at 80% quality (JPEG on the few browsers that cannot make WebP), ready for uploadImage().
+// shrinkImage() does only the resizing and WebP step, for when "Auto-enhance" is turned off.
 
 const MIN_LONG_SIDE = 1400
-const MAX_LONG_SIDE = 2000
+const MAX_LONG_SIDE = 1600 // the website never shows a photo wider than this
+export const WEB_QUALITY = 0.8
 
 function loadImage(source) {
   return new Promise((resolve, reject) => {
@@ -100,7 +102,18 @@ function balanceLight(data) {
   }
 }
 
-export async function enhanceImage(source, { name = 'photo.jpg', quality = 0.9 } = {}) {
+// WebP at the given quality; older Safari cannot encode WebP and quietly returns PNG, so fall back to JPEG there
+async function encodeForWeb(canvas, quality) {
+  const webp = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', quality))
+  if (webp && webp.type === 'image/webp') return { blob: webp, ext: 'webp', type: 'image/webp' }
+  const jpeg = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality))
+  if (!jpeg) throw new Error('The photo could not be prepared.')
+  return { blob: jpeg, ext: 'jpg', type: 'image/jpeg' }
+}
+
+const baseName = name => (name || 'photo').replace(/\.[^.]+$/, '')
+
+export async function enhanceImage(source, { name = 'photo.jpg', quality = WEB_QUALITY } = {}) {
   const img = await loadImage(source)
   const w0 = img.naturalWidth, h0 = img.naturalHeight
   const longSide = Math.max(w0, h0)
@@ -112,8 +125,18 @@ export async function enhanceImage(source, { name = 'photo.jpg', quality = 0.9 }
   cleanAndSharpen(image.data, width, height, factor > 1.3 ? 0.55 : 0.4)
   balanceLight(image.data)
   ctx.putImageData(image, 0, 0)
-  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality))
-  if (!blob) throw new Error('The photo could not be improved.')
-  const base = (name || 'photo').replace(/\.[^.]+$/, '')
-  return new File([blob], `${base}-enhanced.jpg`, { type: 'image/jpeg' })
+  const out = await encodeForWeb(canvas, quality)
+  return new File([out.blob], `${baseName(name)}-enhanced.${out.ext}`, { type: out.type })
+}
+
+// No enhancement: only shrink to at most 1600 px and save as WebP 80%.
+// A photo that is already small and light enough is kept as it is.
+export async function shrinkImage(file, { quality = WEB_QUALITY } = {}) {
+  const img = await loadImage(file)
+  const w0 = img.naturalWidth, h0 = img.naturalHeight
+  const factor = Math.min(1, MAX_LONG_SIDE / Math.max(w0, h0))
+  const width = Math.round(w0 * factor), height = Math.round(h0 * factor)
+  const out = await encodeForWeb(resizeCanvas(img, width, height), quality)
+  if (factor === 1 && file.type === 'image/webp' && file.size <= out.blob.size) return file
+  return new File([out.blob], `${baseName(file.name)}.${out.ext}`, { type: out.type })
 }

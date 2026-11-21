@@ -10,7 +10,7 @@ const dataUri = name => `data:${TYPES[name.split('.').pop()]};base64,${readFileS
 // The <picture> keeps the WebP source; the JPEG fallback points at the same WebP to avoid storing the photo twice
 html = html.replaceAll('./images/belur-math-front.jpg', './images/belur-math-front.webp')
 html = html.replace(/<link rel="manifest"[^>]*>\s*/, '').replace(/<link rel="icon" href="\.\/favicon\.ico"[^>]*>\s*/, '')
-for (const name of ['emblem.svg', 'favicon.svg', 'apple-touch-icon.png', 'hero-banner-belur.jpg', 'temple-photo.jpg', 'images/belur-math-front.webp']) {
+for (const name of ['emblem.svg', 'favicon.svg', 'apple-touch-icon.png', 'hero-banner-belur.webp', 'temple-photo.webp', 'images/belur-math-front.webp']) {
   if (!existsSync(new URL(name, dir))) continue
   const uri = dataUri(name)
   html = html.replaceAll(`./${name}`, uri)
