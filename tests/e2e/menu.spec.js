@@ -20,3 +20,13 @@ test('Smriti Stambha lists the published founders in their order', async ({ page
   expect(body.indexOf('Sri Haripada Chowdhury')).toBeLessThan(body.indexOf('Sri Gopal Chandra Nath'))
   await expect(page.getByText('Hidden Draft Name')).toHaveCount(0)
 })
+
+test('the About menu leads to Holy Visits and the Bhavadhara directory', async ({ page, isMobile }) => {
+  await page.goto('/')
+  if (isMobile) await page.getByRole('button', { name: 'Toggle navigation' }).click()
+  await page.getByRole('button', { name: 'About' }).first().click()
+  await expect(page.getByRole('link', { name: 'Bhavadhara Worldwide', exact: true }).first()).toBeVisible()
+  await page.getByRole('link', { name: 'Holy Visits', exact: true }).first().click()
+  await expect(page).toHaveURL(/\/visits$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Holy Visits')
+})

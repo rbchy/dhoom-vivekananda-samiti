@@ -1,0 +1,20 @@
+/* Admin → Holy Visits and Bhavadhara directory */
+.checkbox-group{border:1px solid #e2d6c6;border-radius:8px;padding:8px 14px 10px;margin:12px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px 16px}
+.checkbox-group legend{font-weight:700;padding:0 6px}
+.admin-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:10px 0}
+.admin-thumbs figure{position:relative;margin:0;border:1px solid #e2d6c6;border-radius:6px;overflow:hidden;background:#faf5ee}
+.admin-thumbs img{display:block;width:100%;height:84px;object-fit:cover}
+.admin-thumbs figcaption{position:absolute;top:4px;left:4px;background:#1f6b2c;color:#fff;font-size:11px;padding:1px 6px;border-radius:4px}
+.admin-thumbs button{width:100%;border:0;border-top:1px solid #e2d6c6;background:#fff;color:#b3261e;font-size:12px;padding:4px;cursor:pointer}
+.filter-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 14px}
+.filter-tabs button{padding:6px 12px;border:1px solid #d5c8b8;border-radius:999px;background:#fff;cursor:pointer;font:inherit;font-size:14px}
+.filter-tabs button.active{background:#811d29;border-color:#811d29;color:#fff}
+.badge-count{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;background:#d97a2b;color:#fff;font-size:13px;vertical-align:middle}
+.admin-memory,.admin-org{border:1px solid #e2d6c6;border-left:4px solid #d97a2b;border-radius:8px;padding:12px 14px;margin:0 0 12px;background:#fff}
+.admin-memory.status-approved,.admin-org.status-approved{border-left-color:#1f6b2c}
+.admin-memory.status-rejected,.admin-org.status-rejected{border-left-color:#9a8f86;opacity:.8}
+.admin-memory header small,.admin-org header small{color:#7a6f66}
+.admin-memory blockquote{margin:8px 0;white-space:pre-line;line-height:1.6}
+.admin-memory-visit,.admin-memory-contact,.admin-org p{margin:4px 0;font-size:14px;color:#5a4f48}
+.admin-org-status{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:12px;background:#f3e6d2;color:#5a3a1e}
+.admin-search{width:100%;max-width:360px;padding:8px 12px;border:1px solid #d5c8b8;border-radius:6px;font:inherit;margin:0 0 12px}

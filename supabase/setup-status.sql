@@ -112,6 +112,16 @@ begin
       case when c > 0 then 'Has size and file-type limits.' else 'No size or file-type limit.' end);
   end loop;
 
+  -- 14. Holy visits and the Bhavadhara directory (visits-and-bhavadhara.sql)
+  if to_regclass('public.maharaj_visits') is not null and to_regclass('public.bhavadhara_orgs') is not null then
+    select count(*) into c from public.visit_memories where status = 'pending';
+    select count(*) into c2 from public.bhavadhara_orgs where status = 'pending';
+    insert into setup_status values (14, 'Holy visits & Bhavadhara / পুণ্য আগমন ও ভাবধারা', case when c + c2 > 0 then '⚠️' else '✅' end,
+      case when c + c2 > 0 then c || ' memory(ies) and ' || c2 || ' organisation(s) wait for approval in Admin.' else 'Installed. Nothing waiting for approval.' end);
+  else
+    insert into setup_status values (14, 'Holy visits & Bhavadhara / পুণ্য আগমন ও ভাবধারা', '❌', 'Run visits-and-bhavadhara.sql.');
+  end if;
+
   -- 13. Two-step login (MFA) for staff
   if to_regclass('auth.mfa_factors') is not null then
     execute $q$select count(distinct user_id) from auth.mfa_factors where status = 'verified'$q$ into c;

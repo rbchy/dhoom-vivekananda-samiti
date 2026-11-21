@@ -51,7 +51,8 @@ returns text language sql immutable as $$
   select case
     when p_table in ('events', 'gallery', 'announcements', 'worship_schedule',
                      'temple_highlights', 'temple_content', 'committee_contacts',
-                     'site_settings', 'event_catalog', 'smriti_stambha')
+                     'site_settings', 'event_catalog', 'smriti_stambha',
+                     'maharaj_visits', 'visit_memories', 'bhavadhara_orgs')
       then 'admin'
     when p_table in ('donations', 'subscriptions', 'subscription_payments',
                      'income_entries', 'expense_entries', 'account_heads')

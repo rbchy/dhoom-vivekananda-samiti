@@ -2,6 +2,7 @@ import { DONATION_TEXT } from './i18n-donations'
 import { MANAGEMENT_TEXT } from './i18n-management'
 import { EXTRAS_TEXT } from './i18n-extras'
 import { ORG_TEXT } from './i18n-org'
+import { VISITS_TEXT } from './i18n-visits'
 
 // Homepage translations for 10 languages.
 // Text that comes from the database (events, gallery, announcements) uses its
@@ -262,7 +263,7 @@ const ru = {
 
 const BASE = { en, bn, hi, ko, ja, zh, es, fr, ar, ru }
 export const TRANSLATIONS = Object.fromEntries(
-  Object.entries(BASE).map(([code, text]) => [code, { ...text, ...DONATION_TEXT[code], ...MANAGEMENT_TEXT[code], ...EXTRAS_TEXT[code], ...ORG_TEXT[code] }])
+  Object.entries(BASE).map(([code, text]) => [code, { ...text, ...DONATION_TEXT[code], ...MANAGEMENT_TEXT[code], ...EXTRAS_TEXT[code], ...ORG_TEXT[code], ...VISITS_TEXT[code] }])
 )
 
 const STORAGE_KEY = 'temple-language'

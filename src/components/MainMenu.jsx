@@ -47,7 +47,9 @@ export default function MainMenu({ t, language, onNavigate, has = {} }) {
       { href: '#about', label: t('menu_intro') },
       has.story && { href: '#story', label: t('menu_story') },
       has.mission && { href: '#mission', label: t('mission_title') },
-      { to: '/smriti-stambha', label: t('smriti_title') }
+      { to: '/smriti-stambha', label: t('smriti_title') },
+      { to: '/visits', label: t('menu_visits') },
+      { to: '/bhavadhara', label: t('menu_bhavadhara') }
     ] },
     { key: 'orgs', label: t('nav_institutions'), items: [
       ...ORGANISATIONS.map(org => ({ to: `/org/${org.id}`, label: name(org) })),

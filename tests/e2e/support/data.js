@@ -50,6 +50,21 @@ export function sampleTables() {
       { id: 'sm-1', name_en: 'Sri Haripada Chowdhury', name_bn: 'শ্রী হরিপদ চৌধুরী', role_en: 'Founder President', role_bn: 'প্রতিষ্ঠাতা সভাপতি', years: '1985 – 2004', is_late: true, sort_order: 10, is_published: true },
       { id: 'sm-x', name_en: 'Hidden Draft Name', name_bn: 'খসড়া নাম', sort_order: 5, is_published: false }
     ],
+    // Test-only rows for /visits and /bhavadhara (invented names, never on the real site)
+    maharaj_visits: [
+      { id: 'vi-1', monk_name_en: 'Test Swami Alpha Maharaj', monk_name_bn: 'পরীক্ষা স্বামী আলফা মহারাজ', monk_title_en: 'Test President', monk_title_bn: 'পরীক্ষা অধ্যক্ষ', visit_date: '2024-02-10', visit_date_end: null, occasion_en: 'Test consecration', occasion_bn: 'পরীক্ষা প্রতিষ্ঠা', places: ['ramakrishna', 'durga'], summary_en: 'First paragraph of the visit.\n\nSecond paragraph.', summary_bn: 'প্রথম অনুচ্ছেদ।', blessing_en: 'Test blessing words.', blessing_bn: 'পরীক্ষা আশীর্বাণী।', photo_url: null, photos: [img('gallery/basanti-durga-mandir.webp')], sort_order: 100, is_published: true },
+      { id: 'vi-2', monk_name_en: 'Test Swami Beta Maharaj', visit_date: '2019-12-01', places: [], photos: [], sort_order: 100, is_published: true },
+      { id: 'vi-x', monk_name_en: 'Hidden Draft Visit', visit_date: '2025-01-01', places: [], photos: [], sort_order: 100, is_published: false }
+    ],
+    visit_memories: [
+      { id: 'me-1', visit_id: 'vi-1', author_name: 'Test Devotee', relation: 'Disciple', place: 'Test Town', memory: 'An approved test memory of the visit.', status: 'approved', created_at: '2024-03-01T00:00:00Z' },
+      { id: 'me-2', visit_id: 'vi-1', author_name: 'Waiting Writer', memory: 'A PENDING MEMORY THAT MUST NOT SHOW.', status: 'pending', created_at: '2024-03-02T00:00:00Z' }
+    ],
+    bhavadhara_orgs: [
+      { id: 'bd-1', name_en: 'Test Vedanta Centre Zeta', org_type: 'vedanta_society', country: 'Testland', city: 'Zeta City', website: 'https://example.org', email: null, phone: null, founded_year: 1990, about_en: 'A test centre.', status: 'approved', sort_order: 100 },
+      { id: 'bd-2', name_en: 'Test Ashram Omega', org_type: 'ashram', country: 'Bangladesh', city: 'Test Upazila', status: 'approved', sort_order: 100 },
+      { id: 'bd-x', name_en: 'Pending Org Must Not Show', org_type: 'other', country: 'Nowhere', status: 'pending', sort_order: 100 }
+    ],
     admin_profiles: [
       { user_id: 'user-main-admin', role: 'admin' }
     ]

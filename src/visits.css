@@ -1,0 +1,90 @@
+/* Holy Visits (/visits) and Bhavadhara directory (/bhavadhara) */
+.hv-page,.bd-page{background:#fdf8f0;min-height:100vh;display:flex;flex-direction:column}
+.hv-page>main,.bd-page>main{flex:1}
+.hv-hero{background:linear-gradient(160deg,#4e1720 0%,#7a2430 55%,#a8451f 100%);color:#fff;padding:clamp(36px,6vw,76px) clamp(16px,5vw,80px)}
+.bd-hero{background:linear-gradient(160deg,#1f3b4d 0%,#3d2a52 55%,#7a2430 100%)}
+.hv-hero-text{max-width:900px;margin:0 auto}
+.hv-kicker{display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(255,243,214,.92);color:#54121a;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.hv-hero h1{margin:14px 0 10px;font-family:'Playfair Display','Noto Serif Bengali',serif;font-size:clamp(30px,4.6vw,52px);line-height:1.15}
+.hv-hero p{margin:0;font-size:clamp(16px,1.6vw,19px);line-height:1.7;color:#f8e9d6;max-width:780px}
+.hv-main,.bd-main{max-width:1000px;width:100%;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,32px)}
+.bd-main{max-width:1180px}
+.hv-empty{text-align:center;padding:40px 16px;color:#6b5a50;font-size:17px;background:#fff;border:1px dashed #dcc6a4;border-radius:10px}
+.hv-muted{color:#6b5a50;font-size:14px;line-height:1.6}
+
+.hv-visit{background:#fff;border:1px solid #ecdcbf;border-top:4px solid #d97a2b;border-radius:12px;padding:clamp(18px,3vw,32px);margin-bottom:32px;box-shadow:0 6px 24px rgba(78,23,32,.06);scroll-margin-top:90px}
+.hv-visit-head{display:flex;gap:22px;align-items:center}
+.hv-portrait{width:120px;height:120px;border-radius:50%;object-fit:cover;flex:none;border:4px solid #f2d9a8;background:#fbefdc}
+.hv-portrait-blank{display:grid;place-items:center}.hv-portrait-blank img{width:64px;height:64px;opacity:.7}
+.hv-date{display:flex;align-items:center;gap:6px;margin:0;color:#a8451f;font-weight:700;font-size:14px}
+.hv-visit h2{margin:6px 0 0;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:clamp(22px,2.6vw,30px);line-height:1.25}
+.hv-name-bn{margin:2px 0 0;color:#8a5a2b;font-size:17px}
+.hv-monk-title{margin:6px 0 0;color:#3a2a25;font-weight:600}
+.hv-occasion{margin:6px 0 0;color:#6b5a50;font-style:italic}
+.hv-visit h3,.hv-memories h3{display:flex;align-items:center;gap:7px;margin:24px 0 10px;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:19px}
+.hv-places ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.hv-places a{display:inline-block;padding:6px 12px;border-radius:999px;background:#fbefdc;border:1px solid #e6c995;color:#6d1822;font-weight:600;font-size:14px;text-decoration:none}
+.hv-places a:hover{background:#f6e0b8}
+.hv-summary p{margin:16px 0 0;line-height:1.8;color:#302a29;font-size:16px}
+.hv-blessing{position:relative;margin:24px 0 0;padding:20px 22px 18px 56px;background:linear-gradient(135deg,#fff7e8,#fdeccd);border-left:4px solid #c99a4f;border-radius:8px}
+.hv-blessing>svg{position:absolute;left:18px;top:20px;color:#c99a4f}
+.hv-blessing-label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a8451f}
+.hv-blessing p{margin:6px 0 8px;font-family:'Playfair Display','Noto Serif Bengali',serif;font-size:18px;line-height:1.7;color:#3a2418}
+.hv-blessing cite{font-style:normal;color:#6d1822;font-weight:600}
+.hv-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.hv-photo-grid button{padding:0;border:0;border-radius:8px;overflow:hidden;cursor:zoom-in;aspect-ratio:4/3;background:#f3e6d2}
+.hv-photo-grid img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.hv-photo-grid button:hover img{transform:scale(1.05)}
+.hv-lightbox-img{display:block;max-width:100%;max-height:78vh;margin:0 auto;border-radius:6px}
+.hv-memories{margin-top:8px;padding-top:4px;border-top:1px solid #f0e3cc}
+.hv-memory{margin:0 0 14px;padding:14px 18px;background:#fdf8f0;border:1px solid #efe0c6;border-radius:8px}
+.hv-memory blockquote{margin:0;white-space:pre-line;line-height:1.75;color:#302a29}
+.hv-memory figcaption{margin-top:8px;font-size:14px;color:#6b5a50}
+.hv-memory figcaption strong{color:#4e1720}
+.hv-share-btn,.bd-add-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border:0;border-radius:6px;background:#811d29;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.hv-share-btn:hover,.bd-add-btn:hover{background:#6d1822}
+.bd-hero .bd-add-btn{margin-top:20px;background:#f2c063;color:#3a1a10}
+.bd-hero .bd-add-btn:hover{background:#ffd27d}
+.hv-form{margin-top:12px;padding:18px;background:#fffaf1;border:1px solid #ecdcbf;border-radius:10px}
+.hv-form h4{margin:0 0 4px;color:#4e1720;font-size:17px}
+.hv-form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.hv-form-actions button{padding:10px 20px;border:0;border-radius:6px;background:#811d29;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.hv-form-actions button:disabled{opacity:.6;cursor:wait}
+.hv-form-actions .hv-cancel{background:#fff;color:#811d29;border:1px solid #cba775}
+.hv-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.bd-filters{display:grid;grid-template-columns:minmax(0,1fr) 200px 220px auto;gap:12px;align-items:center;margin-bottom:28px}
+.bd-search{position:relative;display:block}
+.bd-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#8a6a4f}
+.bd-filters input,.bd-filters select{width:100%;padding:11px 12px;border:1px solid #d5c8b8;border-radius:8px;font:inherit;font-size:15px;background:#fff}
+.bd-search input{padding-left:38px}
+.bd-count{margin:0;color:#6b5a50;font-weight:600;white-space:nowrap}
+.bd-country{margin-bottom:34px}
+.bd-country h2{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #ecdcbf;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:24px}
+.bd-country h2 small{font-size:15px;color:#8a6a4f;font-family:inherit}
+.bd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.bd-card{display:flex;flex-direction:column;background:#fff;border:1px solid #ecdcbf;border-top:3px solid #3d6f8f;border-radius:10px;padding:16px 18px;overflow:hidden}
+.bd-card>img{margin:-16px -18px 12px;width:calc(100% + 36px);height:150px;object-fit:cover}
+.bd-type{align-self:flex-start;padding:3px 10px;border-radius:999px;background:#eaf2f7;color:#24506b;font-size:12px;font-weight:700}
+.bd-card h3{margin:8px 0 0;color:#4e1720;font-size:18px;line-height:1.35}
+.bd-line{display:flex;gap:6px;margin:8px 0 0;color:#4a3d38;font-size:14px;line-height:1.5}
+.bd-line svg{flex:none;margin-top:3px;color:#a8451f}
+.bd-about{margin:10px 0 0;color:#302a29;font-size:14px;line-height:1.65}
+.bd-contacts{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:5px;font-size:14px}
+.bd-contacts a{display:inline-flex;align-items:center;gap:6px;color:#811d29;text-decoration:none;word-break:break-all}
+.bd-contacts a:hover{text-decoration:underline}
+.bd-founded{margin:auto 0 0;padding-top:10px;color:#8a6a4f;font-size:13px}
+.bd-add-again{text-align:center;margin-top:12px}
+.bd-form-box{margin-top:28px;padding:clamp(18px,3vw,30px);background:#fff;border:1px solid #ecdcbf;border-top:4px solid #3d6f8f;border-radius:12px;scroll-margin-top:90px}
+.bd-form-box h2{margin:0 0 4px;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720}
+.bd-you{margin:18px 0 0;padding:6px 16px 10px;border:1px solid #e6d5bb;border-radius:8px}
+.bd-you legend{padding:0 6px;font-weight:700;color:#4e1720}
+.public-form .bd-confirm{display:flex;align-items:flex-start;gap:9px;margin-top:16px;font-weight:500}
+.public-form .bd-confirm input{width:auto;margin-top:4px}
+@media(max-width:900px){.bd-filters{grid-template-columns:1fr 1fr}.bd-search{grid-column:1/-1}.bd-count{grid-column:1/-1}}
+@media(max-width:560px){.hv-visit-head{flex-direction:column;align-items:flex-start;gap:14px}.hv-portrait{width:96px;height:96px}.hv-blessing{padding-left:20px}.hv-blessing>svg{display:none}.bd-filters{grid-template-columns:1fr}}
+/* The site-wide quote style centres and italicises: keep memories and blessings readable */
+.hv-blessing,.hv-blessing p,.hv-memory blockquote{text-align:left;font-style:normal}
+.hv-memory blockquote{font-family:inherit;font-size:16px;padding:0;border:0;background:none;quotes:none}
+.hv-memory blockquote::before,.hv-memory blockquote::after,.hv-blessing::before,.hv-blessing::after{content:none}
+.hv-blessing-label{font-family:inherit}

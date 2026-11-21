@@ -4,6 +4,8 @@ import { VisitQr } from './components/QrCodeButton'
 import StambhaPillar from './components/StambhaPillar'
 import WelcomeBhajan from './components/WelcomeBhajan'
 import SmritiStambhaPage from './pages/SmritiStambhaPage'
+import VisitsPage from './pages/VisitsPage'
+import BhavadharaPage from './pages/BhavadharaPage'
 import OrgPage from './pages/OrgPage'
 import CalendarPage from './pages/CalendarPage'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
@@ -384,7 +386,7 @@ function App() {
     </main><footer className="site-footer">
       <div className="footer-grid">
         <div><img className="footer-emblem" src={`${import.meta.env.BASE_URL}emblem.svg`} alt={t('brand_name')} loading="lazy" /><strong className="footer-brand">{t('brand_name')}</strong><p>{t('footer_nonprofit')}</p>{address && <p>{address}</p>}<SocialLinks links={socialLinks} t={t} variant="dark" /></div>
-        <div><h4>{t('footer_links')}</h4><ul>{navigation.map(([key, section]) => <li key={section}><a href={`#${section}`}>{t(key)}</a></li>)}<li><Link to="/smriti-stambha">{t('smriti_title')}</Link></li></ul></div>
+        <div><h4>{t('footer_links')}</h4><ul>{navigation.map(([key, section]) => <li key={section}><a href={`#${section}`}>{t(key)}</a></li>)}<li><Link to="/smriti-stambha">{t('smriti_title')}</Link></li><li><Link to="/visits">{t('menu_visits')}</Link></li><li><Link to="/bhavadhara">{t('menu_bhavadhara')}</Link></li></ul></div>
         <div className="footer-hours"><h4>{t('footer_hours')}</h4>{hoursByDay.length === 0 ? <p>{t('hours_none')}</p> : <table className="footer-hours-table">
           <thead><tr><th scope="col">{t('hours_day')}</th><th scope="col"><Sunrise size={14} aria-hidden="true" /> {t('hours_morning')}</th><th scope="col"><Sunset size={14} aria-hidden="true" /> {t('hours_evening')}</th></tr></thead>
           <tbody>{hoursByDay.map(group => <tr key={group.key} className={group.key === todayKey ? 'today' : undefined}>
@@ -414,4 +416,4 @@ function App() {
 
 // The demo build (npm run build:demo) is one HTML file opened from disk, so it keeps the route in memory
 const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
-createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Router>)

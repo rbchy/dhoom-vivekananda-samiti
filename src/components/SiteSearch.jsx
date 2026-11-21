@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { BookOpen, CalendarDays, Clock, HeartHandshake, Images, Landmark, Megaphone, Search, Sparkles, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { ACTIVITIES, ORGANISATIONS } from '../i18n-org'
 import { translate } from '../i18n'
 import './site-search.css'
@@ -11,6 +12,7 @@ const MAX_PER_GROUP = 6
 // Search across the whole home page: institutions, service work, events, photos, worship times, notices and sections.
 // Both the English and the Bangla text of every item are searched, whatever language the visitor has chosen.
 export default function SiteSearch({ t, language, data, pick, orgName, scheduleLabel, onOpenPhoto, onClose }) {
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
   const inputRef = useRef(null)
@@ -56,6 +58,9 @@ export default function SiteSearch({ t, language, data, pick, orgName, scheduleL
     // Sections of the page, so words such as "donate", "contact" or "দান" lead somewhere
     ;[['about', 'menu_intro'], ['worship', 'hours_title'], ['events', 'events_title'], ['gallery', 'gallery_title'], ['donate', 'donate_title'], ['contact', 'visit_title'], ['organisations', 'orgs_title'], ['services', 'acts_title']]
       .forEach(([id, key]) => add('pages', { key: `sec-${id}`, title: t(key), sub: '', searchTitle: `${enBn(key)} ${id}`, searchText: '', href: `#${id}` }))
+    // Stand-alone pages
+    ;[['/visits', 'menu_visits', 'hv_intro', 'maharaj swami monk visit'], ['/bhavadhara', 'menu_bhavadhara', 'bd_intro', 'vedanta math mission ashram world directory']]
+      .forEach(([to, key, text, extra]) => add('pages', { key: `page-${to}`, title: t(key), sub: '', searchTitle: enBn(key), searchText: `${enBn(text)} ${extra}`, to }))
     return entries
   }, [data, language])
 
@@ -79,6 +84,7 @@ export default function SiteSearch({ t, language, data, pick, orgName, scheduleL
   function choose(entry) {
     onClose()
     if (entry.photo) { onOpenPhoto(entry.photo); return }
+    if (entry.to) { navigate(entry.to); return }
     setTimeout(() => {
       const target = document.querySelector(entry.href)
       if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); target.classList.add('search-flash'); setTimeout(() => target.classList.remove('search-flash'), 2200) }
