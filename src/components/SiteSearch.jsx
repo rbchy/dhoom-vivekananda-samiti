@@ -59,7 +59,7 @@ export default function SiteSearch({ t, language, data, pick, orgName, scheduleL
     ;[['about', 'menu_intro'], ['worship', 'hours_title'], ['events', 'events_title'], ['gallery', 'gallery_title'], ['donate', 'donate_title'], ['contact', 'visit_title'], ['organisations', 'orgs_title'], ['services', 'acts_title']]
       .forEach(([id, key]) => add('pages', { key: `sec-${id}`, title: t(key), sub: '', searchTitle: `${enBn(key)} ${id}`, searchText: '', href: `#${id}` }))
     // Stand-alone pages
-    ;[['/visits', 'menu_visits', 'hv_intro', 'maharaj swami monk visit'], ['/bhavadhara', 'menu_bhavadhara', 'bd_intro', 'vedanta math mission ashram world directory']]
+    ;[['/visits', 'menu_visits', 'hv_intro', 'maharaj swami monk visit'], ['/bhavadhara', 'menu_bhavadhara', 'bd_intro', 'vedanta math mission ashram world directory'], ['/donors', 'menu_donors', 'dn_intro', 'donor donors honour board দাতা দান'], ['/committee', 'menu_committee', 'cm_intro', 'committee officials president secretary treasurer সভাপতি সম্পাদক কোষাধ্যক্ষ কর্মকর্তা']]
       .forEach(([to, key, text, extra]) => add('pages', { key: `page-${to}`, title: t(key), sub: '', searchTitle: enBn(key), searchText: `${enBn(text)} ${extra}`, to }))
     return entries
   }, [data, language])

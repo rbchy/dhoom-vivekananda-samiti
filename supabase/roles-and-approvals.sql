@@ -80,7 +80,8 @@ returns text language sql immutable as $$
     when p_table in ('events', 'gallery', 'announcements', 'worship_schedule',
                      'temple_highlights', 'temple_content', 'committee_contacts',
                      'site_settings', 'event_catalog', 'smriti_stambha',
-                     'maharaj_visits', 'visit_memories', 'bhavadhara_orgs')
+                     'maharaj_visits', 'visit_memories', 'bhavadhara_orgs',
+                     'donor_honours', 'samiti_officials')
       then 'admin'
     when p_table in ('donations', 'subscriptions', 'subscription_payments',
                      'income_entries', 'expense_entries', 'account_heads')

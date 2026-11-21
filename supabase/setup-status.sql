@@ -122,6 +122,16 @@ begin
     insert into setup_status values (14, 'Holy visits & Bhavadhara / পুণ্য আগমন ও ভাবধারা', '❌', 'Run visits-and-bhavadhara.sql.');
   end if;
 
+  -- 15. Honoured donors and Samiti officials (donors-and-officials.sql)
+  if to_regclass('public.donor_honours') is not null and to_regclass('public.samiti_officials') is not null then
+    select count(*) into c from public.donor_honours where is_published and not consent;
+    select count(*) into c2 from public.samiti_officials where is_current and is_published;
+    insert into setup_status values (15, 'Donors & officials / দাতা ও কর্মকর্তা', case when c > 0 or c2 = 0 then '⚠️' else '✅' end,
+      c2 || ' current official(s).' || case when c > 0 then ' ' || c || ' donor(s) are hidden because "donor agreed" is not ticked.' else '' end);
+  else
+    insert into setup_status values (15, 'Donors & officials / দাতা ও কর্মকর্তা', '❌', 'Run donors-and-officials.sql.');
+  end if;
+
   -- 13. Two-step login (MFA) for staff
   if to_regclass('auth.mfa_factors') is not null then
     execute $q$select count(distinct user_id) from auth.mfa_factors where status = 'verified'$q$ into c;

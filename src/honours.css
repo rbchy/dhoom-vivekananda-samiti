@@ -1,0 +1,52 @@
+/* Honoured donors (/donors) and Samiti committee (/committee) */
+.dn-page,.cm-page{background:#fdf8f0;min-height:100vh;display:flex;flex-direction:column}
+.dn-page>main,.cm-page>main{flex:1}
+.dn-hero{background:linear-gradient(160deg,#5a3a0e 0%,#8a5a14 45%,#7a2430 100%)}
+.cm-hero{background:linear-gradient(160deg,#1f4a3a 0%,#2f5d4c 45%,#7a2430 100%)}
+.dn-count{display:inline-flex!important;align-items:center;gap:7px;margin-top:16px!important;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.14);font-weight:700}
+.dn-main{max-width:1180px;width:100%;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,32px)}
+
+.dn-card{position:relative;display:flex;gap:18px;height:100%;background:#fff;border:1px solid #ecdcbf;border-top:3px solid #c99a4f;border-radius:12px;padding:18px;box-shadow:0 4px 18px rgba(78,23,32,.05)}
+.dn-photo{flex:none;width:96px;height:96px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#f6e3bd,#e8c27e);border:3px solid #f2d9a8;color:#6d1822;font-family:'Playfair Display','Noto Serif Bengali',serif;font-size:30px;font-weight:700}
+.dn-photo img{width:100%;height:100%;object-fit:cover}
+.dn-body{min-width:0;flex:1}
+.dn-rank{margin:0;font-size:13px;font-weight:700;color:#a8451f}
+.dn-rank::before{content:'#'}
+.dn-card h2{margin:2px 0 0;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:20px;line-height:1.3}
+.dn-line{display:flex;gap:6px;margin:6px 0 0;color:#4a3d38;font-size:14px;line-height:1.5}
+.dn-line svg{flex:none;margin-top:3px;color:#a8451f}
+.dn-facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:12px 0 0}
+.dn-facts dt{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#8a6a4f}
+.dn-facts dd{display:flex;align-items:center;gap:5px;margin:2px 0 0;color:#302a29;font-size:15px}
+.dn-amount{font-family:'Playfair Display',serif;font-size:22px!important;font-weight:700;color:#6d1822!important}
+.dn-purpose,.dn-memory{margin:10px 0 0;font-size:14px;line-height:1.6;color:#4a3d38}
+.dn-memory{font-style:italic;color:#6b5a50}
+.dn-featured{margin-bottom:28px;padding:clamp(22px,3vw,34px);gap:clamp(18px,3vw,34px);align-items:center;background:linear-gradient(135deg,#fffaf0,#fdeccd);border:1px solid #e6c995;border-top:5px solid #c99a4f;box-shadow:0 10px 30px rgba(138,90,20,.14)}
+.dn-featured .dn-photo{width:clamp(120px,16vw,180px);height:clamp(120px,16vw,180px);font-size:48px;border-width:5px}
+.dn-featured h2{font-size:clamp(24px,3vw,34px)}
+.dn-featured .dn-amount{font-size:clamp(26px,3vw,34px)!important}
+.dn-ribbon{position:absolute;top:-14px;left:24px;display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;background:#811d29;color:#fff3d6;font-size:13px;font-weight:700;letter-spacing:.03em;box-shadow:0 3px 10px rgba(78,23,32,.25)}
+.dn-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.dn-cta{text-align:center;margin-top:34px}
+.dn-cta a{text-decoration:none}
+
+.cm-heading{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 18px;padding-bottom:8px;border-bottom:2px solid #ecdcbf;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:26px}
+.cm-heading small{font-size:16px;color:#8a6a4f;font-family:inherit}
+.cm-grid{list-style:none;margin:0 0 24px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.cm-grid-leaders{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.cm-card{display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff;border:1px solid #ecdcbf;border-top:3px solid #2f5d4c;border-radius:12px;padding:20px 16px}
+.cm-leader{border-top-width:5px;padding:26px 18px;box-shadow:0 6px 22px rgba(31,74,58,.08)}
+.cm-leader .cm-photo{width:130px;height:130px;font-size:38px}
+.cm-role{margin:12px 0 0;padding:3px 12px;border-radius:999px;background:#e7f1ec;color:#1f4a3a;font-size:13px;font-weight:700}
+.cm-card h3{margin:8px 0 0;font-family:'Playfair Display','Noto Serif Bengali',serif;color:#4e1720;font-size:19px;line-height:1.3}
+.cm-leader h3{font-size:22px}
+.cm-about{margin:8px 0 0;font-size:14px;line-height:1.6;color:#4a3d38}
+.cm-contacts{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px;font-size:14px}
+.cm-contacts a{display:inline-flex;align-items:center;gap:5px;color:#811d29;text-decoration:none;word-break:break-all}
+.cm-contacts a:hover{text-decoration:underline}
+.cm-former{margin-top:20px}
+.cm-former details{margin:0 0 12px;background:#fff;border:1px solid #ecdcbf;border-radius:10px;padding:12px 16px}
+.cm-former summary{cursor:pointer;font-weight:700;color:#4e1720;font-size:17px}
+.cm-former details[open] summary{margin-bottom:14px}
+.cm-former .cm-grid{margin:0}
+@media(max-width:560px){.dn-card{flex-direction:column;align-items:center;text-align:center}.dn-line,.dn-facts{justify-content:center}.dn-grid{grid-template-columns:1fr}.dn-ribbon{left:50%;transform:translateX(-50%)}}

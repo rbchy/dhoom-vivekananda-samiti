@@ -49,7 +49,9 @@ export default function MainMenu({ t, language, onNavigate, has = {} }) {
       has.mission && { href: '#mission', label: t('mission_title') },
       { to: '/smriti-stambha', label: t('smriti_title') },
       { to: '/visits', label: t('menu_visits') },
-      { to: '/bhavadhara', label: t('menu_bhavadhara') }
+      { to: '/bhavadhara', label: t('menu_bhavadhara') },
+      { to: '/committee', label: t('menu_committee') },
+      { to: '/donors', label: t('menu_donors') }
     ] },
     { key: 'orgs', label: t('nav_institutions'), items: [
       ...ORGANISATIONS.map(org => ({ to: `/org/${org.id}`, label: name(org) })),

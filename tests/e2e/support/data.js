@@ -65,6 +65,21 @@ export function sampleTables() {
       { id: 'bd-2', name_en: 'Test Ashram Omega', org_type: 'ashram', country: 'Bangladesh', city: 'Test Upazila', status: 'approved', sort_order: 100 },
       { id: 'bd-x', name_en: 'Pending Org Must Not Show', org_type: 'other', country: 'Nowhere', status: 'pending', sort_order: 100 }
     ],
+    // Test-only rows for /donors and /committee. The public view already hides what the admin hid,
+    // so the view rows here have no amount or address where that was chosen.
+    donor_honours_public: [
+      { id: 'dh-2', name_en: 'Test Donor Second', address_en: 'Second Village, Testland', amount: 250000, currency: 'BDT', donated_on: '2023-05-01', purpose_en: 'Clinic medicines', sort_order: 100 },
+      { id: 'dh-1', name_en: 'Test Donor First', name_bn: 'পরীক্ষা দাতা প্রথম', address_en: 'First Town, Testland', address_bn: 'প্রথম শহর', amount: 1500000, currency: 'BDT', donated_on: '2022-01-15', purpose_en: 'Ramakrishna Mandir building', in_memory_of: 'Late Test Parent', sort_order: 100 },
+      { id: 'dh-3', name_en: 'Test Land Giver', address_en: null, amount: null, currency: 'BDT', gift_en: 'Land for the Durga Mandir', donated_on: '1999-03-03', sort_order: 100 }
+    ],
+    samiti_officials: [
+      { id: 'of-m', name_en: 'Test Member Mu', position: 'member', role_en: 'Executive Member', role_bn: 'কার্যনির্বাহী সদস্য', term: '2025 – 2027', is_current: true, sort_order: 100, is_published: true },
+      { id: 'of-p', name_en: 'Test President Pi', name_bn: 'পরীক্ষা সভাপতি', position: 'president', role_en: 'President', role_bn: 'সভাপতি', term: '2025 – 2027', is_current: true, phone: '+880 1700 000000', sort_order: 10, is_published: true },
+      { id: 'of-s', name_en: 'Test Secretary Sigma', position: 'general_secretary', role_en: 'General Secretary', role_bn: 'সাধারণ সম্পাদক', term: '2025 – 2027', is_current: true, sort_order: 30, is_published: true },
+      { id: 'of-old', name_en: 'Test Former President', position: 'president', role_en: 'President', term: '2021 – 2023', is_current: false, sort_order: 10, is_published: true },
+      { id: 'of-x', name_en: 'Hidden Official', position: 'member', is_current: true, sort_order: 100, is_published: false }
+    ],
+    donor_honours: [],
     admin_profiles: [
       { user_id: 'user-main-admin', role: 'admin' }
     ]
