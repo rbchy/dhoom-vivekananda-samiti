@@ -41,6 +41,7 @@ export const ACTIVITIES = [
 
 export const ORG_TEXT = {
   en: {
+    menu_key_hint: "Press the underlined key to open",
     cal_title: "Festival Calendar", cal_p: "All the worship days and festivals of the Samiti in one place — dated events, and the festivals we celebrate every year in each month.", cal_today: "Today", cal_prev: "Previous month", cal_next: "Next month", cal_month_events: "This month", cal_none_month: "No festivals or events in this month.", cal_usual: "Every year in this month", cal_year: "Festivals through the year", cal_add: "Add to my calendar", cal_open: "See the full festival calendar", cal_legend_dated: "Date fixed",
     org_details: "Read more",
     search_label: "Search", search_placeholder: "Search temples, events, photos…", search_tip: "Type a temple, festival, service or photo name — for example “Durga”, “clinic” or “Kali Puja”. Results come from both English and Bangla.", search_none: "No results for", search_pages: "Sections", search_keys_move: "move", search_keys_open: "open",
@@ -75,6 +76,7 @@ export const ORG_TEXT = {
     org_type_temple: 'Temple', org_type_clinic: 'Health service', org_type_cremation: 'Cremation temple'
   },
   bn: {
+    menu_key_hint: "দাগ দেওয়া অক্ষর বা সংখ্যা চাপলেই খুলবে",
     cal_title: "উৎসবের ক্যালেন্ডার", cal_p: "সমিতির সব পূজা ও উৎসব এক জায়গায় — তারিখ ঠিক হওয়া অনুষ্ঠান, আর প্রতি বছর কোন মাসে কোন উৎসব হয়।", cal_today: "আজ", cal_prev: "আগের মাস", cal_next: "পরের মাস", cal_month_events: "এই মাসে", cal_none_month: "এই মাসে কোনো উৎসব বা অনুষ্ঠান নেই।", cal_usual: "প্রতি বছর এই মাসে", cal_year: "সারা বছরের উৎসব", cal_add: "আমার ক্যালেন্ডারে যোগ করুন", cal_open: "সম্পূর্ণ উৎসবের ক্যালেন্ডার দেখুন", cal_legend_dated: "তারিখ ঠিক হয়েছে",
     org_details: "বিস্তারিত দেখুন",
     search_label: "খুঁজুন", search_placeholder: "মন্দির, অনুষ্ঠান, ছবি খুঁজুন…", search_tip: "মন্দির, উৎসব, সেবাকাজ বা ছবির নাম লিখুন — যেমন “দুর্গা”, “ক্লিনিক” বা “কালীপূজা”। বাংলা ও ইংরেজি দুই ভাষাতেই খোঁজা যায়।", search_none: "কোনো ফলাফল পাওয়া যায়নি:", search_pages: "পেজের অংশ", search_keys_move: "সরান", search_keys_open: "খুলুন",
@@ -109,6 +111,7 @@ export const ORG_TEXT = {
     org_type_temple: 'মন্দির', org_type_clinic: 'স্বাস্থ্যসেবা', org_type_cremation: 'শ্মশান মন্দির'
   },
   hi: {
+    menu_key_hint: "खोलने के लिए रेखांकित कुंजी दबाएँ",
     cal_title: "उत्सव कैलेंडर", cal_p: "समिति की सभी पूजाएँ और उत्सव एक जगह — तय तिथि वाले कार्यक्रम और हर वर्ष किस महीने कौन-सा उत्सव होता है।", cal_today: "आज", cal_prev: "पिछला महीना", cal_next: "अगला महीना", cal_month_events: "इस महीने", cal_none_month: "इस महीने कोई उत्सव या कार्यक्रम नहीं है।", cal_usual: "हर वर्ष इस महीने", cal_year: "पूरे वर्ष के उत्सव", cal_add: "मेरे कैलेंडर में जोड़ें", cal_open: "पूरा उत्सव कैलेंडर देखें", cal_legend_dated: "तिथि तय",
     org_details: "और पढ़ें",
     search_label: "खोजें", search_placeholder: "मंदिर, कार्यक्रम, तस्वीरें खोजें…", search_tip: "मंदिर, उत्सव, सेवा या तस्वीर का नाम लिखें — जैसे “दुर्गा” या “clinic”।", search_none: "कोई परिणाम नहीं:", search_pages: "अनुभाग", search_keys_move: "चुनें", search_keys_open: "खोलें",
@@ -135,6 +138,7 @@ export const ORG_TEXT = {
     org_type_temple: 'मंदिर', org_type_clinic: 'स्वास्थ्य सेवा', org_type_cremation: 'श्मशान मंदिर'
   },
   ko: {
+    menu_key_hint: "밑줄 친 키를 누르면 열립니다",
     cal_title: "축제 달력", cal_p: "사미티의 모든 예배일과 축제를 한곳에서 — 날짜가 정해진 행사와 매년 달마다 열리는 축제.", cal_today: "오늘", cal_prev: "이전 달", cal_next: "다음 달", cal_month_events: "이번 달", cal_none_month: "이번 달에는 축제나 행사가 없습니다.", cal_usual: "매년 이달", cal_year: "연간 축제", cal_add: "내 캘린더에 추가", cal_open: "전체 축제 달력 보기", cal_legend_dated: "날짜 확정",
     org_details: "자세히 보기",
     search_label: "검색", search_placeholder: "사원, 행사, 사진 검색…", search_tip: "사원, 축제, 봉사 또는 사진 이름을 입력하세요. 예: “Durga”, “clinic”.", search_none: "검색 결과 없음:", search_pages: "섹션", search_keys_move: "이동", search_keys_open: "열기",
@@ -161,6 +165,7 @@ export const ORG_TEXT = {
     org_type_temple: '사원', org_type_clinic: '의료 봉사', org_type_cremation: '화장 사원'
   },
   ja: {
+    menu_key_hint: "下線の付いたキーで開きます",
     cal_title: "祭典カレンダー", cal_p: "サミティの礼拝日と祭典をひと目で — 日付の決まった行事と、毎年各月に行う祭典。", cal_today: "今日", cal_prev: "前の月", cal_next: "次の月", cal_month_events: "今月", cal_none_month: "今月は祭典や行事がありません。", cal_usual: "毎年この月", cal_year: "一年の祭典", cal_add: "カレンダーに追加", cal_open: "祭典カレンダーを見る", cal_legend_dated: "日付確定",
     org_details: "詳しく見る",
     search_label: "検索", search_placeholder: "寺院・行事・写真を検索…", search_tip: "寺院、祭典、奉仕、写真の名前を入力してください。例：「Durga」「clinic」", search_none: "結果がありません：", search_pages: "セクション", search_keys_move: "移動", search_keys_open: "開く",
@@ -187,6 +192,7 @@ export const ORG_TEXT = {
     org_type_temple: '寺院', org_type_clinic: '医療奉仕', org_type_cremation: '火葬寺院'
   },
   zh: {
+    menu_key_hint: "按下划线标出的键即可打开",
     cal_title: "节庆日历", cal_p: "协会所有礼拜日与节庆一览——已定日期的活动，以及每年各月举行的节庆。", cal_today: "今天", cal_prev: "上个月", cal_next: "下个月", cal_month_events: "本月", cal_none_month: "本月没有节庆或活动。", cal_usual: "每年本月", cal_year: "全年节庆", cal_add: "添加到我的日历", cal_open: "查看完整节庆日历", cal_legend_dated: "日期已定",
     org_details: "了解更多",
     search_label: "搜索", search_placeholder: "搜索神庙、活动、照片…", search_tip: "输入神庙、节庆、服务或照片名称，例如“Durga”“clinic”。", search_none: "没有找到结果：", search_pages: "页面栏目", search_keys_move: "移动", search_keys_open: "打开",
@@ -213,6 +219,7 @@ export const ORG_TEXT = {
     org_type_temple: '神庙', org_type_clinic: '医疗服务', org_type_cremation: '火葬神庙'
   },
   es: {
+    menu_key_hint: "Pulsa la tecla subrayada para abrir",
     cal_title: "Calendario de festivales", cal_p: "Todos los días de culto y festivales de la Samiti en un solo lugar: eventos con fecha y los festivales que celebramos cada año en cada mes.", cal_today: "Hoy", cal_prev: "Mes anterior", cal_next: "Mes siguiente", cal_month_events: "Este mes", cal_none_month: "No hay festivales ni eventos este mes.", cal_usual: "Cada año en este mes", cal_year: "Festivales del año", cal_add: "Añadir a mi calendario", cal_open: "Ver el calendario completo", cal_legend_dated: "Fecha fijada",
     org_details: "Ver más",
     search_label: "Buscar", search_placeholder: "Buscar templos, eventos, fotos…", search_tip: "Escribe el nombre de un templo, festival, servicio o foto, por ejemplo “Durga” o “clinic”.", search_none: "Sin resultados para", search_pages: "Secciones", search_keys_move: "mover", search_keys_open: "abrir",
@@ -239,6 +246,7 @@ export const ORG_TEXT = {
     org_type_temple: 'Templo', org_type_clinic: 'Servicio de salud', org_type_cremation: 'Templo crematorio'
   },
   fr: {
+    menu_key_hint: "Appuyez sur la touche soulignée pour ouvrir",
     cal_title: "Calendrier des fêtes", cal_p: "Tous les jours de culte et les fêtes de la Samiti au même endroit : événements datés et fêtes célébrées chaque année, mois par mois.", cal_today: "Aujourd’hui", cal_prev: "Mois précédent", cal_next: "Mois suivant", cal_month_events: "Ce mois-ci", cal_none_month: "Aucune fête ni événement ce mois-ci.", cal_usual: "Chaque année ce mois-ci", cal_year: "Les fêtes de l’année", cal_add: "Ajouter à mon agenda", cal_open: "Voir tout le calendrier", cal_legend_dated: "Date fixée",
     org_details: "En savoir plus",
     search_label: "Rechercher", search_placeholder: "Rechercher temples, événements, photos…", search_tip: "Tapez le nom d’un temple, d’une fête, d’un service ou d’une photo, par exemple « Durga » ou « clinic ».", search_none: "Aucun résultat pour", search_pages: "Sections", search_keys_move: "déplacer", search_keys_open: "ouvrir",
@@ -265,6 +273,7 @@ export const ORG_TEXT = {
     org_type_temple: 'Temple', org_type_clinic: 'Service de santé', org_type_cremation: 'Temple crématoire'
   },
   ar: {
+    menu_key_hint: "اضغط المفتاح المسطّر للفتح",
     cal_title: "تقويم المهرجانات", cal_p: "كل أيام العبادة ومهرجانات الجمعية في مكان واحد: الفعاليات المؤرخة والمهرجانات التي نحتفل بها كل عام في كل شهر.", cal_today: "اليوم", cal_prev: "الشهر السابق", cal_next: "الشهر التالي", cal_month_events: "هذا الشهر", cal_none_month: "لا توجد مهرجانات أو فعاليات هذا الشهر.", cal_usual: "كل عام في هذا الشهر", cal_year: "مهرجانات العام", cal_add: "أضف إلى تقويمي", cal_open: "عرض التقويم الكامل", cal_legend_dated: "تاريخ محدد",
     org_details: "اقرأ المزيد",
     search_label: "بحث", search_placeholder: "ابحث عن المعابد والفعاليات والصور…", search_tip: "اكتب اسم معبد أو مهرجان أو خدمة أو صورة، مثل «Durga» أو «clinic».", search_none: "لا توجد نتائج لـ", search_pages: "الأقسام", search_keys_move: "تنقل", search_keys_open: "فتح",
@@ -291,6 +300,7 @@ export const ORG_TEXT = {
     org_type_temple: 'معبد', org_type_clinic: 'خدمة صحية', org_type_cremation: 'معبد الحرق'
   },
   ru: {
+    menu_key_hint: "Нажмите подчёркнутую клавишу, чтобы открыть",
     cal_title: "Календарь праздников", cal_p: "Все дни богослужений и праздники Самити в одном месте: мероприятия с датой и праздники, которые мы отмечаем каждый год в каждом месяце.", cal_today: "Сегодня", cal_prev: "Предыдущий месяц", cal_next: "Следующий месяц", cal_month_events: "В этом месяце", cal_none_month: "В этом месяце нет праздников и мероприятий.", cal_usual: "Каждый год в этом месяце", cal_year: "Праздники года", cal_add: "Добавить в мой календарь", cal_open: "Смотреть весь календарь", cal_legend_dated: "Дата назначена",
     org_details: "Подробнее",
     search_label: "Поиск", search_placeholder: "Искать храмы, события, фото…", search_tip: "Введите название храма, праздника, служения или фото, например «Durga» или «clinic».", search_none: "Ничего не найдено:", search_pages: "Разделы", search_keys_move: "выбор", search_keys_open: "открыть",

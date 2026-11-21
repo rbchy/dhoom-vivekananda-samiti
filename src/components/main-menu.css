@@ -29,3 +29,18 @@ section[id],.org-card[id],.act-item[id]{scroll-margin-top:110px}
 /* Mid-size screens: the logo and name already lead home, so the separate Home button is hidden to make room */
 @media(min-width:851px) and (max-width:1199px){.main-menu>a.active{display:none}}
 @media(min-width:851px) and (max-width:960px){.nav-dd-btn svg{display:none}.main-menu{gap:9px}}
+
+/* Single-key shortcuts in the dropdowns: the key is underlined */
+.nav-dd-menu u{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:#c76a00}
+.nav-dd-menu .mn-num{display:inline-block;min-width:1.4em;margin-inline-end:8px;padding:0 4px;border-radius:4px;background:#f4ead8;color:#811d29;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.85em;text-align:center}
+.nav-dd-menu a:hover .mn-num,.nav-dd-menu a:focus-visible .mn-num{background:#811d29;color:#fff}
+.nav-dd-menu li.mn-hint{margin-top:6px;padding:6px 12px 2px;border-top:1px dashed #eee2cc;font-size:12px;color:#9a8f86}
+/* phones and touch screens have no keyboard shortcuts: hide the hint and the number boxes' extra space */
+@media(max-width:850px),(hover:none){.nav-dd-menu li.mn-hint{display:none}}
+
+/* When the menu does not fit beside the name (e.g. the longer English labels), it moves to its own row
+   under the name instead of being cut off. Languages whose menu fits stay on one row. */
+@media(min-width:851px){
+  .header{flex-wrap:wrap;height:auto;min-height:92px;row-gap:4px}
+  .header>.nav{flex-wrap:nowrap;margin-left:auto}
+}

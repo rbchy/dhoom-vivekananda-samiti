@@ -4,6 +4,36 @@ import { ChevronDown } from 'lucide-react'
 import { ACTIVITIES, ORGANISATIONS } from '../i18n-org'
 import './main-menu.css'
 
+const BANGLA_DIGITS = '০১২৩৪৫৬৭৮৯'
+const isLatin = text => /^[\p{Script=Latin}\p{N}\p{P}\p{Zs}&'’]+$/u.test(text)
+
+// Gives every item of one dropdown its own single-key shortcut, shown underlined:
+// a letter of the name for English-type names, otherwise a number 1, 2, 3 … in front of the name.
+function withAccessKeys(items) {
+  const used = new Set()
+  const latin = items.every(item => isLatin(item.label))
+  let number = 0
+  return items.map(item => {
+    if (latin) {
+      const label = item.label
+      const lower = label.toLowerCase()
+      // prefer the first letter of a word, then any letter
+      const starts = [...lower.matchAll(/(^|[\s(—-])([a-z])/g)].map(m => m.index + m[1].length)
+      const anyLetters = [...lower].map((ch, i) => (/[a-z]/.test(ch) ? i : -1)).filter(i => i >= 0)
+      const at = [...starts, ...anyLetters].find(i => !used.has(lower[i]))
+      if (at !== undefined) { used.add(lower[at]); return { ...item, access: lower[at], accessAt: at } }
+    }
+    number += 1
+    return { ...item, access: String(number), accessNumber: number }
+  })
+}
+
+function AccessLabel({ item }) {
+  if (item.accessNumber) return <><u className="mn-num" aria-hidden="true">{item.accessNumber}</u>{item.label}</>
+  const i = item.accessAt
+  return <>{item.label.slice(0, i)}<u className="mn-key">{item.label[i]}</u>{item.label.slice(i + 1)}</>
+}
+
 // Main menu with dropdowns. On computers a group opens on hover or click;
 // on phones (inside the ☰ menu) each group opens and closes like an accordion.
 export default function MainMenu({ t, language, onNavigate, has = {} }) {
@@ -41,16 +71,25 @@ export default function MainMenu({ t, language, onNavigate, has = {} }) {
       { href: '#gallery', label: t('gallery_title') },
       has.slideshow && { href: '#slideshow', label: t('slides_title') }
     ] }
-  ].map(group => ({ ...group, items: group.items.filter(Boolean) }))
+  ].map(group => ({ ...group, items: withAccessKeys(group.items.filter(Boolean)) }))
 
   // Close on a click outside the menu or on Escape
   useEffect(() => {
     if (!openKey) return
     function outside(event) { if (navRef.current && !navRef.current.contains(event.target)) setOpenKey(null) }
     function escape(event) {
-      if (event.key !== 'Escape') return
-      const button = navRef.current?.querySelector(`[data-group="${openKey}"]`)
-      setOpenKey(null); button?.focus()
+      if (event.key === 'Escape') {
+        const button = navRef.current?.querySelector(`[data-group="${openKey}"]`)
+        setOpenKey(null); button?.focus()
+        return
+      }
+      // A single key opens the option whose letter or number is underlined
+      if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) return
+      if (/^(input|textarea|select)$/i.test(event.target.tagName) || event.target.isContentEditable) return
+      const digit = BANGLA_DIGITS.indexOf(event.key)
+      const key = digit >= 0 ? String(digit) : event.key.toLowerCase()
+      const target = navRef.current?.querySelector(`#menu-${openKey} [data-access="${CSS.escape(key)}"]`)
+      if (target) { event.preventDefault(); target.click() }
     }
     document.addEventListener('mousedown', outside)
     document.addEventListener('keydown', escape)
@@ -74,8 +113,11 @@ export default function MainMenu({ t, language, onNavigate, has = {} }) {
         </button>
         <ul className="nav-dd-menu" id={`menu-${group.key}`} hidden={!open}>
           {group.items.map(item => <li key={item.href || item.to} className={item.divider ? 'divider' : undefined}>
-            {item.to ? <Link to={item.to} onClick={pick}>{item.label}</Link> : <a href={item.href} onClick={pick}>{item.label}</a>}
+            {item.to
+              ? <Link to={item.to} onClick={pick} data-access={item.access} aria-keyshortcuts={item.access}><AccessLabel item={item} /></Link>
+              : <a href={item.href} onClick={pick} data-access={item.access} aria-keyshortcuts={item.access}><AccessLabel item={item} /></a>}
           </li>)}
+          <li className="mn-hint" aria-hidden="true">⌨ {t('menu_key_hint')}</li>
         </ul>
       </div>
     })}
