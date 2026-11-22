@@ -19,7 +19,7 @@ create table if not exists public.maharaj_visits (
   monk_name_bn   text check (monk_name_bn is null or char_length(monk_name_bn) <= 150),
   monk_title_en  text check (monk_title_en is null or char_length(monk_title_en) <= 200),  -- e.g. President, Ramakrishna Math and Ramakrishna Mission
   monk_title_bn  text check (monk_title_bn is null or char_length(monk_title_bn) <= 200),
-  visit_date     date not null,
+  visit_date     date,                                                                  -- empty when the date is not known
   visit_date_end date check (visit_date_end is null or visit_date_end >= visit_date),
   occasion_en    text check (occasion_en is null or char_length(occasion_en) <= 200),     -- e.g. Consecration of the Durga Mandir
   occasion_bn    text check (occasion_bn is null or char_length(occasion_bn) <= 200),

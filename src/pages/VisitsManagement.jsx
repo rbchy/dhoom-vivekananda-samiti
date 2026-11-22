@@ -32,7 +32,7 @@ export default function VisitsManagement() {
 
   async function loadAll() {
     const [v, m, c] = await Promise.all([
-      supabase.from('maharaj_visits').select('*').order('visit_date', { ascending: false }).order('sort_order'),
+      supabase.from('maharaj_visits').select('*').order('visit_date', { ascending: false, nullsFirst: false }).order('sort_order'),
       supabase.from('visit_memories').select('*').order('created_at', { ascending: false }),
       supabase.from('submission_contacts').select('*').eq('kind', 'memory')
     ])
@@ -75,7 +75,7 @@ export default function VisitsManagement() {
       monk_name_bn: checkText(form.monk_name_bn, { label: 'Name (Bangla)', max: 150, bengali: true }),
       monk_title_en: checkText(form.monk_title_en, { label: 'Title (English)', max: 200 }),
       monk_title_bn: checkText(form.monk_title_bn, { label: 'Title (Bangla)', max: 200, bengali: true }),
-      visit_date: !form.visit_date ? 'Date of the visit is required.' : '',
+      visit_date: !form.visit_date && form.visit_date_end ? 'Add the first day too, or clear the last day.' : '',
       visit_date_end: form.visit_date_end && form.visit_date && form.visit_date_end < form.visit_date ? 'The last day cannot be before the first day.' : '',
       occasion_en: checkText(form.occasion_en, { label: 'Occasion (English)', max: 200 }),
       occasion_bn: checkText(form.occasion_bn, { label: 'Occasion (Bangla)', max: 200, bengali: true }),
@@ -110,7 +110,7 @@ export default function VisitsManagement() {
       const previous = items.find(i => i.id === editingId)
       const payload = {
         monk_name_en: form.monk_name_en.trim(), monk_name_bn: clean(form.monk_name_bn), monk_title_en: clean(form.monk_title_en), monk_title_bn: clean(form.monk_title_bn),
-        visit_date: form.visit_date, visit_date_end: form.visit_date_end || null, occasion_en: clean(form.occasion_en), occasion_bn: clean(form.occasion_bn),
+        visit_date: form.visit_date || null, visit_date_end: form.visit_date_end || null, occasion_en: clean(form.occasion_en), occasion_bn: clean(form.occasion_bn),
         places: ORGANISATIONS.map(o => o.id).filter(id => form.places.includes(id)),
         summary_en: clean(form.summary_en), summary_bn: clean(form.summary_bn), blessing_en: clean(form.blessing_en), blessing_bn: clean(form.blessing_bn),
         photo_url: photoUrl, photos: [...form.photos, ...extra], sort_order: Number(form.sort_order), is_published: form.is_published
@@ -133,7 +133,7 @@ export default function VisitsManagement() {
 
   async function handleDelete(item) {
     const count = memories.filter(m => m.visit_id === item.id).length
-    if (!window.confirm(`Delete the visit of ${item.monk_name_en} (${item.visit_date})?${count ? ` Its ${count} memory(ies) will be deleted too.` : ''} This cannot be undone.`)) return
+    if (!window.confirm(`Delete the visit of ${item.monk_name_en} (${item.visit_date || 'date unknown'})?${count ? ` Its ${count} memory(ies) will be deleted too.` : ''} This cannot be undone.`)) return
     const result = await db('maharaj_visits').delete().eq('id', item.id)
     if (result.error) { setMessage('Error: ' + describeDbError(result.error)); return }
     if (!result.pendingApproval) for (const url of [item.photo_url, ...(item.photos || [])]) if (storagePathFromUrl(url)) await removeImage(url)
@@ -173,7 +173,7 @@ export default function VisitsManagement() {
     {props.rows ? <textarea id={`hv-${name}`} name={name} value={form[name]} onChange={handleChange} {...props} {...invalidProps(errors, name, 'hv')} /> : <input id={`hv-${name}`} name={name} value={form[name]} onChange={handleChange} {...props} {...invalidProps(errors, name, 'hv')} />}
     <FieldError id={`hv-${name}-error`} message={errors[name]} />
   </div>
-  const visitName = id => { const v = items.find(i => i.id === id); return v ? `${v.monk_name_en} · ${v.visit_date}` : '—' }
+  const visitName = id => { const v = items.find(i => i.id === id); return v ? `${v.monk_name_en} · ${v.visit_date || 'date unknown'}` : '—' }
   const pendingCount = memories.filter(m => m.status === 'pending').length
   const shownMemories = memories.filter(m => memoryFilter === 'all' || m.status === memoryFilter)
 
@@ -184,7 +184,7 @@ export default function VisitsManagement() {
       <ErrorSummary errors={errors} />
       <div className="form-row">{input('monk_name_en', 'Name of the monk (English) *', { maxLength: 150, placeholder: 'e.g. Srimat Swami … Maharaj' })}{input('monk_name_bn', 'সন্ন্যাসীর নাম (বাংলা)', { maxLength: 150, placeholder: 'যেমন শ্রীমৎ স্বামী … মহারাজ' })}</div>
       <div className="form-row">{input('monk_title_en', 'Position at the time of the visit (English)', { maxLength: 200, placeholder: 'e.g. President, Ramakrishna Math and Ramakrishna Mission' })}{input('monk_title_bn', 'তখনকার পদ (বাংলা)', { maxLength: 200, placeholder: 'যেমন অধ্যক্ষ, রামকৃষ্ণ মঠ ও রামকৃষ্ণ মিশন' })}</div>
-      <div className="form-row">{input('visit_date', 'Date of the visit *', { type: 'date' })}{input('visit_date_end', 'Last day (if more than one day)', { type: 'date', min: form.visit_date || undefined })}</div>
+      <div className="form-row">{input('visit_date', 'Date of the visit (leave empty if not known)', { type: 'date' })}{input('visit_date_end', 'Last day (if more than one day)', { type: 'date', min: form.visit_date || undefined })}</div>
       <div className="form-row">{input('occasion_en', 'Occasion (English)', { maxLength: 200, placeholder: 'e.g. Consecration of the Ramakrishna Mandir' })}{input('occasion_bn', 'উপলক্ষ (বাংলা)', { maxLength: 200 })}</div>
       <fieldset className="checkbox-group">
         <legend>Places visited / যেসব প্রতিষ্ঠানে গিয়েছিলেন</legend>
@@ -222,7 +222,7 @@ export default function VisitsManagement() {
       {items.length === 0 ? <p>No visits recorded yet.</p> : <div className="table-scroll"><table className="admin-table">
         <thead><tr><th>Date</th><th>Monk</th><th>Occasion</th><th>Photos</th><th>Memories</th><th>Show</th><th>Actions</th></tr></thead>
         <tbody>{items.map(item => <tr key={item.id} className={item.is_published ? '' : 'row-muted'}>
-          <td>{item.visit_date}{item.visit_date_end && <small className="cell-sub">to {item.visit_date_end}</small>}</td>
+          <td>{item.visit_date || '—'}{item.visit_date_end && <small className="cell-sub">to {item.visit_date_end}</small>}</td>
           <td>{item.monk_name_en}{item.monk_title_en && <small className="cell-sub">{item.monk_title_en}</small>}</td>
           <td>{item.occasion_en}</td>
           <td>{(item.photos || []).length + (item.photo_url ? 1 : 0)}</td>

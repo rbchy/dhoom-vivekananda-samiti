@@ -28,7 +28,7 @@ export default function VisitsPage() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('maharaj_visits').select('*').eq('is_published', true).order('visit_date', { ascending: false }).order('sort_order'),
+      supabase.from('maharaj_visits').select('*').eq('is_published', true).order('visit_date', { ascending: false, nullsFirst: false }).order('sort_order'),
       supabase.from('visit_memories').select('id,visit_id,author_name,relation,place,memory,created_at').eq('status', 'approved').order('created_at')
     ]).then(([v, m]) => { setVisits(v.data || []); setMemories(m.data || []) })
   }, [])
@@ -64,7 +64,7 @@ export default function VisitsPage() {
           <div className="hv-visit-head">
             {visit.photo_url ? <img className="hv-portrait" src={visit.photo_url} alt={name} loading="lazy" /> : <div className="hv-portrait hv-portrait-blank" aria-hidden="true"><img src={`${home}emblem.svg`} alt="" /></div>}
             <div>
-              <p className="hv-date"><CalendarDays size={16} /> {formatDate(visit.visit_date, locale)}{visit.visit_date_end && visit.visit_date_end !== visit.visit_date && <> – {formatDate(visit.visit_date_end, locale)}</>}</p>
+              {visit.visit_date && <p className="hv-date"><CalendarDays size={16} /> {formatDate(visit.visit_date, locale)}{visit.visit_date_end && visit.visit_date_end !== visit.visit_date && <> – {formatDate(visit.visit_date_end, locale)}</>}</p>}
               <h2>{name}</h2>
               {language !== 'bn' && visit.monk_name_bn && <p className="hv-name-bn" lang="bn">{visit.monk_name_bn}</p>}
               {title && <p className="hv-monk-title">{title}</p>}
