@@ -6,7 +6,8 @@ import WelcomeBhajan from './components/WelcomeBhajan'
 import HeroSlides, { HERO_SLIDES, useHeroSlide } from './components/HeroSlides'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
 import './smriti.css'
-import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { findSeoPage, NOINDEX_PREFIXES } from './seo-pages'
 import { CalendarDays, Church, Clock, ExternalLink, Flame, HeartHandshake, Images, Landmark, Mail, MapPin, Menu, Pause, Phone, Play, Repeat, Search, Stethoscope, X, Shirt, BookOpen, MapPinHouse, Sunrise, Sunset, ArrowRight } from 'lucide-react'
 import './styles.css'
 import './language.css'
@@ -432,5 +433,30 @@ function App() {
 }
 
 // The demo build (npm run build:demo) is one HTML file opened from disk, so it keeps the route in memory
+// Keeps the search-engine tags right while visitors move between pages without reloading
+// (the static versions are written by scripts/seo-build.mjs at build time)
+function setHeadTag(selector, create, attr, value) {
+  let el = document.head.querySelector(selector)
+  if (!value) { el?.remove(); return }
+  if (!el) { el = create(); document.head.appendChild(el) }
+  el.setAttribute(attr, value)
+}
+function RouteSeo() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const page = findSeoPage(pathname)
+    const lang = document.documentElement.lang === 'bn' ? 'bn' : 'en'
+    const meta = (key, name) => () => { const el = document.createElement('meta'); el.setAttribute(key, name); return el }
+    const site = (import.meta.env.VITE_SITE_URL || `${window.location.origin}${import.meta.env.BASE_URL}`).replace(/\/*$/, '/')
+    const url = page ? (page.path === '/' ? site : site + page.path.slice(1)) : ''
+    const hidden = NOINDEX_PREFIXES.some(prefix => pathname.startsWith(prefix))
+    if (page) setHeadTag('meta[name="description"]', meta('name', 'description'), 'content', page.description[lang])
+    setHeadTag('link[rel="canonical"]', () => { const el = document.createElement('link'); el.rel = 'canonical'; return el }, 'href', hidden ? '' : url)
+    if (url) setHeadTag('meta[property="og:url"]', meta('property', 'og:url'), 'content', url)
+    setHeadTag('meta[name="robots"]', meta('name', 'robots'), 'content', hidden ? 'noindex, nofollow' : '')
+  }, [pathname])
+  return null
+}
+
 const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
-createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Suspense fallback={<PageLoading />}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/donors" element={<DonorsPage />} /><Route path="/committee" element={<CommitteePage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></Suspense></Router>)
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Suspense fallback={<PageLoading />}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/donors" element={<DonorsPage />} /><Route path="/committee" element={<CommitteePage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes><RouteSeo /></Suspense></Router>)

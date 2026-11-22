@@ -51,9 +51,9 @@ jobs:
 
       - name: Build
         run: |
+          # Also writes per-page HTML, sitemap.xml, robots.txt and 404.html (scripts/seo-build.mjs);
+          # 404.html lets GitHub Pages serve the app for /admin/... links
           npm run build
-          # Single-page app: let GitHub Pages serve the app for /admin/... links
-          cp dist/index.html dist/404.html
           touch dist/.nojekyll
         env:
           VITE_BASE_PATH: ${{ vars.PAGES_BASE_PATH || format('/{0}/', github.event.repository.name) }}
