@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { VisitQr } from './components/QrCodeButton'
 import StambhaPillar, { localDigits } from './components/StambhaPillar'
 import WelcomeBhajan from './components/WelcomeBhajan'
-import HeroSlides, { HERO_SLIDES, useHeroSlide } from './components/HeroSlides'
+import HeroSlides, { HeroQuote, quoteText, useHeroQuote, useHeroSlide } from './components/HeroSlides'
 import { loadSmritiNames, pickText as pickSmriti } from './lib/smriti'
 import './smriti.css'
 import { BrowserRouter, Link, MemoryRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
@@ -156,7 +156,8 @@ function App() {
 
   // Banner slideshow: Thakur, Ma, Swamiji (the caption under the banner follows the slide)
   const [heroSlide, setHeroSlide] = useHeroSlide()
-  const heroQuote = HERO_SLIDES[heroSlide]
+  const heroQuote = useHeroQuote(heroSlide)
+  const heroCaption = language === 'en' ? null : quoteText(heroQuote, language)
   // A shared link (?event=<id> or ?notice=<id>) scrolls to that post and highlights it once
   const [sharedPostDone, setSharedPostDone] = useState(false)
   useEffect(() => {
@@ -277,8 +278,8 @@ function App() {
       </nav>
     </header>
     <main>
-      <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={bhajanAutoplay ? '' : setting('ticker_audio_url')} t={t} /><HeroSlides index={heroSlide} setIndex={setHeroSlide} t={t} /><div className="hero-copy sr-only"><p>{t(heroQuote.q1)} {t(heroQuote.q2)}</p><span>{t(heroQuote.by)}</span></div></section>
-      {language !== 'en' && <p className="hero-caption" key={heroQuote.id}>{t(heroQuote.q1)} {t(heroQuote.q2)}<span>{t(heroQuote.by)}</span></p>}
+      <section className="hero" id="home"><HeroTicker text={[settings.ticker_message?.value_en, settings.ticker_message?.value_bn].filter(Boolean).join('\n')} audioUrl={bhajanAutoplay ? '' : setting('ticker_audio_url')} t={t} /><HeroSlides index={heroSlide} setIndex={setHeroSlide} t={t} /><HeroQuote quote={heroQuote} /></section>
+      {heroCaption && <p className="hero-caption" key={`${heroQuote.slide.id}-${heroQuote.position}`}>{heroCaption[0]} {heroCaption[1]}<span>{heroCaption[2]}</span></p>}
       <div className="hero-orgs" aria-label={t('nav_orgs')}>
         <div className="hero-orgs-track">{[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 ? true : undefined}>{ORGANISATIONS.map(org => <li key={org.id}><Link to={`/org/${org.id}`} tabIndex={copy === 1 ? -1 : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</Link></li>)}</ul>)}</div>
       </div>
