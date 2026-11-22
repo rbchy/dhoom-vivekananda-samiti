@@ -8,3 +8,12 @@
 .hero-dots button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 @media(max-width:560px){.hero-slide{background-size:100% auto;background-position:center 30px}.hero-dots{bottom:6px;gap:6px}.hero-dots button{width:9px;height:9px}}
 @media(prefers-reduced-motion:reduce){.hero-slide{transition:none}}
+/* The saying over the banner. The area has the picture's own shape (1536 × 367) and sits at the bottom of the
+   banner, so it lines up with the picture on desktop (picture fills the banner) and on phones (picture under the ticker).
+   Sizes are in cqw (1% of the picture's width), so the words scale with the picture like the old printed text. */
+.hero-quote-area{position:absolute;left:0;right:0;bottom:0;aspect-ratio:1536/367;z-index:2;pointer-events:none;container-type:inline-size}
+.hero-quote{position:absolute;left:25cqw;width:31cqw;top:28%;margin:0;padding:0;border:0;background:none;font-style:normal;text-align:center;color:#fffaf0;font-family:'Playfair Display','Noto Serif',serif;text-shadow:0 1px 3px rgba(60,20,10,.55),0 0 18px rgba(60,20,10,.35);animation:hero-quote-in 1.4s ease-in-out both}
+.hero-quote p{margin:0;font-style:normal;font-size:1.95cqw;line-height:1.3}
+.hero-quote-by{display:block;margin-top:.9cqw;font-size:1.05cqw;letter-spacing:.02em;color:#fff3d6}
+@keyframes hero-quote-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.hero-quote{animation:none}}
