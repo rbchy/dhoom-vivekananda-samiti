@@ -58,7 +58,8 @@ create table if not exists public.samiti_officials (
   name_bn       text check (name_bn is null or char_length(name_bn) <= 150),
   position      text not null default 'member'
                 check (position in ('patron', 'advisor', 'president', 'vice_president', 'general_secretary', 'joint_secretary',
-                                    'organising_secretary', 'treasurer', 'office_secretary', 'cultural_secretary', 'member', 'other')),
+                                    'assistant_secretary', 'organising_secretary', 'treasurer', 'office_secretary', 'cultural_secretary',
+                                    'publicity_secretary', 'member', 'other')),
   role_en       text check (role_en is null or char_length(role_en) <= 120),   -- the title to show (filled from the position)
   role_bn       text check (role_bn is null or char_length(role_bn) <= 120),
   term          text check (term is null or char_length(term) <= 40),         -- e.g. 2025 – 2027
