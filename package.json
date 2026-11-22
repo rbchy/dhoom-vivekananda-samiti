@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/seo-build.mjs",
     "preview": "vite preview",
     "app:build": "vite build && npx cap sync",
     "app:android": "vite build && npx cap sync android && npx cap open android",
