@@ -41,7 +41,7 @@ const organisation = {
   url: siteUrl,
   logo: siteUrl + 'app-icon-512.png',
   image: imageUrl,
-  foundingDate: '1922',
+  foundingDate: '1923',
   description: SEO_PAGES[0].description.en,
   address: { '@type': 'PostalAddress', ...ORG_ADDRESS },
   geo: { '@type': 'GeoCoordinates', ...ORG_GEO }
