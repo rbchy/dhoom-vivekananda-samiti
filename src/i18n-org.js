@@ -4,7 +4,9 @@
 // The institutions under the Samiti. Bangla name is shown for Bangla, English for every other language.
 // type: 'temple' | 'clinic' | 'cremation' — decides the icon and the small label on each card.
 export const ORGANISATIONS = [
-  { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির' },
+  { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির',
+    // Enlistment certificate from the Hindu Religious Welfare Trust (shown on the institution's page)
+    registration: { image: 'images/registration/dakshin-kalika-registration.webp', number_bn: '১২২৫৫/চট্ট/মীর/৪৯', number_en: '12255/Chatta/Mir/49', date: '2022-03-06' } },
   { id: 'durga', type: 'temple', name_en: 'Sree Sree Basanti Durga Mandir', name_bn: 'শ্রীশ্রী বাসন্তী দুর্গা মন্দির', established: '2010-03-22',
     desc_en: 'Established on 22 March 2010, the mandap holds the ten-armed Mother Durga with Lakshmi, Saraswati, Kartik, Ganesh and Lord Shiva. Basanti Puja, the worship of the Mother in spring, is the temple\'s main festival.',
     desc_bn: '২০১০ সালের ২২ মার্চ প্রতিষ্ঠিত এই মন্দিরের মণ্ডপে লক্ষ্মী, সরস্বতী, কার্তিক, গণেশ ও দেবাদিদেব মহাদেবসহ দশভুজা মা দুর্গা অধিষ্ঠিত। বসন্তকালে মায়ের আরাধনা, বাসন্তী পূজা, এই মন্দিরের প্রধান উৎসব।' },
@@ -41,6 +43,11 @@ export const ACTIVITIES = [
 
 export const ORG_TEXT = {
   en: {
+    "reg_title": "Registration",
+    "reg_cert": "Enlistment Certificate — Hindu Religious Welfare Trust, Ministry of Religious Affairs, Government of Bangladesh",
+    "reg_no": "Enlistment No.",
+    "reg_date": "Date",
+    "reg_view": "Tap the certificate to view it full size",
     menu_key_hint: "Press the underlined key to open",
     cal_title: "Festival Calendar", cal_p: "All the worship days and festivals of the Samiti in one place — dated events, and the festivals we celebrate every year in each month.", cal_today: "Today", cal_prev: "Previous month", cal_next: "Next month", cal_month_events: "This month", cal_none_month: "No festivals or events in this month.", cal_usual: "Every year in this month", cal_year: "Festivals through the year", cal_add: "Add to my calendar", cal_open: "See the full festival calendar", cal_legend_dated: "Date fixed",
     org_details: "Read more",
@@ -78,6 +85,11 @@ export const ORG_TEXT = {
     org_type_temple: 'Temple', org_type_clinic: 'Health service', org_type_cremation: 'Cremation temple'
   },
   bn: {
+    "reg_title": "নিবন্ধন",
+    "reg_cert": "তালিকাভুক্তির সনদ — হিন্দুধর্মীয় কল্যাণ ট্রাস্ট, ধর্ম বিষয়ক মন্ত্রণালয়, গণপ্রজাতন্ত্রী বাংলাদেশ সরকার",
+    "reg_no": "তালিকাভুক্তি নং",
+    "reg_date": "তারিখ",
+    "reg_view": "পূর্ণ আকারে দেখতে সনদে চাপুন",
     menu_key_hint: "দাগ দেওয়া অক্ষর বা সংখ্যা চাপলেই খুলবে",
     cal_title: "উৎসবের ক্যালেন্ডার", cal_p: "সমিতির সব পূজা ও উৎসব এক জায়গায় — তারিখ ঠিক হওয়া অনুষ্ঠান, আর প্রতি বছর কোন মাসে কোন উৎসব হয়।", cal_today: "আজ", cal_prev: "আগের মাস", cal_next: "পরের মাস", cal_month_events: "এই মাসে", cal_none_month: "এই মাসে কোনো উৎসব বা অনুষ্ঠান নেই।", cal_usual: "প্রতি বছর এই মাসে", cal_year: "সারা বছরের উৎসব", cal_add: "আমার ক্যালেন্ডারে যোগ করুন", cal_open: "সম্পূর্ণ উৎসবের ক্যালেন্ডার দেখুন", cal_legend_dated: "তারিখ ঠিক হয়েছে",
     org_details: "বিস্তারিত দেখুন",

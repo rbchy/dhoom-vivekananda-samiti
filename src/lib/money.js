@@ -42,7 +42,7 @@ const OFFICIAL_PAYMENT_INFO = {
     '',
     'শ্রী শ্রী দক্ষিণ কালিকা মন্দির (Sree Sree Dokkhin Kalika Mandir)',
     'রূপালী ব্যাংক পিএলসি (Rupali Bank PLC), শান্তিরহাট শাখা (Shantirhat Branch), মীরসরাই, চট্টগ্রাম',
-    'হিসাব নং (A/C No): 14380100011211 · রাউটিং নং (Routing No): 185156974'
+    'হিসাব নং (A/C No): 1438010011211 · রাউটিং নং (Routing No): 185156974'
   ].join('\n')
 }
 
