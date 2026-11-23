@@ -124,3 +124,15 @@
 .smriti-story p{font-family:'Playfair Display','Noto Serif Bengali',serif;font-size:clamp(16px,1.5vw,18px);line-height:1.85;color:#4a2a22;margin:0 0 18px}
 .smriti-story p:first-child::first-letter{font-size:1.5em;color:#811d29}
 .smriti-story .smriti-story-blessing{color:#811d29;font-weight:600;font-style:italic;margin-top:8px}
+
+/* Wide pillar for a long list: names in two columns (down the first, then the second) */
+.stambha-monument--wide{width:min(760px,94vw)}
+.stambha-monument--wide .stambha-shaft{width:75%}
+.stambha-monument--wide .stambha-names{display:block;columns:2;column-gap:26px;column-rule:1px dotted rgba(201,169,97,.6)}
+.stambha-monument--wide .stambha-names li{break-inside:avoid;margin-bottom:11px}
+.smriti-hero:has(.stambha-monument--wide){flex-direction:column-reverse;text-align:center}
+.smriti-hero:has(.stambha-monument--wide) .smriti-hero-text{max-width:760px}
+@media(max-width:620px){
+  .stambha-monument--wide .stambha-shaft{width:75%}
+  .stambha-monument--wide .stambha-names{columns:1}
+}
