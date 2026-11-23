@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { receiptUrl, sendReceipt, sendSummary } from '../lib/receipts'
 import { supabase } from '../lib/supabaseClient'
-import { db } from '../lib/staff'
+import { db, getCurrentStaffRole } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel, monthLabel, monthStart } from '../lib/money'
 import { describeDbError } from '../lib/dbErrors'
@@ -132,12 +133,22 @@ export default function SubscriptionsManagement() {
     setPayErrors(found)
     if (Object.keys(found).length) return
     setBusyId(paying.id)
+    const paymentId = crypto.randomUUID()
     const { error } = await db('subscription_payments').insert({
-      subscription_id: paying.id, month: `${payForm.month}-01`, amount: Number(payForm.amount), currency: payForm.currency,
+      id: paymentId, subscription_id: paying.id, month: `${payForm.month}-01`, amount: Number(payForm.amount), currency: payForm.currency,
       method: payForm.method, transaction_ref: payForm.transaction_ref.trim() || null, paid_on: payForm.paid_on
     })
     if (error) setMessage('Error: ' + describeDbError(error))
-    else { setMessage(`Payment for ${monthLabel(payForm.month)} recorded for ${paying.donor_name}.`); setPaying(null); await loadAll() }
+    else {
+      const done = `Payment for ${monthLabel(payForm.month)} recorded for ${paying.donor_name}.`
+      const subscriber = paying
+      setMessage(done); setPaying(null); await loadAll()
+      // The subscriber gets the receipt by e-mail / SMS by itself (not while a secretary's entry waits for approval)
+      if (getCurrentStaffRole() !== 'secretary' && (subscriber.email || subscriber.phone)) {
+        const summary = sendSummary(await sendReceipt('subscription', paymentId, { auto: true }))
+        if (summary) setMessage(`${done} ${summary}`)
+      }
+    }
     setBusyId(null)
   }
 
@@ -314,8 +325,8 @@ export default function SubscriptionsManagement() {
               </tr>,
               historyId === sub.id && <tr key={`${sub.id}-history`} className="history-row"><td colSpan="6">
                 <div className="month-grid">{monthsFor(sub).map(month => <span key={month} className={isPaid(sub, month) ? 'month-chip paid' : 'month-chip due'}>{monthLabel(month)} — {isPaid(sub, month) ? 'Paid' : 'Due'}</span>)}</div>
-                {history.length > 0 && <table className="admin-table inner"><thead><tr><th>Month</th><th>Amount</th><th>Method</th><th>Ref</th><th>Paid on</th><th></th></tr></thead><tbody>
-                  {history.map(p => <tr key={p.id}><td>{monthLabel(p.month)}</td><td className="num">{formatMoney(p.amount, p.currency)}</td><td>{methodLabel(p.method)}</td><td>{p.transaction_ref || '—'}</td><td>{String(p.paid_on).slice(0, 10)}</td><td><button type="button" onClick={() => deletePayment(p)}>Delete</button></td></tr>)}
+                {history.length > 0 && <table className="admin-table inner"><thead><tr><th>Month</th><th>Amount</th><th>Method</th><th>Ref</th><th>Paid on</th><th>Receipt</th></tr></thead><tbody>
+                  {history.map(p => <tr key={p.id}><td>{monthLabel(p.month)}</td><td className="num">{formatMoney(p.amount, p.currency)}</td><td>{methodLabel(p.method)}</td><td>{p.transaction_ref || '—'}</td><td>{String(p.paid_on).slice(0, 10)}</td><td className="row-actions"><a className="button-link" href={receiptUrl('subscription', p.id)} target="_blank" rel="noopener">রসিদ</a><button type="button" onClick={() => deletePayment(p)}>Delete</button></td></tr>)}
                 </tbody></table>}
               </td></tr>
             ]

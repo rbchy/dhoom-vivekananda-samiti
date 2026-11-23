@@ -204,3 +204,57 @@ select pg_temp.check((select image_url like '%/images/deities/ganga-devi.webp' a
 
 -- Basanti Durga Mandir photo: added once to the gallery under the Durga Mandir
 select pg_temp.check((select count(*) from public.gallery where image_url like '%/images/gallery/basanti-durga-mandir.webp' and organisation = 'durga') = 1, 'Durga Mandir photo is in the gallery once');
+
+-- ---------------------------------------------------------------------
+-- Accounts for audit: verification by an authorised official, locking, report archive
+-- ---------------------------------------------------------------------
+reset role;
+select pg_temp.login('accounts');
+insert into public.expense_entries (expense_date, category, description, paid_to, amount, currency, method, voucher_no, verified_at, verified_by_name)
+  values ('2026-11-08', 'puja_materials', 'Flowers for puja', 'Flower shop', 400, 'BDT', 'cash', 'EXP-AUDIT-1', now(), 'forged');
+select pg_temp.check((select verified_at is null and verified_by_name is null from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'a new expense always starts unverified (a forged verification is cleared)');
+select pg_temp.expect($$update public.expense_entries set verified_at = now() where voucher_no = 'EXP-AUDIT-1'$$, true, 'verification cannot be set by a plain update');
+select pg_temp.expect($$select public.verify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'checked')$$, true, 'the person who entered an expense cannot verify it');
+select pg_temp.login('secretary');
+select pg_temp.expect($$select public.verify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'checked')$$, true, 'the secretary cannot verify');
+select pg_temp.login('main');
+select pg_temp.expect($$select public.verify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'Voucher seen')$$, false, 'the main admin verifies an expense entered by the accounts admin');
+select pg_temp.check((select verified_by_name = 'main@example.com' and verified_role = 'admin' and verify_note = 'Voucher seen' from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'who verified, in which role and the note are recorded');
+select pg_temp.expect($$select public.verify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'again')$$, true, 'a transaction cannot be verified twice');
+select pg_temp.login('accounts');
+select pg_temp.expect($$update public.expense_entries set amount = 4000 where voucher_no = 'EXP-AUDIT-1'$$, true, 'a verified expense cannot be changed');
+select pg_temp.expect($$delete from public.expense_entries where voucher_no = 'EXP-AUDIT-1'$$, true, 'a verified expense cannot be deleted');
+select pg_temp.expect($$select public.unverify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'wrong amount')$$, true, 'only the main admin can take a verification back');
+select pg_temp.login('main');
+select pg_temp.expect($$select public.unverify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'x')$$, true, 'taking a verification back needs a reason');
+select pg_temp.expect($$select public.unverify_transaction('expense_entries', (select id from public.expense_entries where voucher_no = 'EXP-AUDIT-1'), 'Wrong amount on voucher')$$, false, 'the main admin takes a verification back with a reason');
+select pg_temp.login('accounts');
+select pg_temp.expect($$update public.expense_entries set amount = 450 where voucher_no = 'EXP-AUDIT-1'$$, false, 'after that the accounts admin can correct it');
+select pg_temp.check((select count(*) from public.verification_log where action in ('verified', 'unverified')) = 2, 'every verification and withdrawal is logged');
+select pg_temp.expect($$delete from public.verification_log$$, false, 'deleting the log is silently refused');
+select pg_temp.check((select count(*) from public.verification_log) = 2, 'the verification log cannot be deleted from the website');
+reset role;
+delete from public.expense_entries where voucher_no = 'EXP-AUDIT-1';
+
+-- Donations record who verified them
+select pg_temp.login('accounts');
+insert into public.donations (channel, status, donor_name, amount, currency, method, receipt_no, purpose, donated_on)
+  values ('office', 'verified', 'Audit Donor', 100, 'BDT', 'cash', 'DVS-AUDIT-1', 'General temple fund', current_date);
+select pg_temp.check((select verified_by_name = 'accounts@example.com' and verified_role = 'accounts_admin' from public.donations where receipt_no = 'DVS-AUDIT-1'), 'a donation records who verified it');
+reset role;
+delete from public.donations where receipt_no = 'DVS-AUDIT-1';
+
+-- Statement archive and recipients
+select pg_temp.login('nobody');
+select pg_temp.check((select count(*) from public.finance_reports) = 0 and (select count(*) from public.finance_report_recipients) = 0, 'a user without role sees no statements or recipients');
+select pg_temp.login('secretary');
+select pg_temp.expect($$insert into public.finance_report_recipients (email) values ('auditor@example.org')$$, true, 'the secretary cannot change who receives statements');
+select pg_temp.expect($$insert into public.finance_reports (report_no, kind, title, period_start, period_end, html, csv) values ('x', 'month', 'x', current_date, current_date, 'x', 'x')$$, true, 'statements cannot be written from the website');
+select pg_temp.login('accounts');
+select pg_temp.expect($$insert into public.finance_report_recipients (email, name) values ('auditor@example.org', 'Auditor')$$, false, 'the accounts admin adds a statement recipient');
+select pg_temp.expect($$insert into public.finance_report_recipients (email) values ('not-an-email')$$, true, 'a recipient must be an e-mail address');
+select pg_temp.login('anon');
+select pg_temp.check((select count(*) from public.receipt_deliveries) = 0, 'visitors cannot read receipt deliveries');
+reset role;
+delete from public.finance_report_recipients;
+\echo 'ACCOUNTS AUDIT TESTS PASSED'

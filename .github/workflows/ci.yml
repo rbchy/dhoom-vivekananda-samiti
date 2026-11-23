@@ -36,6 +36,9 @@ jobs:
       - name: Unit tests (social-post function)
         run: node --test supabase/functions/social-post/lib.test.mjs
 
+      - name: Unit tests (send-receipt and finance-report functions)
+        run: node --test supabase/functions/send-receipt/lib.test.mjs supabase/functions/finance-report/lib.test.mjs
+
       - name: Build
         run: npm run build
         env:
