@@ -53,7 +53,7 @@ insert into public.smriti_stambha (id, name_en, name_bn, role_en, role_bn, is_la
   ('d2016000-0000-4000-8000-000000000027', $q$Sri Rajani Kanta Bhowmik$q$, $q$শ্রী রজনী কান্ত ভৌমিক$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 227),
   ('d2016000-0000-4000-8000-000000000029', $q$Sri Chandra Kanta Nath$q$, $q$শ্রী চন্দ্র কান্ত নাথ$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 229),
   ('d2016000-0000-4000-8000-000000000030', $q$Sri Debendra Pal$q$, $q$শ্রী দেবেন্দ্র পাল$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 230),
-  ('d2016000-0000-4000-8000-000000000031', $q$Sri Jamini Pal$q$, $q$শ্রী জামিনী পাল$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 231)
+  ('d2016000-0000-4000-8000-000000000031', $q$Sri Jamini Pal$q$, $q$শ্রী যামিনী পাল$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 231)
 on conflict (id) do update set
   name_en = excluded.name_en, name_bn = excluded.name_bn, role_en = excluded.role_en, role_bn = excluded.role_bn,
   is_late = excluded.is_late, sort_order = excluded.sort_order, is_published = true;
