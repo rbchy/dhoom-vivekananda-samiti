@@ -14,7 +14,7 @@ const OTHER = '__other__'
 function newReceiptNo() {
   const now = new Date()
   const pad = n => String(n).padStart(2, '0')
-  return `RKT-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+  return `DVS-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
 }
 
 const makeEmptyForm = () => ({
