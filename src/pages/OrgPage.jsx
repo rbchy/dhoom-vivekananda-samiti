@@ -99,7 +99,7 @@ export default function OrgPage() {
             <div><dt>{t('reg_date')}</dt><dd>{new Intl.DateTimeFormat(current.locale || (language === 'bn' ? 'bn-BD' : 'en-GB'), { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${org.registration.date}T00:00:00`))}</dd></div>
           </dl>
           <button type="button" className="org-reg-image" onClick={() => setLightbox({ image_url: `${home}${org.registration.image}`, title_en: 'Enlistment Certificate', title_bn: 'তালিকাভুক্তির সনদ' })} aria-label={t('reg_view')}>
-            <img src={`${home}${org.registration.image}`} alt={t('reg_cert')} loading="lazy" width="1600" height="1204" />
+            <img src={`${home}${org.registration.image}`} alt={t('reg_cert')} loading="lazy" width="1600" height="1180" />
           </button>
           <small>{t('reg_view')}</small>
         </section>}
