@@ -6,12 +6,13 @@ import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel } from '../lib/mo
 import { headLabel, headsFromRows, nextNumber } from '../lib/finance'
 import AccountHeadsManager from './AccountHeadsManager'
 import IncomeExpenditureStatement from './IncomeExpenditureStatement'
+import { donationReceiptNo, incomeReceiptNo, receiptUrl, subscriptionReceiptNo } from '../lib/receipts'
 import { describeDbError } from '../lib/dbErrors'
 import { downloadCsv } from '../lib/csv'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 
 const CONFIG = {
-  income: { table: 'income_entries', dateField: 'entry_date', numberField: 'receipt_no', partyField: 'received_from', prefix: 'INC', title: 'Other Income Entry / অন্যান্য আয়', numberLabel: 'Receipt No. / রসিদ নম্বর', partyLabel: 'Received From / কার কাছ থেকে' },
+  income: { table: 'income_entries', dateField: 'entry_date', numberField: 'receipt_no', partyField: 'received_from', prefix: 'DVS-INC', title: 'Other Income Entry / অন্যান্য আয়', numberLabel: 'Receipt No. / রসিদ নম্বর', partyLabel: 'Received From / কার কাছ থেকে' },
   expense: { table: 'expense_entries', dateField: 'expense_date', numberField: 'voucher_no', partyField: 'paid_to', prefix: 'EXP', title: 'Expenditure Entry / খরচ', numberLabel: 'Voucher No. / ভাউচার নম্বর', partyLabel: 'Paid To / কাকে দেওয়া হয়েছে' }
 }
 
@@ -175,9 +176,9 @@ export default function FinanceManagement() {
   const ledger = useMemo(() => {
     const subName = id => data.subscriptions.find(s => s.id === id)?.donor_name || 'Subscriber'
     const rows = [
-      ...data.donations.map(d => ({ key: `d-${d.id}`, date: String(d.donated_on).slice(0, 10), type: 'income', source: d.channel === 'office' ? 'Donation (office)' : 'Donation (online)', category: 'Donation — দান', description: d.purpose, party: d.donor_name, amount: d.amount, currency: d.currency, method: d.method, reference: d.transaction_ref, number: d.receipt_no, eventId: d.event_catalog_id })),
-      ...data.subPayments.map(p => ({ key: `s-${p.id}`, date: String(p.paid_on).slice(0, 10), type: 'income', source: 'Monthly subscription', category: 'Monthly subscription — মাসিক চাঁদা', description: `Subscription for ${String(p.month).slice(0, 7)}`, party: subName(p.subscription_id), amount: p.amount, currency: p.currency, method: p.method, reference: p.transaction_ref, number: null, eventId: null })),
-      ...data.income.map(i => ({ key: `i-${i.id}`, id: i.id, editable: 'income', raw: i, date: String(i.entry_date).slice(0, 10), type: 'income', source: 'Other income', category: headLabel(data.heads, 'income', i.category), categoryCode: i.category, description: i.description, party: i.received_from, amount: i.amount, currency: i.currency, method: i.method, reference: i.reference, number: i.receipt_no, eventId: i.event_catalog_id })),
+      ...data.donations.map(d => ({ key: `d-${d.id}`, date: String(d.donated_on).slice(0, 10), type: 'income', source: d.channel === 'office' ? 'Donation (office)' : 'Donation (online)', category: 'Donation — দান', description: d.purpose, party: d.donor_name, amount: d.amount, currency: d.currency, method: d.method, reference: d.transaction_ref, number: donationReceiptNo(d), receiptType: 'donation', receiptId: d.id, eventId: d.event_catalog_id })),
+      ...data.subPayments.map(p => ({ key: `s-${p.id}`, date: String(p.paid_on).slice(0, 10), type: 'income', source: 'Monthly subscription', category: 'Monthly subscription — মাসিক চাঁদা', description: `Subscription for ${String(p.month).slice(0, 7)}`, party: subName(p.subscription_id), amount: p.amount, currency: p.currency, method: p.method, reference: p.transaction_ref, number: subscriptionReceiptNo(p), receiptType: 'subscription', receiptId: p.id, eventId: null })),
+      ...data.income.map(i => ({ key: `i-${i.id}`, id: i.id, editable: 'income', raw: i, date: String(i.entry_date).slice(0, 10), type: 'income', source: 'Other income', category: headLabel(data.heads, 'income', i.category), categoryCode: i.category, description: i.description, party: i.received_from, amount: i.amount, currency: i.currency, method: i.method, reference: i.reference, number: incomeReceiptNo(i), receiptType: 'income', receiptId: i.id, eventId: i.event_catalog_id })),
       ...data.expenses.map(e => ({ key: `e-${e.id}`, id: e.id, editable: 'expense', raw: e, date: String(e.expense_date).slice(0, 10), type: 'expense', source: 'Expense', category: headLabel(data.heads, 'expense', e.category), categoryCode: e.category, description: e.description, party: e.paid_to, amount: e.amount, currency: e.currency, method: e.method, reference: e.reference, number: e.voucher_no, eventId: e.event_catalog_id }))
     ]
     return rows.sort((a, b) => b.date.localeCompare(a.date))
@@ -304,7 +305,7 @@ export default function FinanceManagement() {
             <td className="num expense-cell">{row.type === 'expense' ? formatMoney(row.amount, row.currency) : ''}</td>
             <td>{methodLabel(row.method)}{row.reference && <small className="cell-sub">{row.reference}</small>}</td>
             <td>{row.number || '—'}</td>
-            <td className="row-actions">{row.editable ? <><button type="button" onClick={() => startEdit(row)}>Edit</button><button type="button" onClick={() => deleteRow(row)}>Delete</button></> : <small className="cell-sub">{row.source.startsWith('Donation') ? 'Edit in Donations' : 'Edit in Subscriptions'}</small>}</td>
+            <td className="row-actions">{row.receiptType && <a className="button-link" href={receiptUrl(row.receiptType, row.receiptId)} target="_blank" rel="noopener">রসিদ</a>}{row.editable ? <><button type="button" onClick={() => startEdit(row)}>Edit</button><button type="button" onClick={() => deleteRow(row)}>Delete</button></> : <small className="cell-sub">{row.source.startsWith('Donation') ? 'Edit in Donations' : 'Edit in Subscriptions'}</small>}</td>
           </tr>)}</tbody>
         </table></div>}
       </div>

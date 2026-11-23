@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { formatMoney } from '../lib/money'
 import { downloadCsv } from '../lib/csv'
 import { todayISO } from '../lib/validation'
+import { receiptUrl } from '../lib/receipts'
 
 // Line name in the statement for one ledger row
 function lineName(row) {
@@ -24,11 +25,13 @@ export default function IncomeExpenditureStatement({ rows, start, end, templeNam
     return currencies.map(currency => {
       const group = type => {
         const map = new Map()
+        const receipts = new Map()
         rows.filter(r => r.currency === currency && r.type === type).forEach(r => {
           const name = lineName(r)
           map.set(name, (map.get(name) || 0) + Number(r.amount))
+          if (r.receiptType) receipts.set(name, (receipts.get(name) || 0) + 1)
         })
-        return [...map.entries()].map(([name, amount]) => ({ name, amount })).sort((a, b) => b.amount - a.amount)
+        return [...map.entries()].map(([name, amount]) => ({ name, amount, receipts: receipts.get(name) || 0 })).sort((a, b) => b.amount - a.amount)
       }
       const income = group('income')
       const expense = group('expense')
@@ -52,10 +55,21 @@ export default function IncomeExpenditureStatement({ rows, start, end, templeNam
     ], lines)
   }
 
+  // Every earning with its receipt, as the annex to the statement (audit trail: each income line ↔ its receipts)
+  const register = useMemo(() => rows.filter(r => r.type === 'income').sort((a, b) => a.date.localeCompare(b.date) || String(a.number).localeCompare(String(b.number))), [rows])
+
+  function exportRegister() {
+    downloadCsv(`receipt-register-${start}-to-${toDate}.csv`, [
+      { label: 'Date', value: 'date' }, { label: 'Receipt No', value: 'number' }, { label: 'Received From', value: 'party' },
+      { label: 'Head', value: r => lineName(r) }, { label: 'Description', value: 'description' }, { label: 'Currency', value: 'currency' }, { label: 'Amount', value: r => Number(r.amount).toFixed(2) }
+    ], register)
+  }
+
   return <div>
     <div className="form-actions no-print">
       <button type="button" onClick={() => window.print()}>🖨️ Print / Save as PDF</button>
       <button type="button" onClick={exportCsv} disabled={!statements.length}>Download CSV</button>
+      <button type="button" onClick={exportRegister} disabled={!register.length}>Receipt register CSV / রসিদ খাতা</button>
     </div>
     <div className="print-area statement">
       <header className="statement-header">
@@ -78,7 +92,7 @@ export default function IncomeExpenditureStatement({ rows, start, end, templeNam
               {Array.from({ length: count }).map((_, i) => <tr key={i}>
                 <td className={leftRows[i]?.balancing ? 'balancing' : ''}>{leftRows[i]?.name || ''}</td>
                 <td className={`num ${leftRows[i]?.balancing ? 'balancing' : ''}`}>{leftRows[i] ? formatMoney(leftRows[i].amount, s.currency) : ''}</td>
-                <td className={rightRows[i]?.balancing ? 'balancing' : ''}>{rightRows[i]?.name || ''}</td>
+                <td className={rightRows[i]?.balancing ? 'balancing' : ''}>{rightRows[i]?.name || ''}{rightRows[i]?.receipts > 0 && <small className="cell-sub">{rightRows[i].receipts} receipt{rightRows[i].receipts > 1 ? 's' : ''} / রসিদ</small>}</td>
                 <td className={`num ${rightRows[i]?.balancing ? 'balancing' : ''}`}>{rightRows[i] ? formatMoney(rightRows[i].amount, s.currency) : ''}</td>
               </tr>)}
             </tbody>
@@ -87,6 +101,19 @@ export default function IncomeExpenditureStatement({ rows, start, end, templeNam
           <p className="statement-summary">Total income {formatMoney(s.totalIncome, s.currency)} · Total expenditure {formatMoney(s.totalExpense, s.currency)} · <b>{surplus ? 'Surplus' : 'Deficit'} {formatMoney(Math.abs(s.result), s.currency)}</b></p>
         </section>
       })}
+      {register.length > 0 && <section className="statement-block statement-register">
+        <h4>Annexure — Receipt register / রসিদ খাতা ({register.length})</h4>
+        <table className="statement-table">
+          <thead><tr><th>Date</th><th>Receipt No.</th><th>Received from</th><th>Head</th><th className="num">Amount</th></tr></thead>
+          <tbody>{register.map(r => <tr key={r.key}>
+            <td>{r.date}</td>
+            <td>{r.receiptType ? <a href={receiptUrl(r.receiptType, r.receiptId)} target="_blank" rel="noopener">{r.number}</a> : r.number || '—'}</td>
+            <td>{r.party || '—'}</td>
+            <td>{lineName(r)}</td>
+            <td className="num">{formatMoney(r.amount, r.currency)}</td>
+          </tr>)}</tbody>
+        </table>
+      </section>}
       <div className="statement-signatures">
         <div><span />Prepared by</div><div><span />Treasurer / কোষাধ্যক্ষ</div><div><span />President / সভাপতি</div>
       </div>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { receiptUrl } from '../lib/receipts'
 import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
@@ -273,7 +274,7 @@ export default function DonationsManagement() {
             <td className="row-actions">
               {item.status !== 'verified' && <button type="button" disabled={busyId === item.id} onClick={() => setStatus(item, 'verified')}>Verify</button>}
               {item.status === 'pending' && <button type="button" disabled={busyId === item.id} onClick={() => setStatus(item, 'rejected')}>Reject</button>}
-              {item.status === 'verified' && <a className="button-link" href={`${import.meta.env.BASE_URL}admin/receipt?id=${item.id}`} target="_blank" rel="noopener">রসিদ / Receipt</a>}
+              {item.status === 'verified' && <a className="button-link" href={receiptUrl('donation', item.id)} target="_blank" rel="noopener">রসিদ / Receipt</a>}
               <button type="button" disabled={busyId === item.id} onClick={() => handleDelete(item)}>Delete</button>
             </td>
           </tr>)}</tbody>

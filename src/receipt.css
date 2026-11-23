@@ -60,3 +60,17 @@
   .rc-sheet:nth-child(2n){break-after:page;border-top:1px dashed #bbb}
 }
 .rc-line.wide{min-width:36mm}
+
+/* Send the receipt to the donor (screen only) */
+.rc-share{max-width:210mm;margin:0 auto 14px;padding:12px 14px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);font-family:system-ui,sans-serif;font-size:14px;display:flex;flex-direction:column;gap:8px}
+.rc-share-title{margin:0;font-weight:700;color:#7a1f2b}
+.rc-share-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.rc-share label{display:flex;align-items:center;gap:6px;flex:1;min-width:240px}
+.rc-share input{flex:1;padding:6px 8px;border:1px solid #cbbfae;border-radius:6px;font:inherit}
+.rc-btn{display:inline-block;padding:7px 14px;border-radius:6px;background:#7a1f2b;color:#fff!important;font-weight:600;text-decoration:none;border:0;cursor:pointer;font:inherit;font-weight:600}
+.rc-btn-wa{background:#1f8f4e}
+.rc-btn-ghost{align-self:flex-start;background:#fff;color:#7a1f2b!important;border:1px solid #7a1f2b}
+.rc-btn.is-off{opacity:.4;pointer-events:none}
+.rc-share small{color:#6b5a46}
+.rc-stub .rc-line{white-space:normal;word-break:break-all;font-size:8.5pt}
+.rc-no{font-family:'Noto Sans Bengali',system-ui,sans-serif;letter-spacing:.3px}

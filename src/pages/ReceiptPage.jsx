@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import { ORGANISATIONS } from '../i18n-org'
+import { RECEIPT_TYPES, donationReceiptNo, incomeReceiptNo, intlPhone, subscriptionReceiptNo } from '../lib/receipts'
 import '../receipt.css'
 
 // Money receipt (মানি রসিদ) of Dhoom Vivekananda Samiti and its institutions.
 // One design, two uses:
-//   /admin/receipt?id=<donation id>           → a filled receipt for one donation, to print or save as PDF
+//   /admin/receipt?type=donation|subscription|income&id=<id> → a filled receipt for one earning: view, print/PDF,
+//                                                 and send to the donor by e-mail, SMS or WhatsApp
 //   /admin/receipt?blank=1&from=1&count=100   → blank receipts for a printed receipt book, 2 per A4 page
 // Each receipt is A5 landscape: a counterfoil (মুড়ি) kept by the Samiti, and the receipt given to the donor.
 
@@ -90,7 +92,7 @@ export function Receipt({ data = {}, number = '' }) {
         <p className="rc-stub-title">মুড়ি</p>
         <p className="rc-stub-org">{SAMITI.name_bn}</p>
         <dl>
-          <dt>রসিদ নং</dt><dd><Line value={bnDigits(no)} /></dd>
+          <dt>রসিদ নং</dt><dd><Line value={no} /></dd>
           <dt>তারিখ</dt><dd><Line value={bnDate(d.donated_on)} /></dd>
           <dt>দাতার নাম</dt><dd><Line value={name} /><Line /></dd>
           <dt>খাত</dt><dd><Line value={d.fund_name} /></dd>
@@ -112,7 +114,7 @@ export function Receipt({ data = {}, number = '' }) {
         </div>
 
         <div className="rc-titlebar">
-          <span>রসিদ নং: <b>{bnDigits(no) || <Line grow={false} />}</b></span>
+          <span>রসিদ নং: <b className="rc-no">{no || <Line grow={false} />}</b></span>
           <h2>মানি রসিদ</h2>
           <span>তারিখ: <b>{bnDate(d.donated_on) || <Line grow={false} />}</b></span>
         </div>
@@ -144,40 +146,105 @@ export function Receipt({ data = {}, number = '' }) {
   )
 }
 
+const MONTHS_BN = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর']
+const monthBn = iso => { const [y, m] = String(iso || '').split('-'); return m ? `${MONTHS_BN[Number(m) - 1]} ${bnDigits(y)}` : '' }
+
+// Load one earning of any kind and bring it to the receipt's common shape
+async function loadEarning(type, id) {
+  if (type === 'subscription') {
+    const { data: pay } = await supabase.from('subscription_payments').select('*').eq('id', id).maybeSingle()
+    if (!pay) return null
+    const { data: sub } = await supabase.from('subscriptions').select('*').eq('id', pay.subscription_id).maybeSingle()
+    return { id: pay.id, kind: 'মাসিক চাঁদা', receipt_no: subscriptionReceiptNo(pay), donated_on: pay.paid_on, donor_name: sub?.donor_name, phone: sub?.phone, email: sub?.email, address: sub?.address,
+      amount: pay.amount, currency: pay.currency, method: pay.method, transaction_ref: pay.transaction_ref, purpose: `মাসিক চাঁদা — ${monthBn(pay.month)}` }
+  }
+  if (type === 'income') {
+    const { data: inc } = await supabase.from('income_entries').select('*').eq('id', id).maybeSingle()
+    if (!inc) return null
+    return { id: inc.id, kind: 'আয়', receipt_no: incomeReceiptNo(inc), donated_on: inc.entry_date, donor_name: inc.received_from, amount: inc.amount, currency: inc.currency,
+      method: inc.method, transaction_ref: inc.reference, purpose: inc.description }
+  }
+  const { data: don } = await supabase.from('donations').select('*').eq('id', id).maybeSingle()
+  return don ? { ...don, kind: 'দান', receipt_no: donationReceiptNo(don) } : null
+}
+
+// The receipt as a short text, for e-mail, SMS and WhatsApp
+function receiptText(d, fundName) {
+  const name = d.anonymous ? 'বেনামী দাতা' : d.donor_name
+  return [
+    `${SAMITI.name_bn} — মানি রসিদ`,
+    `রসিদ নং: ${d.receipt_no}`,
+    `তারিখ: ${bnDate(d.donated_on)}`,
+    name && `প্রাপক থেকে: ${name}`,
+    `পরিমাণ: ${amountFigure(d.amount, d.currency)} (${amountInWords(d.amount, d.currency)})`,
+    `খাত: ${fundName}${d.purpose ? ` — ${d.purpose}` : ''}`,
+    `মাধ্যম: ${METHODS.find(m => m.code === d.method)?.bn || d.method}${d.transaction_ref ? ` (${d.transaction_ref})` : ''}`,
+    '',
+    'আপনার সহযোগিতার জন্য আন্তরিক কৃতজ্ঞতা। — ধুম বিবেকানন্দ সমিতি, মীরসরাই, চট্টগ্রাম'
+  ].filter(line => line !== undefined && line !== null && line !== false).join('\n')
+}
+
+function SharePanel({ data, fundName }) {
+  const [email, setEmail] = useState(data.email || '')
+  const [phone, setPhone] = useState(data.phone || '')
+  const text = receiptText(data, fundName)
+  const subject = `মানি রসিদ ${data.receipt_no} — ${SAMITI.name_bn}`
+  const enc = encodeURIComponent
+  const intl = intlPhone(phone)
+  return <div className="rc-share no-print">
+    <p className="rc-share-title">দাতাকে রসিদ পাঠান</p>
+    <div className="rc-share-row">
+      <label>ইমেইল <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="donor@example.com" /></label>
+      <a className={`rc-btn${email ? '' : ' is-off'}`} href={email ? `mailto:${email}?subject=${enc(subject)}&body=${enc(text)}` : undefined}>ইমেইল পাঠান</a>
+    </div>
+    <div className="rc-share-row">
+      <label>মোবাইল <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="01XXXXXXXXX" /></label>
+      <a className={`rc-btn${phone ? '' : ' is-off'}`} href={phone ? `sms:${phone}?&body=${enc(text)}` : undefined}>SMS পাঠান</a>
+      <a className={`rc-btn rc-btn-wa${intl ? '' : ' is-off'}`} href={intl ? `https://wa.me/${intl}?text=${enc(text)}` : undefined} target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    <button type="button" className="rc-btn rc-btn-ghost" onClick={() => navigator.clipboard?.writeText(text)}>লেখা কপি করুন</button>
+    <small>ইমেইল/SMS আপনার নিজের মেইল বা ফোনের মেসেজ অ্যাপে তৈরি হয়ে খুলবে — দেখে “Send” চাপুন। PDF পাঠাতে “প্রিন্ট / PDF” দিয়ে সেভ করে সংযুক্ত করুন।</small>
+  </div>
+}
+
 export default function ReceiptPage() {
   const [params] = useSearchParams()
   const id = params.get('id')
+  const type = RECEIPT_TYPES.includes(params.get('type')) ? params.get('type') : 'donation'
   const blank = params.get('blank') === '1'
   const from = Math.max(0, parseInt(params.get('from') || '0', 10) || 0)
   const count = Math.min(500, Math.max(1, parseInt(params.get('count') || '2', 10) || 2))
-  const [donation, setDonation] = useState(null)
+  const [earning, setEarning] = useState(null)
   const [fund, setFund] = useState('samiti')
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (!id) return
-    supabase.from('donations').select('*').eq('id', id).maybeSingle().then(({ data, error: dbError }) => {
-      if (dbError || !data) { setError('এই দানের তথ্য পাওয়া যায়নি (বা দেখার অনুমতি নেই)।'); return }
-      setDonation(data); setFund(guessFund(data.purpose))
-    })
-  }, [id])
+    loadEarning(type, id).then(data => {
+      if (!data) { setError('এই আয়ের তথ্য পাওয়া যায়নি (বা দেখার অনুমতি নেই)।'); return }
+      setEarning(data); setFund(type === 'subscription' ? 'samiti' : guessFund(data.purpose))
+    }).catch(() => setError('তথ্য লোড করা যায়নি।'))
+  }, [type, id])
 
+  const fundName = FUNDS.find(f => f.id === fund)?.name_bn
   const sheets = useMemo(() => {
     if (blank) return Array.from({ length: count }, (_, i) => ({ number: from ? String(from + i).padStart(4, '0') : '', data: {} }))
-    if (donation) return [{ data: { ...donation, fund, fund_name: FUNDS.find(f => f.id === fund)?.name_bn } }]
+    if (earning) return [{ data: { ...earning, fund, fund_name: fundName } }]
     return []
-  }, [blank, count, from, donation, fund])
+  }, [blank, count, from, earning, fund, fundName])
 
   return <div className="rc-page">
     <div className="rc-toolbar no-print">
       <Link to="/admin/dashboard">← ড্যাশবোর্ড</Link>
-      {donation && <label>খাত: <select value={fund} onChange={e => setFund(e.target.value)}>{FUNDS.map(f => <option key={f.id} value={f.id}>{f.name_bn}</option>)}</select></label>}
+      {earning && <span>{earning.kind}</span>}
+      {earning && <label>খাত: <select value={fund} onChange={e => setFund(e.target.value)}>{FUNDS.map(f => <option key={f.id} value={f.id}>{f.name_bn}</option>)}</select></label>}
       {blank && <span>ফাঁকা রসিদ: {bnDigits(count)}টি{from ? `, নং ${bnDigits(String(from).padStart(4, '0'))} থেকে` : ''} (প্রতি A4 পাতায় ২টি)</span>}
       <button type="button" onClick={() => window.print()} disabled={!sheets.length}>প্রিন্ট / PDF</button>
     </div>
-    {!id && !blank && <p className="rc-msg no-print">দানের তালিকা থেকে “রসিদ” চাপুন, অথবা ফাঁকা রসিদের জন্য <Link to="/admin/receipt?blank=1&count=2">এখানে</Link> যান।</p>}
+    {earning && <SharePanel data={earning} fundName={fundName} key={earning.id} />}
+    {!id && !blank && <p className="rc-msg no-print">আয়ের তালিকা থেকে “রসিদ” চাপুন, অথবা ফাঁকা রসিদের জন্য <Link to="/admin/receipt?blank=1&count=2">এখানে</Link> যান।</p>}
     {error && <p className="rc-msg no-print">{error}</p>}
-    {id && !donation && !error && <p className="rc-msg no-print">লোড হচ্ছে…</p>}
+    {id && !earning && !error && <p className="rc-msg no-print">লোড হচ্ছে…</p>}
     <div className="rc-sheets print-area">{sheets.map((s, i) => <Receipt key={i} data={s.data} number={s.number} />)}</div>
   </div>
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { receiptUrl } from '../lib/receipts'
 import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
@@ -314,8 +315,8 @@ export default function SubscriptionsManagement() {
               </tr>,
               historyId === sub.id && <tr key={`${sub.id}-history`} className="history-row"><td colSpan="6">
                 <div className="month-grid">{monthsFor(sub).map(month => <span key={month} className={isPaid(sub, month) ? 'month-chip paid' : 'month-chip due'}>{monthLabel(month)} — {isPaid(sub, month) ? 'Paid' : 'Due'}</span>)}</div>
-                {history.length > 0 && <table className="admin-table inner"><thead><tr><th>Month</th><th>Amount</th><th>Method</th><th>Ref</th><th>Paid on</th><th></th></tr></thead><tbody>
-                  {history.map(p => <tr key={p.id}><td>{monthLabel(p.month)}</td><td className="num">{formatMoney(p.amount, p.currency)}</td><td>{methodLabel(p.method)}</td><td>{p.transaction_ref || '—'}</td><td>{String(p.paid_on).slice(0, 10)}</td><td><button type="button" onClick={() => deletePayment(p)}>Delete</button></td></tr>)}
+                {history.length > 0 && <table className="admin-table inner"><thead><tr><th>Month</th><th>Amount</th><th>Method</th><th>Ref</th><th>Paid on</th><th>Receipt</th></tr></thead><tbody>
+                  {history.map(p => <tr key={p.id}><td>{monthLabel(p.month)}</td><td className="num">{formatMoney(p.amount, p.currency)}</td><td>{methodLabel(p.method)}</td><td>{p.transaction_ref || '—'}</td><td>{String(p.paid_on).slice(0, 10)}</td><td className="row-actions"><a className="button-link" href={receiptUrl('subscription', p.id)} target="_blank" rel="noopener">রসিদ</a><button type="button" onClick={() => deletePayment(p)}>Delete</button></td></tr>)}
                 </tbody></table>}
               </td></tr>
             ]
