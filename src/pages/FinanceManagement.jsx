@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { db } from '../lib/staff'
+import { db, getCurrentStaffRole } from '../lib/staff'
 import { checkAmount, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel } from '../lib/money'
 import { headLabel, headsFromRows, nextNumber } from '../lib/finance'
 import AccountHeadsManager from './AccountHeadsManager'
-import IncomeExpenditureStatement from './IncomeExpenditureStatement'
-import { donationReceiptNo, incomeReceiptNo, receiptUrl, subscriptionReceiptNo } from '../lib/receipts'
+import { StatementPanel, ReportsArchive } from './FinanceStatements'
+import { receiptUrl } from '../lib/receipts'
+import { buildLedger, periodFor, PERIODS } from '../../supabase/functions/finance-report/statement.js'
+import { NUMBERS } from '../../supabase/functions/finance-report/lib.js'
 import { describeDbError } from '../lib/dbErrors'
 import { downloadCsv } from '../lib/csv'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
@@ -18,20 +20,6 @@ const CONFIG = {
 
 const emptyEntry = mode => ({ date: todayISO(), category: '', description: '', party: '', amount: '', currency: 'BDT', method: 'cash', reference: '', number: nextNumber(CONFIG[mode].prefix), approved_by: '', event_id: '', notes: '' })
 
-function periodRange(period, from, to) {
-  const today = todayISO()
-  if (period === 'month') return [today.slice(0, 7) + '-01', today]
-  if (period === 'last_month') {
-    const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1)
-    const start = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
-    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0)
-    return [start, `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`]
-  }
-  if (period === 'year') return [today.slice(0, 4) + '-01-01', today.slice(0, 4) + '-12-31']
-  if (period === 'last_year') { const y = Number(today.slice(0, 4)) - 1; return [`${y}-01-01`, `${y}-12-31`] }
-  if (period === 'custom') return [from || '2000-01-01', to || '2999-12-31']
-  return ['2000-01-01', '2999-12-31']
-}
 
 function sumByCurrency(rows) {
   const totals = {}
@@ -173,18 +161,17 @@ export default function FinanceManagement() {
 
   const eventName = id => data.catalog.find(c => c.id === id)?.name_en || ''
 
-  const ledger = useMemo(() => {
-    const subName = id => data.subscriptions.find(s => s.id === id)?.donor_name || 'Subscriber'
-    const rows = [
-      ...data.donations.map(d => ({ key: `d-${d.id}`, date: String(d.donated_on).slice(0, 10), type: 'income', source: d.channel === 'office' ? 'Donation (office)' : 'Donation (online)', category: 'Donation — দান', description: d.purpose, party: d.donor_name, amount: d.amount, currency: d.currency, method: d.method, reference: d.transaction_ref, number: donationReceiptNo(d), receiptType: 'donation', receiptId: d.id, eventId: d.event_catalog_id })),
-      ...data.subPayments.map(p => ({ key: `s-${p.id}`, date: String(p.paid_on).slice(0, 10), type: 'income', source: 'Monthly subscription', category: 'Monthly subscription — মাসিক চাঁদা', description: `Subscription for ${String(p.month).slice(0, 7)}`, party: subName(p.subscription_id), amount: p.amount, currency: p.currency, method: p.method, reference: p.transaction_ref, number: subscriptionReceiptNo(p), receiptType: 'subscription', receiptId: p.id, eventId: null })),
-      ...data.income.map(i => ({ key: `i-${i.id}`, id: i.id, editable: 'income', raw: i, date: String(i.entry_date).slice(0, 10), type: 'income', source: 'Other income', category: headLabel(data.heads, 'income', i.category), categoryCode: i.category, description: i.description, party: i.received_from, amount: i.amount, currency: i.currency, method: i.method, reference: i.reference, number: incomeReceiptNo(i), receiptType: 'income', receiptId: i.id, eventId: i.event_catalog_id })),
-      ...data.expenses.map(e => ({ key: `e-${e.id}`, id: e.id, editable: 'expense', raw: e, date: String(e.expense_date).slice(0, 10), type: 'expense', source: 'Expense', category: headLabel(data.heads, 'expense', e.category), categoryCode: e.category, description: e.description, party: e.paid_to, amount: e.amount, currency: e.currency, method: e.method, reference: e.reference, number: e.voucher_no, eventId: e.event_catalog_id }))
-    ]
-    return rows.sort((a, b) => b.date.localeCompare(a.date))
-  }, [data])
+  // The account book: every verified donation, subscription payment, other income and expenditure (shared with the server reports)
+  const ledger = useMemo(() => buildLedger(data, NUMBERS).map(row => ({
+    ...row,
+    editable: row.kind === 'income' || row.kind === 'expense' ? row.kind : null,
+    receiptType: row.kind === 'expense' ? null : row.kind, receiptId: row.id,
+    table: { subscription: 'subscription_payments', income: 'income_entries', expense: 'expense_entries' }[row.kind] || null
+  })), [data])
 
-  const [start, end] = periodRange(period, from, to)
+  const [start, end] = periodFor(period, undefined, from, to)
+  const role = getCurrentStaffRole()
+  const canVerify = role === 'admin' || role === 'accounts_admin'
   const inPeriod = useMemo(() => ledger.filter(row => row.date >= start && row.date <= end), [ledger, start, end])
   const shown = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -233,12 +220,30 @@ export default function FinanceManagement() {
     else { setMessage('Entry deleted.'); await loadAll() }
   }
 
+  // An authorised official (main admin / accounts admin, not the one who entered it) checks the entry against its voucher
+  async function verifyRow(row) {
+    const note = window.prompt(`Verify ${row.type} ${row.number || ''} of ${formatMoney(row.amount, row.currency)}?\nOptional note (e.g. "voucher checked"):`, '')
+    if (note === null) return
+    const { error } = await supabase.rpc('verify_transaction', { p_table: row.table, p_id: row.id, p_note: note })
+    if (error) setMessage('Error: ' + (error.message || describeDbError(error)))
+    else { setMessage(`Verified: ${row.number || row.description}`); await loadAll() }
+  }
+
+  async function unverifyRow(row) {
+    const reason = window.prompt(`Take back the verification of ${row.number || row.description}? Give the reason (it is kept in the log):`, '')
+    if (!reason) return
+    const { error } = await supabase.rpc('unverify_transaction', { p_table: row.table, p_id: row.id, p_reason: reason })
+    if (error) setMessage('Error: ' + (error.message || describeDbError(error)))
+    else { setMessage(`Verification taken back: ${row.number || row.description}`); await loadAll() }
+  }
+
   function exportCsv() {
     downloadCsv(`temple-ledger-${start}-to-${end > todayISO() ? todayISO() : end}.csv`, [
       { label: 'Date', value: 'date' }, { label: 'Type', value: 'type' }, { label: 'Source', value: 'source' }, { label: 'Category', value: 'category' },
       { label: 'Description', value: 'description' }, { label: 'Party', value: 'party' }, { label: 'Event', value: row => eventName(row.eventId) },
       { label: 'Income', value: row => (row.type === 'income' ? row.amount : '') }, { label: 'Expense', value: row => (row.type === 'expense' ? row.amount : '') },
-      { label: 'Currency', value: 'currency' }, { label: 'Method', value: row => methodLabel(row.method) }, { label: 'Reference', value: 'reference' }, { label: 'Receipt / Voucher', value: 'number' }
+      { label: 'Currency', value: 'currency' }, { label: 'Method', value: row => methodLabel(row.method) }, { label: 'Reference', value: 'reference' }, { label: 'Receipt / Voucher', value: 'number' },
+      { label: 'Verified', value: row => (row.verified ? 'yes' : 'no') }, { label: 'Verified by', value: row => [row.verifiedBy, row.verifiedRole].filter(Boolean).join(', ') }
     ], shown)
   }
 
@@ -250,7 +255,7 @@ export default function FinanceManagement() {
 
   return <div className="events-management">
     <div className="tab-row" role="tablist">
-      {[['report', '📊 Ledger & Reports / খাতা ও হিসাব'], ['statement', '🧾 Income & Expenditure Statement / আয়-ব্যয় বিবরণী'], ['income', '➕ Add Income / আয়'], ['expense', '➖ Add Expense / খরচ'], ['heads', '🗂️ Heads / খাত']].map(([key, label]) =>
+      {[['report', '📊 Ledger & Reports / খাতা ও হিসাব'], ['statement', '🧾 Income & Expenditure Statement / আয়-ব্যয় বিবরণী'], ['archive', '🗄️ Prepared statements / প্রস্তুত বিবরণী'], ['income', '➕ Add Income / আয়'], ['expense', '➖ Add Expense / খরচ'], ['heads', '🗂️ Heads / খাত']].map(([key, label]) =>
         <button key={key} type="button" role="tab" aria-selected={tab === key} className={tab === key ? 'tab active' : 'tab'} onClick={() => { setTab(key); if (key !== 'income' && key !== 'expense') setEditing(null) }}>{label}</button>)}
     </div>
     {message && <p className="event-message" role="status">{message}</p>}
@@ -261,13 +266,14 @@ export default function FinanceManagement() {
 
     {(tab === 'report' || tab === 'statement') && <div className="filter-row no-print">
         <select aria-label="Period" value={period} onChange={e => setPeriod(e.target.value)}>
-          <option value="month">This month</option><option value="last_month">Last month</option><option value="year">This year</option><option value="last_year">Last year</option><option value="all">All time</option><option value="custom">Custom dates…</option>
+          {PERIODS.map(p => <option key={p.kind} value={p.kind}>{p.en} / {p.bn}</option>)}
         </select>
         {period === 'custom' && <><input type="date" aria-label="From" value={from} max={to || undefined} onChange={e => setFrom(e.target.value)} /><span>to</span><input type="date" aria-label="To" value={to} min={from || undefined} onChange={e => setTo(e.target.value)} /></>}
         <span className="field-hint">{start === '2000-01-01' ? 'All dates' : `${start} → ${end > todayISO() ? todayISO() : end}`}</span>
       </div>}
 
-    {tab === 'statement' && <IncomeExpenditureStatement rows={inPeriod} start={start} end={end} />}
+    {tab === 'statement' && <StatementPanel ledger={ledger} kind={period} start={start} end={end} onPrepared={() => setTab('archive')} />}
+    {tab === 'archive' && <ReportsArchive />}
 
     {tab === 'report' && <>
 
@@ -295,7 +301,7 @@ export default function FinanceManagement() {
           <button type="button" onClick={exportCsv} disabled={!shown.length}>Download CSV</button>
         </div>
         {loading ? <p>Loading...</p> : shown.length === 0 ? <p>No entries in this period.</p> : <div className="table-scroll"><table className="admin-table">
-          <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Party</th><th>Income</th><th>Expense</th><th>Method / Ref</th><th>No.</th><th></th></tr></thead>
+          <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Party</th><th>Income</th><th>Expense</th><th>Method / Ref</th><th>No.</th><th>Verified / যাচাই</th><th></th></tr></thead>
           <tbody>{shown.map(row => <tr key={row.key}>
             <td>{row.date}</td>
             <td>{row.category}<small className="cell-sub">{row.source}</small></td>
@@ -305,7 +311,10 @@ export default function FinanceManagement() {
             <td className="num expense-cell">{row.type === 'expense' ? formatMoney(row.amount, row.currency) : ''}</td>
             <td>{methodLabel(row.method)}{row.reference && <small className="cell-sub">{row.reference}</small>}</td>
             <td>{row.number || '—'}</td>
-            <td className="row-actions">{row.receiptType && <a className="button-link" href={receiptUrl(row.receiptType, row.receiptId)} target="_blank" rel="noopener">রসিদ</a>}{row.editable ? <><button type="button" onClick={() => startEdit(row)}>Edit</button><button type="button" onClick={() => deleteRow(row)}>Delete</button></> : <small className="cell-sub">{row.source.startsWith('Donation') ? 'Edit in Donations' : 'Edit in Subscriptions'}</small>}</td>
+            <td>{row.verified
+              ? <><span className="badge badge-verified">✓ verified</span>{row.verifiedBy && <small className="cell-sub">{row.verifiedBy}{row.verifiedRole ? ` (${row.verifiedRole})` : ''}</small>}{role === 'admin' && row.table && <button type="button" className="link-button" onClick={() => unverifyRow(row)}>take back</button>}</>
+              : <><span className="badge badge-pending">not verified</span>{canVerify && row.table && <button type="button" onClick={() => verifyRow(row)}>Verify</button>}</>}</td>
+            <td className="row-actions">{row.receiptType && <a className="button-link" href={receiptUrl(row.receiptType, row.receiptId)} target="_blank" rel="noopener">রসিদ</a>}{row.editable && !row.verified ? <><button type="button" onClick={() => startEdit(row)}>Edit</button><button type="button" onClick={() => deleteRow(row)}>Delete</button></> : row.editable ? <small className="cell-sub">Locked (verified)</small> : <small className="cell-sub">{row.source.startsWith('Donation') ? 'Edit in Donations' : 'Edit in Subscriptions'}</small>}</td>
           </tr>)}</tbody>
         </table></div>}
       </div>
