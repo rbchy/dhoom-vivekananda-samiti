@@ -73,10 +73,16 @@ export function localDigits(text, locale) {
 
 // A large memorial pillar with the names, serial numbers and years engraved on the stone.
 // people: [{ id, name, role, years, is_late }]
+// Many names (more than WIDE_AFTER) → a wider pillar with the names in two columns.
+// E = extra width added to each side of the drawing; the shaft is (240 + 2E) of (400 + 2E) wide.
+const WIDE_AFTER = 12
 export function StambhaMonument({ title, dedication, people = [], locale = 'en', lateLabel = '' }) {
+  const wide = people.length > WIDE_AFTER
+  const E = wide ? 120 : 0
+  const sx = (260 + 2 * E) / 260 // stretch of the gold crown so it still meets the wider shaft
   return (
-    <figure className="stambha-monument" aria-label={title}>
-      <svg className="stambha-top" viewBox="0 0 400 190" aria-hidden="true">
+    <figure className={`stambha-monument${wide ? ' stambha-monument--wide' : ''}`} aria-label={title}>
+      <svg className="stambha-top" viewBox={`${-E} 0 ${400 + 2 * E} 190`} aria-hidden="true">
         <defs>
           <linearGradient id="mon-gold" x1="0" x2="1"><stop offset="0" stopColor="#a8742a" /><stop offset=".5" stopColor="#f2c86b" /><stop offset="1" stopColor="#a8742a" /></linearGradient>
           <linearGradient id="mon-marble" x1="0" x2="1"><stop offset="0" stopColor="#d9cdb8" /><stop offset=".35" stopColor="#fbf6ec" /><stop offset=".65" stopColor="#f3ebdc" /><stop offset="1" stopColor="#c9bba2" /></linearGradient>
@@ -87,10 +93,10 @@ export function StambhaMonument({ title, dedication, people = [], locale = 'en',
         <path className="stambha-flame mon-flame" d="M200 14 C214 34 216 48 200 66 C184 48 186 34 200 14 Z" fill="url(#mon-flame)" />
         <path d="M160 70 Q200 98 240 70 Q234 88 200 91 Q166 88 160 70 Z" fill="url(#mon-gold)" />
         <rect x="192" y="90" width="16" height="10" fill="#a8742a" />
-        <path d="M70 136 Q92 104 118 124 Q132 100 150 120 Q166 96 184 118 Q200 92 216 118 Q234 96 250 120 Q268 100 282 124 Q308 104 330 136 Z" fill="url(#mon-gold)" />
-        <rect x="52" y="134" width="296" height="22" rx="3" fill="url(#mon-marble)" stroke="#b9a684" />
-        <rect x="70" y="156" width="260" height="12" fill="url(#mon-gold)" />
-        <rect x="80" y="168" width="240" height="22" fill="url(#mon-marble)" stroke="#b9a684" />
+        <path transform={`translate(200 0) scale(${sx} 1) translate(-200 0)`} d="M70 136 Q92 104 118 124 Q132 100 150 120 Q166 96 184 118 Q200 92 216 118 Q234 96 250 120 Q268 100 282 124 Q308 104 330 136 Z" fill="url(#mon-gold)" />
+        <rect x={52 - E} y="134" width={296 + 2 * E} height="22" rx="3" fill="url(#mon-marble)" stroke="#b9a684" />
+        <rect x={70 - E} y="156" width={260 + 2 * E} height="12" fill="url(#mon-gold)" />
+        <rect x={80 - E} y="168" width={240 + 2 * E} height="22" fill="url(#mon-marble)" stroke="#b9a684" />
       </svg>
       <div className="stambha-shaft">
         <div className="stambha-panel">
@@ -107,13 +113,13 @@ export function StambhaMonument({ title, dedication, people = [], locale = 'en',
           <p className="stambha-om" aria-hidden="true">ॐ</p>
         </div>
       </div>
-      <svg className="stambha-base" viewBox="0 0 400 110" aria-hidden="true">
-        <rect x="70" y="0" width="260" height="22" fill="url(#mon-marble)" stroke="#b9a684" />
-        <rect x="40" y="22" width="320" height="26" fill="url(#mon-marble)" stroke="#b9a684" />
-        <rect x="40" y="31" width="320" height="4" fill="url(#mon-gold)" opacity=".85" />
-        <rect x="10" y="48" width="380" height="32" fill="url(#mon-marble)" stroke="#b9a684" />
-        {[30, 58, 86, 314, 342, 370].map(x => <g key={x}><circle cx={x} cy="88" r="11" fill="#f2a52a" /><circle cx={x} cy="88" r="4.5" fill="#c96a26" /></g>)}
-        <ellipse cx="200" cy="102" rx="196" ry="6" fill="#000" opacity=".18" />
+      <svg className="stambha-base" viewBox={`${-E} 0 ${400 + 2 * E} 110`} aria-hidden="true">
+        <rect x={70 - E} y="0" width={260 + 2 * E} height="22" fill="url(#mon-marble)" stroke="#b9a684" />
+        <rect x={40 - E} y="22" width={320 + 2 * E} height="26" fill="url(#mon-marble)" stroke="#b9a684" />
+        <rect x={40 - E} y="31" width={320 + 2 * E} height="4" fill="url(#mon-gold)" opacity=".85" />
+        <rect x={10 - E} y="48" width={380 + 2 * E} height="32" fill="url(#mon-marble)" stroke="#b9a684" />
+        {[30, 58, 86].flatMap(x => [x - E, 400 - x + E]).map(x => <g key={x}><circle cx={x} cy="88" r="11" fill="#f2a52a" /><circle cx={x} cy="88" r="4.5" fill="#c96a26" /></g>)}
+        <ellipse cx="200" cy="102" rx={196 + E} ry="6" fill="#000" opacity=".18" />
       </svg>
     </figure>
   )
