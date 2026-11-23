@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { receiptUrl } from '../lib/receipts'
+import { receiptUrl, sendReceipt, sendSummary } from '../lib/receipts'
 import { supabase } from '../lib/supabaseClient'
-import { db } from '../lib/staff'
+import { db, getCurrentStaffRole } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel } from '../lib/money'
 import { describeDbError } from '../lib/dbErrors'
@@ -81,6 +81,7 @@ export default function DonationsManagement() {
     setSaving(true)
     const picked = catalog.find(item => item.id === form.purpose_choice)
     const payload = {
+      id: crypto.randomUUID(),
       channel: 'office',
       status: 'verified',
       donor_name: form.anonymous ? 'Anonymous' : form.donor_name.trim(),
@@ -99,8 +100,19 @@ export default function DonationsManagement() {
     }
     const { error } = await db('donations').insert(payload)
     if (error) setMessage('Error: ' + describeDbError(error))
-    else { setMessage(`Donation saved. Receipt no. ${payload.receipt_no}`); setForm(makeEmptyForm()); setErrors({}); await loadItems() }
+    else {
+      setMessage(`Donation saved. Receipt no. ${payload.receipt_no}`); setForm(makeEmptyForm()); setErrors({}); await loadItems()
+      await autoSendReceipt(payload.id, payload, `Donation saved. Receipt no. ${payload.receipt_no}`)
+    }
     setSaving(false)
+  }
+
+  // Verified donations get their receipt by e-mail / SMS by themselves (only when saved directly,
+  // not when a secretary's change still waits for approval, and only if the donor left a contact)
+  async function autoSendReceipt(id, donor, prefix) {
+    if (getCurrentStaffRole() === 'secretary' || (!donor.email && !donor.phone)) return
+    const summary = sendSummary(await sendReceipt('donation', id, { auto: true }))
+    if (summary) setMessage(`${prefix} ${summary}`)
   }
 
   async function setStatus(item, status) {
@@ -109,7 +121,10 @@ export default function DonationsManagement() {
     if (status === 'verified' && !item.receipt_no) patch.receipt_no = newReceiptNo()
     const { error } = await db('donations').update(patch).eq('id', item.id)
     if (error) setMessage('Error: ' + describeDbError(error))
-    else { setMessage(status === 'verified' ? 'Donation verified.' : 'Donation marked as rejected.'); await loadItems() }
+    else {
+      setMessage(status === 'verified' ? 'Donation verified.' : 'Donation marked as rejected.'); await loadItems()
+      if (status === 'verified') await autoSendReceipt(item.id, item, 'Donation verified.')
+    }
     setBusyId(null)
   }
 

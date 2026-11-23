@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { receiptUrl } from '../lib/receipts'
+import { receiptUrl, sendReceipt, sendSummary } from '../lib/receipts'
 import { supabase } from '../lib/supabaseClient'
-import { db } from '../lib/staff'
+import { db, getCurrentStaffRole } from '../lib/staff'
 import { checkAmount, checkOptionalEmail, checkPhone, checkText, checkTransactionRef, cleanErrors, todayISO } from '../lib/validation'
 import { CURRENCIES, PAYMENT_METHODS, formatMoney, methodLabel, monthLabel, monthStart } from '../lib/money'
 import { describeDbError } from '../lib/dbErrors'
@@ -133,12 +133,22 @@ export default function SubscriptionsManagement() {
     setPayErrors(found)
     if (Object.keys(found).length) return
     setBusyId(paying.id)
+    const paymentId = crypto.randomUUID()
     const { error } = await db('subscription_payments').insert({
-      subscription_id: paying.id, month: `${payForm.month}-01`, amount: Number(payForm.amount), currency: payForm.currency,
+      id: paymentId, subscription_id: paying.id, month: `${payForm.month}-01`, amount: Number(payForm.amount), currency: payForm.currency,
       method: payForm.method, transaction_ref: payForm.transaction_ref.trim() || null, paid_on: payForm.paid_on
     })
     if (error) setMessage('Error: ' + describeDbError(error))
-    else { setMessage(`Payment for ${monthLabel(payForm.month)} recorded for ${paying.donor_name}.`); setPaying(null); await loadAll() }
+    else {
+      const done = `Payment for ${monthLabel(payForm.month)} recorded for ${paying.donor_name}.`
+      const subscriber = paying
+      setMessage(done); setPaying(null); await loadAll()
+      // The subscriber gets the receipt by e-mail / SMS by itself (not while a secretary's entry waits for approval)
+      if (getCurrentStaffRole() !== 'secretary' && (subscriber.email || subscriber.phone)) {
+        const summary = sendSummary(await sendReceipt('subscription', paymentId, { auto: true }))
+        if (summary) setMessage(`${done} ${summary}`)
+      }
+    }
     setBusyId(null)
   }
 

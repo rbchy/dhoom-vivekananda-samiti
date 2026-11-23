@@ -74,3 +74,11 @@
 .rc-share small{color:#6b5a46}
 .rc-stub .rc-line{white-space:normal;word-break:break-all;font-size:8.5pt}
 .rc-no{font-family:'Noto Sans Bengali',system-ui,sans-serif;letter-spacing:.3px}
+
+.rc-share button.rc-btn:disabled{opacity:.45;cursor:not-allowed}
+.rc-again{flex:0 1 auto!important;min-width:0!important;font-size:13px;color:#5b4636}
+.rc-again input{flex:none!important}
+.rc-outcome{margin:0;padding:8px 10px;border-radius:6px;background:#e9f6ee;color:#1d5a35;font-size:13px}
+.rc-outcome.is-error{background:#fdecec;color:#8a1f1f}
+.rc-history{font-size:13px;color:#5b4636}
+.rc-history ul{margin:6px 0 0;padding-inline-start:18px}

@@ -1,25 +1,47 @@
 // Money receipts for every kind of earning: donations, monthly subscription payments and other income.
 // Each earning has one receipt number starting with DVS (Dhoom Vivekananda Samiti).
+import { supabase } from './supabaseClient'
+export { bdMobile, donationReceiptNo, incomeReceiptNo, subscriptionReceiptNo } from '../../supabase/functions/send-receipt/receipt-text.js'
 
 export const RECEIPT_TYPES = ['donation', 'subscription', 'income']
 
 // Link to the printable receipt of one earning (staff-only page)
 export const receiptUrl = (type, id) => `${import.meta.env.BASE_URL}admin/receipt?type=${type}&id=${id}`
 
-const short = id => String(id || '').replace(/-/g, '').slice(0, 6).toUpperCase()
-
-// Subscription payments have no stored number: it is derived, so it never changes — DVS-MS-YYYYMM-XXXXXX
-export const subscriptionReceiptNo = payment => `DVS-MS-${String(payment.month || '').slice(0, 7).replace('-', '')}-${short(payment.id)}`
-
-// Other income: its own receipt number, or a derived one for old entries saved without it
-export const incomeReceiptNo = entry => entry.receipt_no || `DVS-IN-${String(entry.entry_date || '').slice(0, 10).replace(/-/g, '')}-${short(entry.id)}`
-
-export const donationReceiptNo = donation => donation.receipt_no || `DVS-DN-${String(donation.donated_on || '').slice(0, 10).replace(/-/g, '')}-${short(donation.id)}`
-
-// Bangladeshi mobile number → international digits for WhatsApp (01XXXXXXXXX → 8801XXXXXXXXX)
+// Mobile number → international digits for WhatsApp (01XXXXXXXXX → 8801XXXXXXXXX)
 export function intlPhone(phone) {
   const digits = String(phone || '').replace(/[^0-9]/g, '')
   if (/^01\d{9}$/.test(digits)) return `88${digits}`
-  if (/^8801\d{9}$/.test(digits)) return digits
   return digits
+}
+
+// Send a receipt to the donor through the send-receipt Edge Function (e-mail and/or SMS).
+// auto: true when it is sent by itself after a donation is verified or a payment recorded.
+// Returns { results: [{ channel, to, status: sent|failed|skipped, error }] } or { error }.
+export async function sendReceipt(type, id, { channels = ['email', 'sms'], email, phone, fundName, force = false, auto = false } = {}) {
+  const { data, error } = await supabase.functions.invoke('send-receipt', {
+    body: { type, id, channels, email: email || undefined, phone: phone || undefined, fund_name: fundName || undefined, force, auto }
+  })
+  if (error) {
+    // 207 (one channel failed) still carries the results
+    const detail = await error.context?.json?.().catch(() => null)
+    if (detail?.results) return detail
+    return { error: detail?.error || 'Could not reach the receipt-sending service' }
+  }
+  return data
+}
+
+// One line for staff, e.g. "Receipt sent: e-mail ✓, SMS ✓"
+export function sendSummary(result) {
+  if (!result || result.error) return result?.error ? `Receipt not sent: ${result.error}` : ''
+  const label = { email: 'e-mail', sms: 'SMS' }
+  const sent = result.results.filter(r => r.status === 'sent').map(r => `${label[r.channel]} ✓`)
+  const failed = result.results.filter(r => r.status === 'failed').map(r => `${label[r.channel]} ✗ (${r.error})`)
+  if (!sent.length && !failed.length) return ''
+  return `Receipt ${result.receipt_no || ''} — ${[...sent, ...failed].join(', ')}`
+}
+
+export async function loadDeliveries(type, id) {
+  const { data } = await supabase.from('receipt_deliveries').select('*').eq('earning_type', type).eq('earning_id', id).order('created_at', { ascending: false })
+  return data || []
 }
