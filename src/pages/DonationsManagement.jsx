@@ -256,6 +256,7 @@ export default function DonationsManagement() {
         <select aria-label="Status" value={filters.status} onChange={e => setFilters(f => ({ ...f, status: e.target.value }))}><option value="all">All status</option><option value="pending">Pending</option><option value="verified">Verified</option><option value="rejected">Rejected</option></select>
         <input className="management-search" aria-label="Search donations" placeholder="Search name, phone, receipt, transaction ID" value={filters.search} maxLength={100} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} />
         <button type="button" onClick={exportCsv} disabled={!filtered.length}>Download CSV</button>
+        <a className="button-link" href={`${import.meta.env.BASE_URL}admin/receipt?blank=1&count=2`} target="_blank" rel="noopener">ফাঁকা রসিদ ছাপুন</a>
       </div>
       {loading ? <p>Loading...</p> : filtered.length === 0 ? <p>No donations found.</p> : (
         <div className="table-scroll"><table className="admin-table">
@@ -272,6 +273,7 @@ export default function DonationsManagement() {
             <td className="row-actions">
               {item.status !== 'verified' && <button type="button" disabled={busyId === item.id} onClick={() => setStatus(item, 'verified')}>Verify</button>}
               {item.status === 'pending' && <button type="button" disabled={busyId === item.id} onClick={() => setStatus(item, 'rejected')}>Reject</button>}
+              {item.status === 'verified' && <a className="button-link" href={`${import.meta.env.BASE_URL}admin/receipt?id=${item.id}`} target="_blank" rel="noopener">রসিদ / Receipt</a>}
               <button type="button" disabled={busyId === item.id} onClick={() => handleDelete(item)}>Delete</button>
             </td>
           </tr>)}</tbody>

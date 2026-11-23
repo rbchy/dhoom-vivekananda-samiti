@@ -39,6 +39,7 @@ const OrgPage = lazy(() => import('./pages/OrgPage'))
 const CalendarPage = lazy(() => import('./pages/CalendarPage'))
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
 const AdminLogin = lazy(() => import('./pages/AdminLogin'))
+const ReceiptPage = lazy(() => import('./pages/ReceiptPage'))
 const SiteSearch = lazy(() => import('./components/SiteSearch'))
 const PublicContactForm = lazy(() => import('./components/PublicContactForm'))
 const OnlineDonationForm = lazy(() => import('./components/PublicDonationForms').then(m => ({ default: m.OnlineDonationForm })))
@@ -460,4 +461,4 @@ function RouteSeo() {
 }
 
 const Router = import.meta.env.MODE === 'demo' ? MemoryRouter : BrowserRouter
-createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Suspense fallback={<PageLoading />}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/donors" element={<DonorsPage />} /><Route path="/committee" element={<CommitteePage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes><RouteSeo /></Suspense></Router>)
+createRoot(document.getElementById('root')).render(<Router basename={import.meta.env.MODE === 'demo' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}><Suspense fallback={<PageLoading />}><Routes><Route path="/" element={<App />} /><Route path="/smriti-stambha" element={<SmritiStambhaPage />} /><Route path="/org/:orgId" element={<OrgPage />} /><Route path="/calendar" element={<CalendarPage />} /><Route path="/visits" element={<VisitsPage />} /><Route path="/bhavadhara" element={<BhavadharaPage />} /><Route path="/donors" element={<DonorsPage />} /><Route path="/committee" element={<CommitteePage />} /><Route path="/admin" element={<Navigate to="/admin/login" replace />} /><Route path="/admin/login" element={<AdminLogin />} /><Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} /><Route path="/admin/receipt" element={<ProtectedRoute><ReceiptPage /></ProtectedRoute>} /><Route path="*" element={<Navigate to="/" replace />} /></Routes><RouteSeo /></Suspense></Router>)

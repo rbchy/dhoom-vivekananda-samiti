@@ -296,3 +296,5 @@ select[aria-invalid="true"]{border-color:#b3261e!important;background:#fff7f6!im
 .footer-hours-table th:first-child{padding-inline-start:0}
 .footer-hours-table tbody tr+tr{border-top:1px solid rgba(255,255,255,.08)}
 .footer-hours-table tr.today th,.footer-hours-table tr.today td{color:#ffd27a}
+.button-link{display:inline-block;margin:0 6px 4px 0;padding:5px 10px;border:1px solid #7a1f2b;border-radius:6px;color:#7a1f2b;background:#fff;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap}
+.button-link:hover{background:#7a1f2b;color:#fff}

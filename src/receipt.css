@@ -1,0 +1,62 @@
+/* Money receipt — A5 landscape (210 × 148.5 mm), two per A4 portrait page */
+.rc-page{min-height:100vh;background:#e9e4da;padding:20px 0 40px;font-family:'Noto Serif Bengali','Hind Siliguri',serif;color:#2b1d12}
+.rc-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:14px;max-width:210mm;margin:0 auto 14px;padding:10px 14px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);font-family:system-ui,sans-serif;font-size:14px}
+.rc-toolbar a{color:#7a1f2b;text-decoration:none;font-weight:600}
+.rc-toolbar button{margin-inline-start:auto;padding:8px 16px;border:0;border-radius:6px;background:#7a1f2b;color:#fff;font-weight:700;cursor:pointer}
+.rc-toolbar select{padding:5px 8px}
+.rc-msg{max-width:210mm;margin:0 auto 14px;font-family:system-ui,sans-serif}
+.rc-sheets{display:flex;flex-direction:column;align-items:center;gap:10px}
+
+.rc-sheet{--rc-ink:#7a1f2b;--rc-gold:#b8862f;box-sizing:border-box;width:210mm;height:148.5mm;display:grid;grid-template-columns:46mm 1fr;background:#fffdf7;box-shadow:0 4px 14px rgba(0,0,0,.12);overflow:hidden;font-size:10.5pt;line-height:1.35}
+.rc-sheet *{box-sizing:border-box}
+
+/* Counterfoil kept by the Samiti, cut along the dashed line */
+.rc-stub{padding:7mm 4mm 6mm 6mm;border-inline-end:1.5px dashed #9b8a70;display:flex;flex-direction:column;font-size:9pt;background:#faf5e8}
+.rc-stub-title{margin:0;text-align:center;font-weight:700;color:var(--rc-ink);letter-spacing:1px}
+.rc-stub-org{margin:1mm 0 3mm;text-align:center;font-size:8.5pt;font-weight:700;border-bottom:1px solid var(--rc-gold);padding-bottom:2mm}
+.rc-stub dl{margin:0;flex:1}
+.rc-stub dt{font-weight:700;color:#5b4636;margin-top:2.2mm}
+.rc-stub dd{margin:0}
+.rc-stub .rc-line{display:block;min-height:5.5mm}
+.rc-stub-sign{margin:0;padding-top:1.5mm;border-top:1px solid #6b5a46;text-align:center;font-size:8.5pt}
+
+/* Receipt for the donor */
+.rc-main{position:relative;padding:6mm 7mm 5mm 7mm;display:flex;flex-direction:column;gap:2.4mm;border:2.5mm solid transparent;border-image:repeating-linear-gradient(45deg,var(--rc-gold) 0 2px,#f3e6c4 2px 5px) 10}
+.rc-main::before{content:'';position:absolute;inset:0;background:var(--rc-emblem) center 60%/58mm no-repeat;opacity:.06;pointer-events:none}
+.rc-head{display:flex;align-items:center;gap:4mm;text-align:center;justify-content:center;padding-bottom:2mm;border-bottom:1.5px solid var(--rc-gold)}
+.rc-emblem{width:17mm;height:17mm}
+.rc-head div{flex:none}
+.rc-om{margin:0;font-size:11pt;color:var(--rc-gold);line-height:1}
+.rc-head h1{margin:0;font-size:19pt;line-height:1.15;color:var(--rc-ink);font-weight:800}
+.rc-en{margin:0;font-family:'Playfair Display',Georgia,serif;font-size:9pt;letter-spacing:1.5px;text-transform:uppercase;color:#5b4636}
+.rc-sub{margin:.5mm 0 0;font-size:8pt;color:#5b4636}
+.rc-titlebar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:3mm}
+.rc-titlebar span:last-child{text-align:end}
+.rc-titlebar h2{margin:0;padding:1mm 7mm;border-radius:99px;background:var(--rc-ink);color:#fff8e6;font-size:12.5pt;letter-spacing:1px}
+.rc-titlebar .rc-line{min-width:26mm}
+.rc-row{margin:0;display:flex;align-items:baseline;gap:2mm;white-space:nowrap}
+.rc-label{font-weight:700;color:#5b4636;white-space:nowrap}
+.rc-line{display:inline-block;min-width:20mm;border-bottom:1px dotted #6b5a46;padding:0 1mm;font-family:'Noto Sans Bengali','Hind Siliguri',sans-serif;font-weight:600;color:#14233c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rc-line.grow{flex:1}
+.rc-funds,.rc-methods{display:flex;flex-wrap:wrap;align-items:center;gap:1.2mm 3.5mm;font-size:9.2pt}
+.rc-methods .rc-line{flex:1;min-width:24mm}
+.rc-check{display:inline-flex;align-items:center;gap:1.2mm;white-space:nowrap}
+.rc-box{display:inline-grid;place-items:center;width:3.6mm;height:3.6mm;border:1px solid #5b4636;border-radius:.6mm;font-size:8pt;line-height:1;color:#14233c;font-weight:800;background:#fff}
+.rc-foot{margin-top:auto;display:grid;grid-template-columns:auto 1fr 1fr;align-items:end;gap:6mm}
+.rc-amount{display:flex;flex-direction:column;border:1.5px solid var(--rc-ink);border-radius:2mm;overflow:hidden;min-width:44mm}
+.rc-amount span{background:var(--rc-ink);color:#fff8e6;text-align:center;font-size:8.5pt;padding:.6mm 0}
+.rc-amount b{padding:1.5mm 3mm;font-size:15pt;color:#14233c;font-family:'Noto Sans Bengali',sans-serif;min-height:10mm}
+.rc-sign{text-align:center;font-size:8.5pt;color:#5b4636}
+.rc-sign-line{display:block;border-top:1px solid #6b5a46;margin-bottom:1mm}
+.rc-thanks{margin:0;text-align:center;font-size:7.6pt;color:#6b5a46}
+
+@media print{
+  @page{size:A4 portrait;margin:0}
+  html,body{background:#fff}
+  .no-print{display:none!important}
+  .rc-page{padding:0;background:#fff;min-height:0}
+  .rc-sheets,.rc-sheets.print-area{display:block;position:static}
+  .rc-sheet{box-shadow:none;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rc-sheet:nth-child(2n){break-after:page;border-top:1px dashed #bbb}
+}
+.rc-line.wide{min-width:36mm}
