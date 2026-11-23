@@ -16,8 +16,8 @@ export const SEO_PAGES = [
     changefreq: 'weekly',
     title: { en: 'Dhoom Vivekananda Samiti — Temples & Community Clinic, Mirsharai, Chattogram', bn: 'ধুম বিবেকানন্দ সমিতি — মন্দির ও কমিউনিটি ক্লিনিক, মীরসরাই, চট্টগ্রাম' },
     description: {
-      en: 'Dhoom Vivekananda Samiti (since 1922), Dhoom, Mirsharai, Chattogram: Ramakrishna, Kali, Durga and Shiv temples, a community clinic, festivals, puja timings and service work inspired by Sri Ramakrishna and Swami Vivekananda.',
-      bn: 'ধুম বিবেকানন্দ সমিতি (১৯২২ সাল থেকে), ধুম, মীরসরাই, চট্টগ্রাম: শ্রীশ্রী রামকৃষ্ণ, দক্ষিণকালিকা, দুর্গা ও শিব মন্দির, কমিউনিটি ক্লিনিক, পূজার সময়সূচি, উৎসব ও সেবাকাজ।'
+      en: 'Dhoom Vivekananda Samiti (since 1923), Dhoom, Mirsharai, Chattogram: Ramakrishna, Kali, Durga and Shiv temples, a community clinic, festivals, puja timings and service work inspired by Sri Ramakrishna and Swami Vivekananda.',
+      bn: 'ধুম বিবেকানন্দ সমিতি (১৯২৩ সাল থেকে), ধুম, মীরসরাই, চট্টগ্রাম: শ্রীশ্রী রামকৃষ্ণ, দক্ষিণকালিকা, দুর্গা ও শিব মন্দির, কমিউনিটি ক্লিনিক, পূজার সময়সূচি, উৎসব ও সেবাকাজ।'
     }
   },
   {
@@ -34,10 +34,10 @@ export const SEO_PAGES = [
     path: '/smriti-stambha',
     priority: '0.6',
     changefreq: 'yearly',
-    title: { en: 'Smriti Stambha — Founders of the Samiti (1922)', bn: 'স্মৃতিস্তম্ভ — সমিতির প্রতিষ্ঠাতাগণ (১৯২২)' },
+    title: { en: 'Smriti Stambha — Founders of the Samiti (1923)', bn: 'স্মৃতিস্তম্ভ — সমিতির প্রতিষ্ঠাতাগণ (১৯২৩)' },
     description: {
-      en: 'In grateful memory of the founders who established Dhoom Vivekananda Samiti in 1922 in Dhoom, Mirsharai — the story of the Samiti and the names of its founding committee.',
-      bn: '১৯২২ সালে মীরসরাইয়ের ধুম গ্রামে যাঁরা ধুম বিবেকানন্দ সমিতি প্রতিষ্ঠা করেছিলেন, সেই প্রতিষ্ঠাতাদের কৃতজ্ঞ স্মরণে — সমিতির ইতিহাস ও প্রতিষ্ঠাকালীন কমিটির নাম।'
+      en: 'In grateful memory of the founders who established Dhoom Vivekananda Samiti in 1923 in Dhoom, Mirsharai — the story of the Samiti and the names of its founding committee.',
+      bn: '১৯২৩ সালে মীরসরাইয়ের ধুম গ্রামে যাঁরা ধুম বিবেকানন্দ সমিতি প্রতিষ্ঠা করেছিলেন, সেই প্রতিষ্ঠাতাদের কৃতজ্ঞ স্মরণে — সমিতির ইতিহাস ও প্রতিষ্ঠাকালীন কমিটির নাম।'
     }
   },
   {
