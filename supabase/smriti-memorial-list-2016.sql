@@ -3,16 +3,31 @@
 -- Run once in Supabase → SQL Editor. Safe to run again (it updates the same rows).
 --
 -- Kept as they are: the five founders of 1923 already on the Stambha, with their tributes.
--- Two names of the list are those founders and are not added a second time:
---   no. 14 Rohini Kumar Acharya  (= d1922000-0000-4000-8000-000000000002)
---   no. 28 Jagabandhu Nath       (= d1922000-0000-4000-8000-000000000003)
--- The other 29 are added after the founders (sort_order 201–231 = diary no. 1–31).
+-- Five names of the list are already on the Stambha and are not added a second time
+-- (confirmed by the Samiti, Nov 2026):
+--   no. 1  Chitta Ranjan Dutta     = Dr. Chittaharan Dutta       (d1922000-…-000000000001)
+--   no. 2  Dhirendra Kumar Dutta   = founder listed as Dhirendra Chandra Dutta (…-000000000004) — name corrected below
+--   no. 13 Bipin Acharya           = listed as Dr. Bipin Dutta   (…-000000000005) — name corrected below
+--   no. 14 Rohini Kumar Acharya    (…-000000000002)
+--   no. 28 Jagabandhu Nath         (…-000000000003)
+-- The other 26 are added after the founders (sort_order 201–231 = diary no. 1–31).
 
 begin;
 
+-- Correct two names already on the Stambha (name and the same name inside the tribute)
+update public.smriti_stambha
+set name_en = 'Sri Dhirendra Kumar Dutta', name_bn = 'শ্রী ধীরেন্দ্র কুমার দত্ত',
+    tribute_en = replace(tribute_en, 'Dhirendra Chandra Dutta', 'Dhirendra Kumar Dutta'),
+    tribute_bn = replace(tribute_bn, 'ধীরেন্দ্র চন্দ্র দত্ত', 'ধীরেন্দ্র কুমার দত্ত')
+where id = 'd1922000-0000-4000-8000-000000000004';
+
+update public.smriti_stambha
+set name_en = 'Dr. Bipin Acharya', name_bn = 'ডা. বিপিন আচার্য',
+    tribute_en = replace(tribute_en, 'Bipin Dutta', 'Bipin Acharya'),
+    tribute_bn = replace(tribute_bn, 'বিপিন দত্ত', 'বিপিন আচার্য')
+where id = 'd1922000-0000-4000-8000-000000000005';
+
 insert into public.smriti_stambha (id, name_en, name_bn, role_en, role_bn, is_late, sort_order) values
-  ('d2016000-0000-4000-8000-000000000001', $q$Sri Chitta Ranjan Dutta$q$, $q$শ্রী চিত্ত রঞ্জন দত্ত$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 201),
-  ('d2016000-0000-4000-8000-000000000002', $q$Sri Dhirendra Kumar Dutta$q$, $q$শ্রী ধীরেন্দ্র কুমার দত্ত$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 202),
   ('d2016000-0000-4000-8000-000000000003', $q$Sri Nripendra Kumar Dutta$q$, $q$শ্রী নৃপেন্দ্র কুমার দত্ত$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 203),
   ('d2016000-0000-4000-8000-000000000004', $q$Sri Noni Gopal Dutta$q$, $q$শ্রী ননী গোপাল দত্ত$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 204),
   ('d2016000-0000-4000-8000-000000000005', $q$Sri Nobo Gopal Dutta$q$, $q$শ্রী নব গোপাল দত্ত$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 205),
@@ -23,7 +38,6 @@ insert into public.smriti_stambha (id, name_en, name_bn, role_en, role_bn, is_la
   ('d2016000-0000-4000-8000-000000000010', $q$Sri Mukul Kar Chowdhury$q$, $q$শ্রী মুকুল কর চৌধুরী$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 210),
   ('d2016000-0000-4000-8000-000000000011', $q$Sri Parijat Dutta$q$, $q$শ্রী পারিজাত দত্ত$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 211),
   ('d2016000-0000-4000-8000-000000000012', $q$Sri Akshay Kumar Acharya$q$, $q$শ্রী অক্ষয় কুমার আচার্য$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 212),
-  ('d2016000-0000-4000-8000-000000000013', $q$Sri Bipin Acharya$q$, $q$শ্রী বিপিন আচার্য$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 213),
   ('d2016000-0000-4000-8000-000000000015', $q$Sri Phanibhushan Acharya$q$, $q$শ্রী ফণিভূষণ আচার্য$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 215),
   ('d2016000-0000-4000-8000-000000000016', $q$Sri Dhirendra Kumar Acharya$q$, $q$শ্রী ধীরেন্দ্র কুমার আচার্য$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 216),
   ('d2016000-0000-4000-8000-000000000017', $q$Sri Rebati Acharya$q$, $q$শ্রী রেবতী আচার্য$q$, $q$Memorial Member$q$, $q$স্মরণীয় সদস্য$q$, true, 217),
@@ -46,5 +60,5 @@ on conflict (id) do update set
 
 commit;
 
--- Check: should list 29 names (with the 5 founders, 34 on the Stambha)
+-- Check: should list 26 names (with the 5 already there, 31 on the Stambha)
 select sort_order, name_bn from public.smriti_stambha where id::text like 'd2016000-%' order by sort_order;
