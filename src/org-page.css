@@ -46,3 +46,15 @@
 .org-foot span{color:#d4a056;padding:0 7px}
 @media(max-width:900px){.org-main{grid-template-columns:1fr}.org-side{position:static}}
 @media(max-width:560px){.org-bar-brand span{display:none}.org-back{padding:7px 10px;font-size:13px}.org-photo-grid{grid-template-columns:1fr 1fr}.org-photo-grid img{height:140px}}
+
+/* Registration / enlistment certificate on an institution's page */
+.org-registration{margin-top:28px;padding:18px;border:1px solid #e6d3a8;border-radius:10px;background:#fffaf0}
+.org-registration h3{display:flex;align-items:center;gap:8px;margin:0 0 6px}
+.org-reg-cert{margin:0 0 10px;color:#5b4636}
+.org-reg-facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0 0 12px}
+.org-reg-facts div{display:flex;gap:6px}
+.org-reg-facts dt{color:#7a6252}
+.org-reg-facts dd{margin:0;font-weight:700}
+.org-reg-image{display:block;width:100%;padding:0;border:1px solid #e6d3a8;border-radius:8px;overflow:hidden;background:#fff;cursor:zoom-in}
+.org-reg-image img{display:block;width:100%;height:auto}
+.org-registration small{display:block;margin-top:6px;color:#7a6252}

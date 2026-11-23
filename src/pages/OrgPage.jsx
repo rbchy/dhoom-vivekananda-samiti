@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { ArrowLeft, CalendarDays, Clock, Flame, HeartHandshake, Images, Landmark, MapPin, Stethoscope } from 'lucide-react'
+import { ArrowLeft, BadgeCheck, CalendarDays, Clock, Flame, HeartHandshake, Images, Landmark, MapPin, Stethoscope } from 'lucide-react'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import Modal from '../components/Modal'
 import { supabase } from '../lib/supabaseClient'
@@ -90,6 +90,19 @@ export default function OrgPage() {
           <figcaption>🙏 {t('pranam_label')}</figcaption>
           <blockquote lang={language === 'bn' || !content?.mantra_en ? 'bn' : 'sa-Latn'}>{mantra.split('\n').map((line, i) => <span key={i}>{line}</span>)}</blockquote>
         </figure>}
+
+        {org.registration && <section className="org-registration" aria-label={t('reg_title')}>
+          <h3><BadgeCheck size={20} /> {t('reg_title')}</h3>
+          <p className="org-reg-cert">{t('reg_cert')}</p>
+          <dl className="org-reg-facts">
+            <div><dt>{t('reg_no')}</dt><dd>{language === 'bn' ? org.registration.number_bn : org.registration.number_en}</dd></div>
+            <div><dt>{t('reg_date')}</dt><dd>{new Intl.DateTimeFormat(current.locale || (language === 'bn' ? 'bn-BD' : 'en-GB'), { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${org.registration.date}T00:00:00`))}</dd></div>
+          </dl>
+          <button type="button" className="org-reg-image" onClick={() => setLightbox({ image_url: `${home}${org.registration.image}`, title_en: 'Enlistment Certificate', title_bn: 'তালিকাভুক্তির সনদ' })} aria-label={t('reg_view')}>
+            <img src={`${home}${org.registration.image}`} alt={t('reg_cert')} loading="lazy" width="1600" height="1204" />
+          </button>
+          <small>{t('reg_view')}</small>
+        </section>}
 
         {photos.length > 0 && <section className="org-photos" aria-label={t('gallery_title')}>
           <h3><Images size={20} /> {t('gallery_title')} <small>({photos.length})</small></h3>

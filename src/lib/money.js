@@ -30,12 +30,28 @@ export function formatMoney(amount, currency = 'BDT', locale = 'en-US') {
   }
 }
 
-// Payment details shown to online donors — set these in the .env file
+// Official payment details approved by the committee (Nov 2026), per institution.
+// A VITE_DONATION_* variable in .env / GitHub repo variables still overrides each one.
+const OFFICIAL_PAYMENT_INFO = {
+  bkash: '01812381544 — ধুম বিবেকানন্দ সমিতি (Dhoom Vivekananda Samiti)',
+  nagad: '01854018902 — ধুম বিবেকানন্দ সমিতি (Dhoom Vivekananda Samiti)',
+  bank: [
+    'ধুম বিবেকানন্দ সমিতি (Dhoom Vivekananda Samiti)',
+    'রূপালী ব্যাংক পিএলসি (Rupali Bank PLC), শান্তিরহাট শাখা (Shantirhat Branch), মীরসরাই, চট্টগ্রাম',
+    'হিসাব নং (A/C No): 1438010008825 · রাউটিং নং (Routing No): 185156974',
+    '',
+    'শ্রী শ্রী দক্ষিণ কালিকা মন্দির (Sree Sree Dokkhin Kalika Mandir)',
+    'রূপালী ব্যাংক পিএলসি (Rupali Bank PLC), শান্তিরহাট শাখা (Shantirhat Branch), মীরসরাই, চট্টগ্রাম',
+    'হিসাব নং (A/C No): 1438010011211 · রাউটিং নং (Routing No): 185156974'
+  ].join('\n')
+}
+
+// Payment details shown to online donors
 export const PAYMENT_INFO = {
-  bkash: import.meta.env.VITE_DONATION_BKASH || '',
-  nagad: import.meta.env.VITE_DONATION_NAGAD || '',
+  bkash: import.meta.env.VITE_DONATION_BKASH || OFFICIAL_PAYMENT_INFO.bkash,
+  nagad: import.meta.env.VITE_DONATION_NAGAD || OFFICIAL_PAYMENT_INFO.nagad,
   rocket: import.meta.env.VITE_DONATION_ROCKET || '',
-  bank: import.meta.env.VITE_DONATION_BANK || '',
+  bank: (import.meta.env.VITE_DONATION_BANK || OFFICIAL_PAYMENT_INFO.bank).replace(/\\n/g, '\n'),
   cardUrl: import.meta.env.VITE_DONATION_PAYMENT_URL || ''
 }
 
