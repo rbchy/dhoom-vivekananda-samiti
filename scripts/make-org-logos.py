@@ -127,13 +127,21 @@ def sym_durga():
 
 
 def sym_shiv():
-    # Shiva lingam on its base, three lines of tripundra, crescent
-    return ('M270 236 C270 176 280 138 300 138 C320 138 330 176 330 236 Z '
-            'M280 170 L320 170 L320 175 L280 175 Z M278 182 L322 182 L322 187 L278 187 Z M277 194 L323 194 L323 199 L277 199 Z '
-            'M300 156 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 '
-            'M232 236 L368 236 C368 250 356 258 340 258 L260 258 C244 258 232 250 232 236 Z '
-            'M368 240 L396 244 C398 250 394 254 388 254 L364 252 Z '
-            'M250 258 L350 258 L344 274 L256 274 Z M240 274 L360 274 L360 284 L240 284 Z ')
+    # Lord Shiva and Ma Ganga together: the Shiva Linga with tripundra and crescent moon,
+    # and Ganga flowing down from above onto the Linga (jalabhishek), ending in waves at its foot
+    linga = ('M276 246 C276 196 284 166 300 166 C316 166 324 196 324 246 Z '
+             'M284 196 L316 196 L316 200 L284 200 Z M282 206 L318 206 L318 210 L282 210 Z M281 216 L319 216 L319 220 L281 220 Z '
+             'M300 184 m-3.5 0 a3.5 3.5 0 1 0 7 0 a3.5 3.5 0 1 0 -7 0 '
+             'M240 246 L360 246 C360 258 350 266 336 266 L264 266 C250 266 240 258 240 246 Z '
+             'M360 250 L388 254 C390 260 386 264 380 264 L356 262 Z '
+             'M256 266 L344 266 L338 280 L262 280 Z M246 280 L354 280 L354 290 L246 290 Z ')
+    moon = 'M318 140 a15 15 0 1 0 22 18 a11 11 0 1 1 -22 -18 Z'
+    ganga = ''
+    waves = ('M214 304 C226 296 238 296 250 304 C262 312 274 312 286 304 C298 296 310 296 322 304 C334 312 346 312 358 304 C370 296 382 296 388 302 '
+             'L388 308 C382 302 370 302 358 310 C346 318 334 318 322 310 C310 302 298 302 286 310 C274 318 262 318 250 310 C238 302 226 302 214 310 Z '
+             'M232 318 C244 312 256 312 268 318 C280 324 292 324 304 318 C316 312 328 312 340 318 C352 324 364 324 370 320 '
+             'L370 325 C364 329 352 329 340 323 C328 317 316 317 304 323 C292 329 280 329 268 323 C256 317 244 317 232 323 Z')
+    return linga + moon + ' ' + waves
 
 
 def sym_ramakrishna():
@@ -169,10 +177,17 @@ def sym_gourishankar():
             'M262 262 L338 262 C338 274 326 282 312 282 L288 282 C274 282 262 274 262 262 Z')
 
 
+# Lines drawn with a pen (gold stroke) on top of a symbol: Ma Ganga's stream onto the Shiva Linga
+STROKES = {
+    'shiv': '<path d="M218 118 C244 98 270 110 280 126 C288 140 294 150 300 160" fill="none" stroke="url(#gt)" stroke-width="10" stroke-linecap="round"/>'
+            '<path d="M222 140 C240 128 256 132 266 142 C272 148 276 154 280 160" fill="none" stroke="url(#gt)" stroke-width="5" stroke-linecap="round"/>'
+            '<circle cx="292" cy="172" r="3" fill="url(#gt)"/><circle cx="308" cy="174" r="2.5" fill="url(#gt)"/>'
+}
+
 INSTITUTIONS = [
     ('dakshin-kalika', sym_kali, ['শ্রীশ্রী', 'দক্ষিণকালিকা মন্দির'], 'SREE SREE DOKKHIN KALIKA MANDIR'),
     ('durga', sym_durga, ['শ্রীশ্রী', 'বাসন্তী দুর্গা মন্দির'], 'SREE SREE BASANTI DURGA MANDIR'),
-    ('shiv', sym_shiv, ['শ্রীশ্রী', 'শিব মন্দির'], 'SREE SREE SHIV MANDIR'),
+    ('shiv', sym_shiv, ['শ্রীশ্রী মহাদেব ও মা গঙ্গা', 'শিব মন্দির'], 'SHIV MANDIR · LORD SHIVA & MA GANGA'),
     ('ramakrishna', sym_ramakrishna, ['শ্রীশ্রী', 'রামকৃষ্ণ মন্দির'], 'SREE SREE RAMAKRISHNA MANDIR'),
     ('clinic', sym_clinic, ['কমিউনিটি', 'ক্লিনিক'], 'COMMUNITY CLINIC'),
     ('gourishankar', sym_gourishankar, ['শ্রীশ্রী গৌরীশংকর', 'শ্মশান মন্দির'], 'SREE SREE GOURISHANKAR FUNERAL TEMPLE'),
@@ -184,7 +199,7 @@ def fit(face, text, size, max_width):
     return size if w <= max_width else size * max_width / w
 
 
-def logo(symbol, name_lines, name_en):
+def logo(symbol, name_lines, name_en, strokes=''):
     ring_top = arc(BN, 'ধুম বিবেকানন্দ সমিতি', 40, 236, top=True, spacing=1.5)
     ring_bottom = arc(EN, 'DHOOM VIVEKANANDA SAMITI', 26, 262, top=False, spacing=3)
     small, big = name_lines
@@ -210,6 +225,7 @@ def logo(symbol, name_lines, name_en):
 <path d="{ring_bottom}"/>
 <path d="{star(54, 300)} {star(546, 300)}"/>
 <path fill-rule="evenodd" d="{symbol()}"/>
+{strokes}
 <path d="{text}"/>
 <rect x="200" y="334" width="200" height="2" rx="1"/>
 </g>
@@ -221,5 +237,5 @@ if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
     for oid, symbol, lines, en in INSTITUTIONS:
         with open(os.path.join(OUT, f'{oid}.svg'), 'w') as f:
-            f.write(logo(symbol, lines, en))
+            f.write(logo(symbol, lines, en, STROKES.get(oid, '')))
         print('wrote', oid)
