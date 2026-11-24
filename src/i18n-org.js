@@ -20,6 +20,19 @@ export const ORGANISATIONS = [
   { id: 'gourishankar', type: 'cremation', name_en: 'Sree Sree GouriShankar Funeral Temple', name_bn: 'শ্রীশ্রী গৌরীশংকর শ্মশান মন্দির' }
 ]
 
+// Service work of the Samiti that has its own page (/service/<id>) but is not an institution
+export const SERVICES = [
+  { id: 'clothes', type: 'service', name_en: 'Annual Clothes Distribution', name_bn: 'বার্ষিক বস্ত্র বিতরণ',
+    desc_en: 'Every year, before the winter and the great festivals, the Samiti gives new clothes and blankets to distressed and poor families of the area, without any distinction. Devotees and well-wishers make it possible with their gifts of money and clothes.',
+    desc_bn: 'প্রতি বছর শীতের আগে ও বড় উৎসবের সময় সমিতি এলাকার দুঃস্থ ও দরিদ্র পরিবারের মাঝে কোনো ভেদাভেদ ছাড়াই নতুন বস্ত্র ও কম্বল বিতরণ করে। ভক্ত ও শুভানুধ্যায়ীদের অর্থ ও বস্ত্র দানে এই সেবা সম্ভব হয়।' },
+  { id: 'gita', type: 'service', name_en: 'Gita Learning Centre for Young Children', name_bn: 'শিশুদের জন্য গীতা শিক্ষা কেন্দ্র',
+    desc_en: 'In a joyful weekly class, children learn to recite verses of the Bhagavad Gita, simple prayers and the values the Gita teaches — truthfulness, kindness, duty and devotion — through stories and songs.',
+    desc_bn: 'আনন্দময় সাপ্তাহিক ক্লাসে শিশুরা গল্প ও গানের মাধ্যমে শ্রীমদ্ভগবদ্গীতার শ্লোক আবৃত্তি, সহজ প্রার্থনা এবং গীতার শিক্ষা — সত্য, দয়া, কর্তব্য ও ভক্তি — শেখে।' }
+]
+// Page of an institution or a service work
+export const pageOf = id => ORGANISATIONS.find(o => o.id === id) || SERVICES.find(s => s.id === id)
+export const pagePath = id => (SERVICES.some(s => s.id === id) ? `/service/${id}` : `/org/${id}`)
+
 // Address used for Google Maps (map and "Get directions"). Always in English so Google finds it.
 // A "Google Maps link" saved in Admin → Temple Info & Contacts takes priority over this.
 export const MAP_ADDRESS = 'Dhoom Vivekananda Samiti, Dhoom, Mohazanhat-4328, Mirsharai, Chattogram, Bangladesh'
@@ -48,6 +61,7 @@ export const ACTIVITIES = [
 export const ORG_TEXT = {
   en: {
     "org_deities": "Deities worshipped here",
+    "org_type_service": "Service work",
     "reg_title": "Registration",
     "reg_cert": "Enlistment Certificate — Hindu Religious Welfare Trust, Ministry of Religious Affairs, Government of Bangladesh",
     "reg_no": "Enlistment No.",
@@ -91,6 +105,7 @@ export const ORG_TEXT = {
   },
   bn: {
     "org_deities": "এখানে পূজিত ঠাকুর",
+    "org_type_service": "সেবাকাজ",
     "reg_title": "নিবন্ধন",
     "reg_cert": "তালিকাভুক্তির সনদ — হিন্দুধর্মীয় কল্যাণ ট্রাস্ট, ধর্ম বিষয়ক মন্ত্রণালয়, গণপ্রজাতন্ত্রী বাংলাদেশ সরকার",
     "reg_no": "তালিকাভুক্তি নং",

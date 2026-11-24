@@ -66,6 +66,7 @@
 .org-bar-title{margin:0;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;font-family:'Playfair Display','Noto Serif Bengali',serif;font-weight:700;font-size:clamp(15px,1.8vw,21px);color:#8a4b12;max-width:42vw}
 .org-bar-title span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .org-bar-title svg{flex:none;color:#b8862f}
+.org-bar-logo{width:44px;height:44px;border-radius:50%;flex:none}
 @media(max-width:900px){.org-bar--titled .org-bar-brand{font-size:15px}.org-bar--titled .org-bar-brand img{width:40px;height:40px}.org-bar-title{font-size:15px}}
 @media(max-width:560px){
   .org-bar--titled{grid-template-columns:auto 1fr;grid-template-areas:'brand actions' 'title title';row-gap:6px}
@@ -91,3 +92,4 @@
 .org-deity-time{margin:0 0 8px;color:#8a4b12;font-weight:600;font-size:14px}
 .org-deity blockquote{margin:0;padding:8px 10px;border-top:1px dashed #e6d3a8;color:#5b4636;font-size:14px;line-height:1.6}
 .org-deity blockquote span{display:block}
+@media(max-width:560px){.org-bar-logo{width:34px;height:34px}}

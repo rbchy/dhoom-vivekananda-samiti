@@ -128,6 +128,22 @@ export const SEO_PAGES = [
       en: 'Community clinic of Dhoom Vivekananda Samiti in Dhoom, Mirsharai, Chattogram — health care for the people of the area.',
       bn: 'ধুম, মীরসরাই, চট্টগ্রামে ধুম বিবেকানন্দ সমিতির কমিউনিটি ক্লিনিক — এলাকার মানুষের জন্য চিকিৎসাসেবা।'
     }
+  },
+  {
+    path: '/service/clothes', priority: '0.6', changefreq: 'monthly',
+    title: { en: 'Annual Clothes Distribution — Dhoom Vivekananda Samiti', bn: 'বার্ষিক বস্ত্র বিতরণ — ধুম বিবেকানন্দ সমিতি' },
+    description: {
+      en: 'Every year Dhoom Vivekananda Samiti gives new clothes and blankets to distressed families in Dhoom, Mirsharai, Chattogram.',
+      bn: 'প্রতি বছর ধুম বিবেকানন্দ সমিতি ধুম, মীরসরাই, চট্টগ্রামের দুঃস্থ পরিবারের মাঝে নতুন বস্ত্র ও কম্বল বিতরণ করে।'
+    }
+  },
+  {
+    path: '/service/gita', priority: '0.6', changefreq: 'monthly',
+    title: { en: 'Gita Learning Centre for Young Children — Dhoom Vivekananda Samiti', bn: 'শিশুদের জন্য গীতা শিক্ষা কেন্দ্র — ধুম বিবেকানন্দ সমিতি' },
+    description: {
+      en: 'Children learn Bhagavad Gita verses, prayers and values in a joyful weekly class at Dhoom Vivekananda Samiti.',
+      bn: 'ধুম বিবেকানন্দ সমিতিতে আনন্দময় সাপ্তাহিক ক্লাসে শিশুরা শেখে গীতার শ্লোক, প্রার্থনা ও মূল্যবোধ।'
+    }
   }
 ]
 

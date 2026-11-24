@@ -5,10 +5,10 @@ import LanguageSwitcher from '../components/LanguageSwitcher'
 import Modal from '../components/Modal'
 import { supabase } from '../lib/supabaseClient'
 import { getInitialLanguage, getLanguage, saveLanguage, translate } from '../i18n'
-import { ACTIVITIES, ORGANISATIONS } from '../i18n-org'
+import { ACTIVITIES, ORGANISATIONS, pageOf, pagePath } from '../i18n-org'
 import '../org-page.css'
 
-const ICONS = { temple: Landmark, clinic: Stethoscope, cremation: Flame }
+const ICONS = { temple: Landmark, clinic: Stethoscope, cremation: Flame, service: HeartHandshake }
 const home = `${import.meta.env.BASE_URL}`
 
 // Bangla text for Bangla, English text for every other language (falls back to the other one)
@@ -17,7 +17,9 @@ const pick = (item, field, language) => (language === 'bn' ? item?.[`${field}_bn
 // Public page of one institution: /org/<id>
 export default function OrgPage() {
   const { orgId } = useParams()
-  const org = ORGANISATIONS.find(o => o.id === orgId)
+  // an institution (/org/…) or a service work with its own page (/service/…)
+  const org = pageOf(orgId)
+  const isService = org?.type === 'service'
   const [language, setLanguage] = useState(getInitialLanguage)
   const [content, setContent] = useState(undefined) // undefined = loading, null = no published page yet
   const [photos, setPhotos] = useState([])
@@ -69,10 +71,9 @@ export default function OrgPage() {
 
   return <div className="org-page">
     <header className="org-bar org-bar--titled">
-      {/* The institution's logo (the Samiti's ring with the institution's symbol and name) and the Samiti's name */}
-      <Link to="/" className="org-bar-brand"><img src={logo} alt="" width="48" height="48" /><span>{t('brand_name')}</span></Link>
+      <Link to="/" className="org-bar-brand"><img src={`${home}emblem.svg`} alt="" width="48" height="48" /><span>{t('brand_name')}</span></Link>
       {/* The institution's own name, in the middle of the same line as the Samiti's name */}
-      <p className="org-bar-title"><Icon size={18} aria-hidden="true" /><span>{title}</span></p>
+      <p className="org-bar-title"><img className="org-bar-logo" src={logo} alt="" width="44" height="44" /><span>{title}</span></p>
       <div className="org-bar-actions">
         <LanguageSwitcher language={language} onChange={setLanguage} label={t('choose_language')} />
         <Link to="/" className="org-back"><ArrowLeft size={17} /> {t('smriti_back')}</Link>
@@ -80,9 +81,8 @@ export default function OrgPage() {
     </header>
 
     <section className="org-hero" style={{ backgroundImage: `linear-gradient(180deg,rgba(30,8,6,.15),rgba(30,8,6,.82)),url("${cover}")` }}>
-      {/* The name is already in the top bar: the photo now carries the institution's logo instead of a second title */}
+      {/* The name and logo are in the top bar; the photo stays clear */}
       <h1 className="sr-only">{title}</h1>
-      <img className="org-hero-logo" src={logo} alt={`${title} — ${t('brand_name')}`} width="600" height="600" />
     </section>
 
     <nav className="org-switch" aria-label={t('nav_institutions')}>
@@ -91,7 +91,7 @@ export default function OrgPage() {
 
     <main className="org-main">
       <article className="org-article">
-        <span className="section-eyebrow">{t('nav_institutions')}</span>
+        <span className="section-eyebrow">{isService ? t('org_type_service') : t('nav_institutions')}</span>
         <h2>{name}</h2>
         {content === undefined ? <p className="org-loading">…</p> : body.split(/\n\s*\n/).map((para, i) => <p key={i}>{para.trim()}</p>)}
 
@@ -149,7 +149,7 @@ export default function OrgPage() {
           <ul className="org-others">{others.map(o => <li key={o.id}><Link to={`/org/${o.id}`}><img className="org-others-logo" src={`${home}logos/${o.id}.svg`} alt="" width="30" height="30" loading="lazy" /> {language === 'bn' ? o.name_bn : o.name_en}</Link></li>)}</ul>
           {serviceLinks.length > 0 && <>
             <h3 className="org-sub-h">{t('nav_service')}</h3>
-            <ul className="org-others">{serviceLinks.map(a => <li key={a.id}><a href={`${home}#act-${a.id}`}><HeartHandshake size={17} /> {t(`act_${a.id}_t`)}</a></li>)}</ul>
+            <ul className="org-others">{serviceLinks.filter(a => a.id !== org.id).map(a => <li key={a.id}>{pageOf(a.id) ? <Link to={pagePath(a.id)}><img className="org-others-logo" src={`${home}logos/${a.id}.svg`} alt="" width="30" height="30" loading="lazy" /> {pick(pageOf(a.id), 'name', language)}</Link> : <a href={`${home}#act-${a.id}`}><HeartHandshake size={17} /> {t(`act_${a.id}_t`)}</a>}</li>)}</ul>
           </>}
         </div>
       </aside>

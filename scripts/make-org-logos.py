@@ -184,12 +184,37 @@ STROKES = {
             '<circle cx="292" cy="172" r="3" fill="url(#gt)"/><circle cx="308" cy="174" r="2.5" fill="url(#gt)"/>'
 }
 
+def sym_clothes():
+    # a folded garment (kurta) offered on open hands
+    shirt = ('M262 120 L286 110 C290 122 310 122 314 110 L338 120 L362 150 L344 162 L334 150 L334 226 L266 226 L266 150 L256 162 L238 150 Z '
+             'M300 132 L300 226 L296 226 L296 132 Z M290 140 m-3 0 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 M290 160 m-3 0 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0 ')
+    hands = ('M206 250 C228 238 262 236 296 246 L296 262 C262 254 232 256 214 266 Z '
+             'M394 250 C372 238 338 236 304 246 L304 262 C338 254 368 256 386 266 Z '
+             'M228 270 L372 270 L364 282 L236 282 Z')
+    return shirt + hands
+
+
+def sym_gita():
+    # the open Gita with the lamp of knowledge above it
+    flame = ('M300 104 C288 124 286 140 300 154 C314 140 312 124 300 104 Z '
+             'M300 122 C295 132 295 140 300 146 C305 140 305 132 300 122 Z '
+             'M282 160 C290 168 310 168 318 160 L314 170 C306 176 294 176 286 170 Z ')
+    book = ('M300 202 C276 186 246 182 218 188 L218 262 C246 256 276 260 300 276 Z '
+            'M300 202 C324 186 354 182 382 188 L382 262 C354 256 324 260 300 276 Z '
+            'M230 204 C250 200 270 202 288 212 L288 216 C270 206 250 204 230 208 Z M230 222 C250 218 270 220 288 230 L288 234 C270 224 250 222 230 226 Z '
+            'M370 204 C350 200 330 202 312 212 L312 216 C330 206 350 204 370 208 Z M370 222 C350 218 330 220 312 230 L312 234 C330 224 350 222 370 226 Z '
+            'M206 196 L214 196 L214 270 C246 264 276 268 300 284 C324 268 354 264 386 270 L386 196 L394 196 L394 280 C356 274 326 278 300 294 C274 278 244 274 206 280 Z')
+    return flame + book
+
+
 INSTITUTIONS = [
     ('dakshin-kalika', sym_kali, ['শ্রীশ্রী', 'দক্ষিণকালিকা মন্দির'], 'SREE SREE DOKKHIN KALIKA MANDIR'),
     ('durga', sym_durga, ['শ্রীশ্রী', 'বাসন্তী দুর্গা মন্দির'], 'SREE SREE BASANTI DURGA MANDIR'),
     ('shiv', sym_shiv, ['শ্রীশ্রী মহাদেব ও মা গঙ্গা', 'শিব মন্দির'], 'SHIV MANDIR · LORD SHIVA & MA GANGA'),
     ('ramakrishna', sym_ramakrishna, ['শ্রীশ্রী', 'রামকৃষ্ণ মন্দির'], 'SREE SREE RAMAKRISHNA MANDIR'),
     ('clinic', sym_clinic, ['কমিউনিটি', 'ক্লিনিক'], 'COMMUNITY CLINIC'),
+    ('clothes', sym_clothes, ['বার্ষিক', 'বস্ত্র বিতরণ'], 'ANNUAL CLOTHES DISTRIBUTION'),
+    ('gita', sym_gita, ['শিশুদের জন্য', 'গীতা শিক্ষা কেন্দ্র'], 'GITA LEARNING CENTRE FOR CHILDREN'),
     ('gourishankar', sym_gourishankar, ['শ্রীশ্রী গৌরীশংকর', 'শ্মশান মন্দির'], 'SREE SREE GOURISHANKAR FUNERAL TEMPLE'),
 ]
 
