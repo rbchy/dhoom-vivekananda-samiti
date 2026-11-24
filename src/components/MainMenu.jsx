@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
-import { ACTIVITIES, ORGANISATIONS } from '../i18n-org'
+import { ACTIVITIES, ORGANISATIONS, pageOf, pagePath } from '../i18n-org'
 import './main-menu.css'
 
 const BANGLA_DIGITS = '০১২৩৪৫৬৭৮৯'
@@ -66,8 +66,9 @@ export default function MainMenu({ t, language, onNavigate, has = {} }) {
     ] },
     { key: 'service', label: t('nav_service'), items: [
       ...ACTIVITIES.filter(act => act.icon !== 'temple' && act.icon !== 'cremation').map(act => {
-        const org = ORGANISATIONS.find(o => o.id === act.id)
-        return { href: `#act-${act.id}`, label: org ? name(org) : t(`act_${act.id}_t`) }
+        const page = pageOf(act.id)
+        // a service with its own page opens that page; anything else jumps to its card on the home page
+        return page ? { to: pagePath(act.id), label: name(page) } : { href: `#act-${act.id}`, label: t(`act_${act.id}_t`) }
       }),
       { href: '#services', label: t('menu_all_services'), divider: true }
     ] },

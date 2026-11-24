@@ -16,12 +16,20 @@ function availableMethods() {
   return ONLINE_METHODS.filter(code => code !== 'card' || PAYMENT_INFO.cardUrl)
 }
 
+// Monthly subscription: collected like any gift of money — in cash (at the office or to the collector),
+// bKash, Nagad, Rocket or bank (and card when a payment link is set)
+const SUB_METHODS = ['cash', 'bkash', 'nagad', 'rocket', 'bank']
+function subscriptionMethods() {
+  return [...SUB_METHODS, ...(PAYMENT_INFO.cardUrl ? ['card'] : [])]
+}
+
 function PaymentDetails({ method, t }) {
   const value = PAYMENT_INFO[method]
   if (method === 'card') {
     return <div className="pay-box"><a className="pay-card-link" href={PAYMENT_INFO.cardUrl} target="_blank" rel="noopener noreferrer">{t('pay_card_btn')} ↗</a><small>{t('pay_card_note')}</small></div>
   }
   if (method === 'other') return null
+  if (method === 'cash') return <div className="pay-box"><strong>{t('pay_details')}: {methodText(method, t)}</strong><p className="pay-value">{t('pay_cash_note')}</p></div>
   return <div className="pay-box"><strong>{t('pay_details')}: {methodText(method, t)}</strong>{value ? <p className="pay-value">{value}</p> : <p className="pay-missing">{t('pay_not_set')}</p>}</div>
 }
 
@@ -89,7 +97,7 @@ export function OnlineDonationForm({ t, language }) {
 
   return <form className="public-form" onSubmit={handleSubmit} noValidate>
     <p className="public-form-intro">{t('donation_intro')}</p>
-    {Object.keys(errors).length > 0 && <p className="form-error-summary" role="alert">{t('fix_fields')}</p>}
+    {Object.values(errors).some(Boolean) && <p className="form-error-summary" role="alert">{t('fix_fields')}</p>}
 
     <label htmlFor="don-donor_name">{t('f_name')} *</label>
     <input id="don-donor_name" name="donor_name" value={form.donor_name} onChange={handleChange} autoComplete="name" maxLength={100} {...invalidProps(errors, 'donor_name', 'don')} />
@@ -167,7 +175,7 @@ export function SubscriptionForm({ t }) {
       email: checkOptionalEmail(form.email) ? t('err_email') : '',
       address: form.address.length > 300 ? t('err_long') : '',
       monthly_amount: checkAmount(form.monthly_amount, { max: 1000000 }) ? t('err_amount') : '',
-      payment_method: !availableMethods().includes(form.payment_method) ? t('err_method') : '',
+      payment_method: !subscriptionMethods().includes(form.payment_method) ? t('err_method') : '',
       start_month: !/^\d{4}-\d{2}$/.test(form.start_month) || form.start_month < thisMonth ? t('err_start') : '',
       notes: form.notes.length > 500 ? t('err_long') : ''
     })
@@ -201,7 +209,7 @@ export function SubscriptionForm({ t }) {
 
   return <form className="public-form" onSubmit={handleSubmit} noValidate>
     <p className="public-form-intro">{t('sub_intro')}</p>
-    {Object.keys(errors).length > 0 && <p className="form-error-summary" role="alert">{t('fix_fields')}</p>}
+    {Object.values(errors).some(Boolean) && <p className="form-error-summary" role="alert">{t('fix_fields')}</p>}
 
     <label htmlFor="sub-donor_name">{t('f_name')} *</label>
     <input id="sub-donor_name" name="donor_name" value={form.donor_name} onChange={handleChange} autoComplete="name" maxLength={100} {...invalidProps(errors, 'donor_name', 'sub')} />
@@ -240,7 +248,7 @@ export function SubscriptionForm({ t }) {
       <div>
         <label htmlFor="sub-payment_method">{t('f_method')} *</label>
         <select id="sub-payment_method" name="payment_method" value={form.payment_method} onChange={handleChange} {...invalidProps(errors, 'payment_method', 'sub')}>
-          {availableMethods().map(code => <option key={code} value={code}>{methodText(code, t)}</option>)}
+          {subscriptionMethods().map(code => <option key={code} value={code}>{methodText(code, t)}</option>)}
         </select>
         <FieldError id="sub-payment_method-error" message={errors.payment_method} />
       </div>
@@ -250,6 +258,8 @@ export function SubscriptionForm({ t }) {
         <FieldError id="sub-start_month-error" message={errors.start_month} />
       </div>
     </div>
+    <PaymentDetails method={form.payment_method} t={t} />
+    <p className="field-hint">{t('sub_collect_note')}</p>
 
     <label htmlFor="sub-notes">{t('f_message')}</label>
     <textarea id="sub-notes" name="notes" rows="3" value={form.notes} onChange={handleChange} maxLength={500} {...invalidProps(errors, 'notes', 'sub')} />
