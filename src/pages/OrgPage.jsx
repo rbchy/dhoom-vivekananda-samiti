@@ -50,6 +50,7 @@ export default function OrgPage() {
 
   const Icon = ICONS[org.type] || Landmark
   const cover = photos[0]?.image_url || `${home}temple-photo.webp`
+  const logo = `${home}logos/${org.id}.svg`
   // Text: the published page from Admin, otherwise the short description we already have
   const title = pick(content, 'title', language) || name
   const shortText = pick(org, 'desc', language) || t(`act_${org.id}_d`)
@@ -61,7 +62,8 @@ export default function OrgPage() {
 
   return <div className="org-page">
     <header className="org-bar org-bar--titled">
-      <Link to="/" className="org-bar-brand"><img src={`${home}emblem.svg`} alt="" /><span>{t('brand_name')}</span></Link>
+      {/* The institution's logo (the Samiti's ring with the institution's symbol and name) and the Samiti's name */}
+      <Link to="/" className="org-bar-brand"><img src={logo} alt="" width="48" height="48" /><span>{t('brand_name')}</span></Link>
       {/* The institution's own name, in the middle of the same line as the Samiti's name */}
       <p className="org-bar-title"><Icon size={18} aria-hidden="true" /><span>{title}</span></p>
       <div className="org-bar-actions">
@@ -71,11 +73,9 @@ export default function OrgPage() {
     </header>
 
     <section className="org-hero" style={{ backgroundImage: `linear-gradient(180deg,rgba(30,8,6,.15),rgba(30,8,6,.82)),url("${cover}")` }}>
-      <div className="org-hero-text">
-        <span className="org-hero-type"><Icon size={18} /> {t(`org_type_${org.type}`)}</span>
-        <h1>{title}</h1>
-        {language !== 'bn' && <p className="org-hero-bn" lang="bn">{org.name_bn}</p>}
-      </div>
+      {/* The name is already in the top bar: the photo now carries the institution's logo instead of a second title */}
+      <h1 className="sr-only">{title}</h1>
+      <img className="org-hero-logo" src={logo} alt={`${title} — ${t('brand_name')}`} width="600" height="600" />
     </section>
 
     <nav className="org-switch" aria-label={t('nav_institutions')}>
@@ -126,7 +126,7 @@ export default function OrgPage() {
         </div>
         <div className="org-card-box">
           <h3>{t('menu_all_orgs')}</h3>
-          <ul className="org-others">{others.map(o => { const OIcon = ICONS[o.type] || Landmark; return <li key={o.id}><Link to={`/org/${o.id}`}><OIcon size={17} /> {language === 'bn' ? o.name_bn : o.name_en}</Link></li> })}</ul>
+          <ul className="org-others">{others.map(o => <li key={o.id}><Link to={`/org/${o.id}`}><img className="org-others-logo" src={`${home}logos/${o.id}.svg`} alt="" width="30" height="30" loading="lazy" /> {language === 'bn' ? o.name_bn : o.name_en}</Link></li>)}</ul>
           {serviceLinks.length > 0 && <>
             <h3 className="org-sub-h">{t('nav_service')}</h3>
             <ul className="org-others">{serviceLinks.map(a => <li key={a.id}><a href={`${home}#act-${a.id}`}><HeartHandshake size={17} /> {t(`act_${a.id}_t`)}</a></li>)}</ul>
