@@ -3,12 +3,13 @@ import { supabase } from '../lib/supabaseClient'
 import { db } from '../lib/staff'
 import { checkText, cleanErrors } from '../lib/validation'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
-import { ORGANISATIONS } from '../i18n-org'
+import { ORGANISATIONS, SERVICES } from '../i18n-org'
 
 // Pages that can be edited here: the main story, and one page per institution (/org/<id>)
 const PAGES = [
   { slug: 'about-temple', label: 'Our Story (home page) / আমাদের ইতিহাস' },
-  ...ORGANISATIONS.map(org => ({ slug: `org-${org.id}`, label: `${org.name_en} / ${org.name_bn}`, org }))
+  ...ORGANISATIONS.map(org => ({ slug: `org-${org.id}`, label: `${org.name_en} / ${org.name_bn}`, org })),
+  ...SERVICES.map(org => ({ slug: `org-${org.id}`, label: `Seva: ${org.name_en} / ${org.name_bn}`, org }))
 ]
 const emptyPage = slug => ({ slug, title_en: '', title_bn: '', body_en: '', body_bn: '', mantra_bn: '', mantra_en: '', is_published: false })
 

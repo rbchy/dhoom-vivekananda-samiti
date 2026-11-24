@@ -7,13 +7,15 @@ import { removeImage, storagePathFromUrl, uploadImage } from '../lib/storage'
 import { BackToMainButton, ErrorSummary, FieldError, invalidProps } from '../components/FormHelpers'
 import ImagePicker from '../components/ImagePicker'
 import { enhanceImage } from '../lib/imageEnhance'
-import { ORGANISATIONS } from '../i18n-org'
+import { ORGANISATIONS, SERVICES } from '../i18n-org'
 
 const LIMITS = { title: 150, description: 1000 }
-const CATEGORIES = { festivals: 'Festivals / উৎসব', worship: 'Worship / পূজা', community: 'Community / সমাজ', temple: 'Temple / মন্দির', clinic: 'Clinic / ক্লিনিক' }
+const CATEGORIES = { festivals: 'Festivals / উৎসব', worship: 'Worship / পূজা', community: 'Community / সমাজ', temple: 'Temple / মন্দির', clinic: 'Clinic / ক্লিনিক', seva: 'Service work / সেবাকাজ' }
 // Which organisation a photo belongs to ('' = the Samiti in general)
 const GENERAL_LABEL = 'Samiti (general) / সমিতি (সাধারণ)'
-const ORG_LABELS = Object.fromEntries(ORGANISATIONS.map(org => [org.id, `${org.name_en} / ${org.name_bn}`]))
+// institutions and service works with their own page (their photos show on that page)
+const ORG_LABELS = Object.fromEntries([...ORGANISATIONS, ...SERVICES].map(org => [org.id, `${org.type === 'service' ? 'Seva: ' : ''}${org.name_en} / ${org.name_bn}`]))
+const PAGES = [...ORGANISATIONS, ...SERVICES]
 const orgLabel = id => (id ? ORG_LABELS[id] || id : GENERAL_LABEL)
 const emptyForm = { organisation: '', category: 'temple', title_en: '', title_bn: '', image_url: '', description_en: '', description_bn: '', is_published: false }
 
@@ -202,7 +204,7 @@ export default function GalleryManagement() {
       <label htmlFor="gallery-organisation">Organisation / প্রতিষ্ঠান *</label>
       <select id="gallery-organisation" name="organisation" value={form.organisation} onChange={handleChange} {...invalidProps(errors, 'organisation', 'gallery')}>
         <option value="">{GENERAL_LABEL}</option>
-        {ORGANISATIONS.map(org => <option key={org.id} value={org.id}>{ORG_LABELS[org.id]}</option>)}
+        {PAGES.map(org => <option key={org.id} value={org.id}>{ORG_LABELS[org.id]}</option>)}
       </select>
       <small className="field-hint">The photo is shown on the website under this temple / organisation.</small>
       <FieldError id="gallery-organisation-error" message={errors.organisation} />
@@ -247,10 +249,10 @@ export default function GalleryManagement() {
     {message && <p className="event-message" role="status">{message}</p>}
     <div className="events-list">
       <h3>Saved Gallery Items ({shownItems.length} of {items.length})</h3>
-      <div className="org-photo-counts">{[['', GENERAL_LABEL], ...ORGANISATIONS.map(org => [org.id, ORG_LABELS[org.id]])].map(([id, label]) => <button type="button" key={id || 'general'} className={orgFilter === (id || 'general') ? 'active' : ''} onClick={() => setOrgFilter(orgFilter === (id || 'general') ? 'all' : (id || 'general'))}>{label.split(' / ')[0]} <b>{counts[id || 'general'] || 0}</b></button>)}</div>
+      <div className="org-photo-counts">{[['', GENERAL_LABEL], ...PAGES.map(org => [org.id, ORG_LABELS[org.id]])].map(([id, label]) => <button type="button" key={id || 'general'} className={orgFilter === (id || 'general') ? 'active' : ''} onClick={() => setOrgFilter(orgFilter === (id || 'general') ? 'all' : (id || 'general'))}>{label.split(' / ')[0]} <b>{counts[id || 'general'] || 0}</b></button>)}</div>
       <div className="filter-row">
         <input className="management-search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search title or description" aria-label="Search gallery items" maxLength={100} />
-        <select value={orgFilter} onChange={event => setOrgFilter(event.target.value)} aria-label="Filter by organisation"><option value="all">All organisations</option><option value="general">{GENERAL_LABEL}</option>{ORGANISATIONS.map(org => <option key={org.id} value={org.id}>{ORG_LABELS[org.id]}</option>)}</select>
+        <select value={orgFilter} onChange={event => setOrgFilter(event.target.value)} aria-label="Filter by organisation"><option value="all">All organisations</option><option value="general">{GENERAL_LABEL}</option>{PAGES.map(org => <option key={org.id} value={org.id}>{ORG_LABELS[org.id]}</option>)}</select>
         <select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)} aria-label="Filter by category"><option value="all">All categories</option>{Object.entries(CATEGORIES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
         <select value={statusFilter} onChange={event => setStatusFilter(event.target.value)} aria-label="Filter by status"><option value="all">Published and drafts</option><option value="published">Published only</option><option value="draft">Drafts only</option></select>
       </div>
