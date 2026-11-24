@@ -21,6 +21,7 @@ export default function OrgPage() {
   const [language, setLanguage] = useState(getInitialLanguage)
   const [content, setContent] = useState(undefined) // undefined = loading, null = no published page yet
   const [photos, setPhotos] = useState([])
+  const [deities, setDeities] = useState([])
   const [lightbox, setLightbox] = useState(null)
   const t = key => translate(language, key)
   const current = getLanguage(language)
@@ -28,14 +29,20 @@ export default function OrgPage() {
 
   useEffect(() => {
     if (!org) return
-    setContent(undefined); setPhotos([])
+    setContent(undefined); setPhotos([]); setDeities([])
     window.scrollTo(0, 0)
     Promise.all([
       supabase.from('temple_content').select('*').eq('slug', `org-${org.id}`).eq('is_published', true).maybeSingle(),
-      supabase.from('gallery').select('*').eq('is_published', true).eq('organisation', org.id).order('created_at', { ascending: false })
-    ]).then(([page, gallery]) => {
+      supabase.from('gallery').select('*').eq('is_published', true).eq('organisation', org.id).order('created_at', { ascending: false }),
+      org.deities ? supabase.from('temple_highlights').select('*').eq('kind', 'deity').eq('is_active', true).order('sort_order') : Promise.resolve({ data: [] })
+    ]).then(([page, gallery, highlights]) => {
       setContent(page.data || null)
       setPhotos(gallery.data || [])
+      // the temple's own deities, in the order the words are listed (e.g. Shiva first, then Ma Ganga)
+      const all = highlights.data || []
+      const found = []
+      ;(org.deities || []).forEach(word => all.forEach(d => { if (`${d.title_en} ${d.title_bn}`.toLowerCase().includes(word) && !found.includes(d)) found.push(d) }))
+      setDeities(found)
     })
   }, [orgId])
 
@@ -87,6 +94,19 @@ export default function OrgPage() {
         <span className="section-eyebrow">{t('nav_institutions')}</span>
         <h2>{name}</h2>
         {content === undefined ? <p className="org-loading">…</p> : body.split(/\n\s*\n/).map((para, i) => <p key={i}>{para.trim()}</p>)}
+
+        {deities.length > 0 && <section className="org-deities" aria-label={t('org_deities')}>
+          <h3>🙏 {t('org_deities')}</h3>
+          <div className="org-deity-grid">{deities.map(d => {
+            const pranam = language === 'bn' ? d.pranam_bn || d.pranam_en : d.pranam_en || d.pranam_bn
+            return <article key={d.id} className="org-deity">
+              {d.image_url && <button type="button" className="org-deity-img" onClick={() => setLightbox({ image_url: d.image_url, title_en: d.title_en, title_bn: d.title_bn })}><img src={d.image_url} alt={pick(d, 'title', language)} loading="lazy" /></button>}
+              <h4>{pick(d, 'title', language)}</h4>
+              {pick(d, 'subtitle', language) && <p className="org-deity-time">{pick(d, 'subtitle', language)}</p>}
+              {pranam && <blockquote lang={language === 'bn' || !d.pranam_en ? 'bn' : 'sa-Latn'}>{pranam.split('\n').map((line, i) => <span key={i}>{line}</span>)}</blockquote>}
+            </article>
+          })}</div>
+        </section>}
 
         {mantra && <figure className="org-mantra">
           <figcaption>🙏 {t('pranam_label')}</figcaption>

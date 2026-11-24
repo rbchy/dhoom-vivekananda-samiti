@@ -4,15 +4,19 @@
 // The institutions under the Samiti. Bangla name is shown for Bangla, English for every other language.
 // type: 'temple' | 'clinic' | 'cremation' — decides the icon and the small label on each card.
 export const ORGANISATIONS = [
-  { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির',
+  // deities: words that pick this temple's deities from Admin → Mission & Deities (their picture, puja time and pranam mantra)
+  { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির', deities: ['kali'],
     // Enlistment certificate from the Hindu Religious Welfare Trust (shown on the institution's page)
     registration: { image: 'images/registration/dakshin-kalika-registration.webp', number_bn: '১২২৫৫/চট্ট/মীর/৪৯', number_en: '12255/Chatta/Mir/49', date: '2022-03-06' } },
-  { id: 'durga', type: 'temple', name_en: 'Sree Sree Basanti Durga Mandir', name_bn: 'শ্রীশ্রী বাসন্তী দুর্গা মন্দির', established: '2010-03-22',
+  { id: 'durga', type: 'temple', name_en: 'Sree Sree Basanti Durga Mandir', name_bn: 'শ্রীশ্রী বাসন্তী দুর্গা মন্দির', established: '2010-03-22', deities: ['durga'],
     desc_en: 'Established on 22 March 2010, the mandap holds the ten-armed Mother Durga with Lakshmi, Saraswati, Kartik, Ganesh and Lord Shiva. Basanti Puja, the worship of the Mother in spring, is the temple\'s main festival.',
     desc_bn: '২০১০ সালের ২২ মার্চ প্রতিষ্ঠিত এই মন্দিরের মণ্ডপে লক্ষ্মী, সরস্বতী, কার্তিক, গণেশ ও দেবাদিদেব মহাদেবসহ দশভুজা মা দুর্গা অধিষ্ঠিত। বসন্তকালে মায়ের আরাধনা, বাসন্তী পূজা, এই মন্দিরের প্রধান উৎসব।' },
   { id: 'clinic', type: 'clinic', name_en: 'Dhoom Vivekananda Samiti Community Clinic', name_bn: 'ধুম বিবেকানন্দ সমিতি কমিউনিটি ক্লিনিক' },
-  { id: 'shiv', type: 'temple', name_en: 'Sree Sree Shiv Mandir', name_bn: 'শ্রীশ্রী শিব মন্দির' },
-  { id: 'ramakrishna', type: 'temple', name_en: 'Sree Sree Ramakrishna Mandir', name_bn: 'শ্রীশ্রী রামকৃষ্ণ মন্দির' },
+  // Two deities are worshipped here: Lord Shiva and Ma Ganga
+  { id: 'shiv', type: 'temple', name_en: 'Sree Sree Shiv Mandir', name_bn: 'শ্রীশ্রী শিব মন্দির', deities: ['shiv', 'mahadev', 'ganga'],
+    desc_en: 'Two deities are worshipped in this temple: Lord Shiva (Mahadev) as the Shiva Linga, and Ma Ganga, who flows from his matted hair. Both receive daily puja every morning from 7 to 8 AM, and devotees offer water, flowers and prayers to them together. Monday Shiva Puja, the month of Shravan and Maha Shivaratri are the great days of the temple.',
+    desc_bn: 'এই মন্দিরে দুই ঠাকুর পূজিত হন — শিবলিঙ্গরূপে দেবাদিদেব মহাদেব আর তাঁর জটা থেকে প্রবাহিত পতিতপাবনী মা গঙ্গা। প্রতিদিন সকাল ৭টা থেকে ৮টা পর্যন্ত দুজনেরই নিত্যপূজা হয়, ভক্তরা একসঙ্গে দুজনকে জল, ফুল ও প্রণাম নিবেদন করেন। সোমবারের শিবপূজা, শ্রাবণ মাস ও মহাশিবরাত্রি এই মন্দিরের বিশেষ দিন।' },
+  { id: 'ramakrishna', type: 'temple', name_en: 'Sree Sree Ramakrishna Mandir', name_bn: 'শ্রীশ্রী রামকৃষ্ণ মন্দির', deities: ['ramakrishna', 'sarada', 'vivekananda'] },
   { id: 'gourishankar', type: 'cremation', name_en: 'Sree Sree GouriShankar Funeral Temple', name_bn: 'শ্রীশ্রী গৌরীশংকর শ্মশান মন্দির' }
 ]
 
@@ -43,6 +47,7 @@ export const ACTIVITIES = [
 
 export const ORG_TEXT = {
   en: {
+    "org_deities": "Deities worshipped here",
     "reg_title": "Registration",
     "reg_cert": "Enlistment Certificate — Hindu Religious Welfare Trust, Ministry of Religious Affairs, Government of Bangladesh",
     "reg_no": "Enlistment No.",
@@ -85,6 +90,7 @@ export const ORG_TEXT = {
     org_type_temple: 'Temple', org_type_clinic: 'Health service', org_type_cremation: 'Cremation temple'
   },
   bn: {
+    "org_deities": "এখানে পূজিত ঠাকুর",
     "reg_title": "নিবন্ধন",
     "reg_cert": "তালিকাভুক্তির সনদ — হিন্দুধর্মীয় কল্যাণ ট্রাস্ট, ধর্ম বিষয়ক মন্ত্রণালয়, গণপ্রজাতন্ত্রী বাংলাদেশ সরকার",
     "reg_no": "তালিকাভুক্তি নং",
