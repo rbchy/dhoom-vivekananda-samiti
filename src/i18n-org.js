@@ -62,6 +62,7 @@ export const ORG_TEXT = {
   en: {
     "org_deities": "Deities worshipped here",
     "org_type_service": "Service work",
+    "org_photos_title": "Photos",
     "reg_title": "Registration",
     "reg_cert": "Enlistment Certificate — Hindu Religious Welfare Trust, Ministry of Religious Affairs, Government of Bangladesh",
     "reg_no": "Enlistment No.",
@@ -106,6 +107,7 @@ export const ORG_TEXT = {
   bn: {
     "org_deities": "এখানে পূজিত ঠাকুর",
     "org_type_service": "সেবাকাজ",
+    "org_photos_title": "ছবি",
     "reg_title": "নিবন্ধন",
     "reg_cert": "তালিকাভুক্তির সনদ — হিন্দুধর্মীয় কল্যাণ ট্রাস্ট, ধর্ম বিষয়ক মন্ত্রণালয়, গণপ্রজাতন্ত্রী বাংলাদেশ সরকার",
     "reg_no": "তালিকাভুক্তি নং",

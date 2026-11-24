@@ -127,7 +127,7 @@ export default function OrgPage() {
         </section>}
 
         {photos.length > 0 && <section className="org-photos" aria-label={t('gallery_title')}>
-          <h3><Images size={20} /> {t('gallery_title')} <small>({photos.length})</small></h3>
+          <h3><Images size={20} /> {isService ? t('org_photos_title') : t('gallery_title')} <small>({photos.length})</small></h3>
           <div className="org-photo-grid">{photos.map(photo => { const caption = pick(photo, 'title', language); return <figure key={photo.id}>
             <button type="button" onClick={() => setLightbox(photo)} aria-label={caption || t('gallery_title')}><img src={photo.image_url} alt={caption || name} loading="lazy" /></button>
             {caption && <figcaption>{caption}</figcaption>}
