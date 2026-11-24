@@ -258,3 +258,11 @@ select pg_temp.check((select count(*) from public.receipt_deliveries) = 0, 'visi
 reset role;
 delete from public.finance_report_recipients;
 \echo 'ACCOUNTS AUDIT TESTS PASSED'
+
+-- Service-work pages take photos too; unknown pages are refused
+reset role;
+select pg_temp.expect($$insert into public.gallery (title_en, image_url, organisation, is_published) values ('Clothes 2026', 'https://example.org/c.webp', 'clothes', true)$$, false, 'a photo can belong to the clothes distribution page');
+select pg_temp.expect($$insert into public.gallery (title_en, image_url, organisation, is_published) values ('Gita class', 'https://example.org/g.webp', 'gita', true)$$, false, 'a photo can belong to the Gita centre page');
+select pg_temp.expect($$insert into public.gallery (title_en, image_url, organisation) values ('x', 'https://example.org/x.webp', 'nowhere')$$, true, 'a photo cannot belong to an unknown page');
+delete from public.gallery where title_en in ('Clothes 2026', 'Gita class');
+\echo 'SERVICE PAGE PHOTO TESTS PASSED'

@@ -25,7 +25,7 @@ import SocialLinks from './components/SocialLinks'
 import PostShare from './components/PostShare'
 import { supabase } from './lib/supabaseClient'
 import { getInitialLanguage, getLanguage, saveLanguage, translate, TRANSLATIONS } from './i18n'
-import { MAP_LOCATION, ORGANISATIONS, locationFromMapsLink, ACTIVITIES, pageOf, pagePath } from './i18n-org'
+import { MAP_LOCATION, ORGANISATIONS, SERVICES, locationFromMapsLink, ACTIVITIES, pageOf, pagePath } from './i18n-org'
 import PageLoading from './components/PageLoading'
 
 // Code splitting: the home page loads first; every other page, the admin, the search box and the
@@ -76,7 +76,7 @@ function shortTime(value, locale) {
 }
 
 const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]
-const GALLERY_FILTERS = ['all', 'festivals', 'worship', 'community', 'temple', 'clinic']
+const GALLERY_FILTERS = ['all', 'festivals', 'worship', 'community', 'temple', 'clinic', 'seva']
 
 // Scrolling message over the top of the banner photo, with an optional song recording
 function HeroTicker({ text, audioUrl, t }) {
@@ -233,8 +233,8 @@ function App() {
   const inOrg = gallery.filter(item => galleryOrg === 'all' || (item.organisation || 'general') === galleryOrg)
   const shownGallery = inOrg.filter(item => galleryFilter === 'all' || (item.category || 'temple') === galleryFilter)
   const usedGalleryFilters = GALLERY_FILTERS.filter(f => f === 'all' || inOrg.some(item => (item.category || 'temple') === f))
-  const usedOrgFilters = ['all', 'general', ...ORGANISATIONS.map(org => org.id)].filter(id => id === 'all' || orgPhotos(id).length > 0)
-  const orgName = id => { const org = ORGANISATIONS.find(o => o.id === id); return org ? (language === 'bn' ? org.name_bn : org.name_en) : id === 'general' ? t('gallery_general') : t('gallery_org_all') }
+  const usedOrgFilters = ['all', 'general', ...ORGANISATIONS.map(org => org.id), ...SERVICES.map(s => s.id)].filter(id => id === 'all' || orgPhotos(id).length > 0)
+  const orgName = id => { const org = pageOf(id); return org ? (language === 'bn' ? org.name_bn : org.name_en) : id === 'general' ? t('gallery_general') : t('gallery_org_all') }
   function showOrgPhotos(id) {
     setGalleryOrg(id); setGalleryFilter('all')
     document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })
