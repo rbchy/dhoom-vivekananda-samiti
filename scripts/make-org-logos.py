@@ -43,7 +43,7 @@ class Face:
         return sum(p.x_advance for _, p in self.shape(text)) * size / self.upem
 
     def glyph_path(self, gid, transform):
-        pen = SVGPathPen(self.glyphs)
+        pen = SVGPathPen(self.glyphs, ntos=lambda v: ('%.1f' % v).rstrip('0').rstrip('.'))  # 0.1 px is plenty, keeps files small
         self.glyphs[self.order[gid]].draw(TransformPen(pen, transform))
         return pen.getCommands()
 
