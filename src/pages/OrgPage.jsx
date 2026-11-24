@@ -60,8 +60,10 @@ export default function OrgPage() {
   const serviceLinks = ACTIVITIES.filter(a => !ORGANISATIONS.some(o => o.id === a.id))
 
   return <div className="org-page">
-    <header className="org-bar">
+    <header className="org-bar org-bar--titled">
       <Link to="/" className="org-bar-brand"><img src={`${home}emblem.svg`} alt="" /><span>{t('brand_name')}</span></Link>
+      {/* The institution's own name, in the middle of the same line as the Samiti's name */}
+      <p className="org-bar-title"><Icon size={18} aria-hidden="true" /><span>{title}</span></p>
       <div className="org-bar-actions">
         <LanguageSwitcher language={language} onChange={setLanguage} label={t('choose_language')} />
         <Link to="/" className="org-back"><ArrowLeft size={17} /> {t('smriti_back')}</Link>
