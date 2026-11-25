@@ -10,6 +10,8 @@
 // It also writes dist/sitemap.xml, dist/robots.txt and dist/404.html (fallback for /admin/... links, not indexed).
 //
 // The public address comes from VITE_SITE_URL (same variable the QR code uses).
+// The Samiti's social media links (Facebook, YouTube, …) are read from the site settings in Supabase, as the
+// admin dashboard saves them, and added to the structured data ("sameAs") so Google links the profiles to the site.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -33,6 +35,25 @@ function fullTitle(page) {
   return `${page.title.en} | ${page.title.bn}${suffix}`
 }
 
+// Social media links from the admin dashboard (site_settings, publicly readable); skipped without Supabase
+const SOCIAL_KEYS = ['facebook_url', 'youtube_url', 'instagram_url', 'tiktok_url']
+async function readSocialLinks() {
+  const url = process.env.VITE_SUPABASE_URL
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY
+  if (!url || !key || url.includes('example')) return []
+  try {
+    const query = `${url.replace(/\/$/, '')}/rest/v1/site_settings?select=key,value_en,value_bn&key=in.(${SOCIAL_KEYS.join(',')})`
+    const response = await fetch(query, { headers: { apikey: key, Authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(10000) })
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const rows = await response.json()
+    return rows.map(row => (row.value_en || row.value_bn || '').trim()).filter(link => /^https:\/\//.test(link))
+  } catch (error) {
+    console.warn(`seo-build: social links not added (${error.message})`)
+    return []
+  }
+}
+const socialLinks = await readSocialLinks()
+
 const organisation = {
   '@type': 'NGO',
   '@id': siteUrl + '#organisation',
@@ -44,7 +65,8 @@ const organisation = {
   foundingDate: '1923',
   description: SEO_PAGES[0].description.en,
   address: { '@type': 'PostalAddress', ...ORG_ADDRESS },
-  geo: { '@type': 'GeoCoordinates', ...ORG_GEO }
+  geo: { '@type': 'GeoCoordinates', ...ORG_GEO },
+  ...(socialLinks.length ? { sameAs: socialLinks } : {})
 }
 
 function structuredData(page) {
@@ -153,4 +175,4 @@ Sitemap: ${siteUrl}sitemap.xml
 `
 writeFileSync(join(dist, 'robots.txt'), robots)
 
-console.log(`seo-build: ${SEO_PAGES.length} pages, sitemap.xml and robots.txt written for ${siteUrl}`)
+console.log(`seo-build: ${SEO_PAGES.length} pages, sitemap.xml and robots.txt written for ${siteUrl} (${socialLinks.length} social links)`)

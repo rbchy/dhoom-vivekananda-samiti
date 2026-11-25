@@ -74,3 +74,10 @@ jobs:
 
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # Tell Bing and the other IndexNow search engines that the pages changed (scripts/indexnow.mjs)
+      - name: Notify search engines (IndexNow)
+        continue-on-error: true
+        run: node scripts/indexnow.mjs
+        env:
+          VITE_SITE_URL: ${{ vars.VITE_SITE_URL || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
