@@ -30,3 +30,17 @@ test('the About menu leads to Holy Visits and the Bhavadhara directory', async (
   await expect(page).toHaveURL(/\/visits$/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Holy Visits')
 })
+
+// The header must fit on small phones too, or the menu button is pushed off the screen
+for (const width of [320, 360, 390]) {
+  test(`menu button is on screen and opens the menu on a ${width}px phone`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 760 })
+    await page.goto('/')
+    const toggle = page.locator('.menu-toggle')
+    const box = await toggle.boundingBox()
+    expect(box.x + box.width).toBeLessThanOrEqual(width)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+    await toggle.click()
+    await expect(page.locator('nav.nav-open')).toBeVisible()
+  })
+}

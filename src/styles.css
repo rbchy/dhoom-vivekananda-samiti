@@ -12,3 +12,7 @@
 .events-cal-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;border-radius:999px;background:#811d29;color:#fff!important;font-weight:700;font-size:14px}
 .events-cal-link:hover{background:#5f1520}
 .site-footer .footer-address{display:flex;gap:6px;align-items:flex-start;color:#e9c98f}.site-footer .footer-address svg{flex:none;margin-top:4px}
+/* Phones: keep the whole header inside the screen so the menu button (☰) is always visible.
+   The name may wrap to two lines, the tagline hides on narrow phones, and the language button gets smaller. */
+@media(max-width:560px){.header{gap:6px;padding:8px 10px}.header .brand{gap:8px;flex:1 1 0%;min-width:0}.header .brand>span:last-child{min-width:0}.header .brand strong{font-size:clamp(13px,3.9vw,15px);white-space:normal}.lang-button{padding:5px 6px;gap:4px}.lang-button>svg:last-child{display:none}.search-mobile,.menu-toggle{flex:none;padding:4px}}
+@media(max-width:430px){.brand em{display:none}}
