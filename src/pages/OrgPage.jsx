@@ -15,6 +15,9 @@ const home = `${import.meta.env.BASE_URL}`
 const pick = (item, field, language) => (language === 'bn' ? item?.[`${field}_bn`] || item?.[`${field}_en`] : item?.[`${field}_en`] || item?.[`${field}_bn`]) || ''
 
 // Public page of one institution: /org/<id>
+// The Samiti office and Community Clinic building (sign: ধুম বিবেকানন্দ সমিতি কার্যালয় / কমিউনিটি ক্লিনিক)
+const ORG_COVERS = { clinic: 'images/samiti-office-clinic.webp' }
+
 export default function OrgPage() {
   const { orgId } = useParams()
   // an institution (/org/…) or a service work with its own page (/service/…)
@@ -58,7 +61,8 @@ export default function OrgPage() {
   if (!org) return <Navigate to="/" replace />
 
   const Icon = ICONS[org.type] || Landmark
-  const cover = photos[0]?.image_url || `${home}temple-photo.webp`
+  // Fixed cover photos for some institutions (their own building); the others use their first gallery photo
+  const cover = ORG_COVERS[org.id] ? `${home}${ORG_COVERS[org.id]}` : photos[0]?.image_url || `${home}temple-photo.webp`
   const logo = `${home}logos/${org.id}.svg`
   // Text: the published page from Admin, otherwise the short description we already have
   const title = pick(content, 'title', language) || name

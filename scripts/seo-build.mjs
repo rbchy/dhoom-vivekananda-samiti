@@ -28,6 +28,8 @@ const today = new Date().toISOString().slice(0, 10)
 const esc = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const pageUrl = path => path === '/' ? siteUrl : siteUrl + path.replace(/^\//, '')
 const imageUrl = siteUrl + OG_IMAGE
+// Photo of the Samiti office and Community Clinic building, for Google's organisation and clinic details
+const officePhotoUrl = siteUrl + 'images/samiti-office-clinic.webp'
 
 function fullTitle(page) {
   if (page.path === '/') return `${page.title.en} | ${SITE_NAME.bn}`
@@ -61,7 +63,7 @@ const organisation = {
   alternateName: SITE_NAME.bn,
   url: siteUrl,
   logo: siteUrl + 'app-icon-512.png',
-  image: imageUrl,
+  image: officePhotoUrl,
   foundingDate: '1923',
   description: SEO_PAGES[0].description.en,
   address: { '@type': 'PostalAddress', ...ORG_ADDRESS },
@@ -91,7 +93,7 @@ function structuredData(page) {
     alternateName: page.title.bn,
     description: page.description.en,
     url: pageUrl(page.path),
-    image: imageUrl,
+    image: page.path === '/org/clinic' ? officePhotoUrl : imageUrl,
     address: { '@type': 'PostalAddress', ...ORG_ADDRESS },
     geo: { '@type': 'GeoCoordinates', ...ORG_GEO },
     parentOrganization: { '@id': siteUrl + '#organisation', name: SITE_NAME.en }
