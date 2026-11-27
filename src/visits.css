@@ -88,3 +88,8 @@
 .hv-memory blockquote{font-family:inherit;font-size:16px;padding:0;border:0;background:none;quotes:none}
 .hv-memory blockquote::before,.hv-memory blockquote::after,.hv-blessing::before,.hv-blessing::after{content:none}
 .hv-blessing-label{font-family:inherit}
+
+/* Title over the photo of the Samiti office and Community Clinic (Committee, Holy Visits, Donors; samitiPhotoHero in SubPageShell) */
+.hv-hero.hv-hero-photo{background-size:cover;background-position:center 40%;min-height:clamp(260px,34vw,420px);display:flex;align-items:center}
+.hv-hero-photo .hv-hero-text{width:100%}
+.hv-hero-photo h1,.hv-hero-photo p{text-shadow:0 1px 4px rgba(0,0,0,.45)}

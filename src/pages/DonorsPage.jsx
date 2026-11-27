@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Award, CalendarDays, Gift, HandHeart, MapPin } from 'lucide-react'
-import SubPageShell, { pickText, useSubPage } from '../components/SubPageShell'
+import SubPageShell, { pickText, useSubPage, samitiPhotoHero } from '../components/SubPageShell'
 import { localDigits } from '../components/StambhaPillar'
 import { supabase } from '../lib/supabaseClient'
 import { formatMoney } from '../lib/money'
@@ -30,7 +30,7 @@ export default function DonorsPage() {
   const [first, ...rest] = donors || []
 
   return <SubPageShell page={page} className="dn-page">
-    <section className="hv-hero dn-hero" style={{ backgroundImage: `linear-gradient(160deg,rgba(60,30,8,.86) 0%,rgba(90,40,20,.62) 50%,rgba(122,36,48,.80) 100%),url("${import.meta.env.BASE_URL}images/samiti-office-clinic.webp")` }}>
+    <section className="hv-hero hv-hero-photo dn-hero" style={samitiPhotoHero('linear-gradient(160deg,rgba(60,30,8,.86) 0%,rgba(90,40,20,.62) 50%,rgba(122,36,48,.80) 100%)')}>
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('dn_kicker')}</span>
         <h1>{t('dn_title')}</h1>
