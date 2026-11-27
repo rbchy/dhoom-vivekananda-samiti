@@ -135,3 +135,7 @@
 /* Watercolour painting of the Samiti office and Community Clinic, under the welcome text (its edges fade into the page) */
 .welcome-watercolor{margin:22px 0 6px;max-width:670px}
 .content-section .welcome-watercolor img{display:block;width:100%;height:auto;border-radius:0;box-shadow:none}
+
+/* The whole photo of the Samiti office and Community Clinic above "Support the Temple / মন্দিরের পাশে দাঁড়ান" */
+.donate-photo{margin:0 auto 26px;max-width:900px}
+.donate-photo img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 12px 30px rgba(71,43,25,.15)}

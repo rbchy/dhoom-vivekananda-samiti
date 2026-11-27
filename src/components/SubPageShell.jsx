@@ -39,10 +39,14 @@ export default function SubPageShell({ page, className = '', children }) {
 
 // A photo across the top of a page, shown on its own; the page title and text follow below it.
 // framed: a smaller picture shown whole in the middle of a band of the colour `fill` (instead of cropped to the full width)
+// whole: the full photo, never cropped; on wide screens the sides are filled with a soft blurred copy of it
 export const SAMITI_PHOTO = 'images/samiti-office-clinic.webp'
-export function PageBanner({ src = SAMITI_PHOTO, alt, framed = false, fill, position }) {
-  return <figure className={framed ? 'page-banner framed' : 'page-banner'} style={fill ? { background: fill } : undefined}>
-    <img src={`${home}${src}`} alt={alt} style={position ? { objectPosition: position } : undefined} />
+export function PageBanner({ src = SAMITI_PHOTO, alt, framed = false, whole = false, fill, position }) {
+  const url = `${home}${src}`
+  const className = whole ? 'page-banner whole' : framed ? 'page-banner framed' : 'page-banner'
+  const style = whole ? { '--banner-img': `url("${url}")` } : fill ? { background: fill } : undefined
+  return <figure className={className} style={style}>
+    <img src={url} alt={alt} style={position ? { objectPosition: position } : undefined} />
   </figure>
 }
 

@@ -94,3 +94,6 @@
 .page-banner img{display:block;width:100%;height:clamp(220px,36vw,480px);object-fit:cover;object-position:center 40%}
 .page-banner.framed{display:flex;justify-content:center;padding:clamp(10px,2vw,24px) 0}
 .page-banner.framed img{width:auto;max-width:100%;height:auto;max-height:clamp(240px,38vw,460px);object-fit:contain}
+.page-banner.whole{position:relative;overflow:hidden;display:flex;justify-content:center;isolation:isolate}
+.page-banner.whole::before{content:'';position:absolute;inset:-30px;background:var(--banner-img) center/cover no-repeat;filter:blur(24px) brightness(.6);z-index:-1}
+.page-banner.whole img{width:auto;max-width:100%;height:auto;max-height:clamp(260px,60vw,640px);object-fit:contain}

@@ -51,7 +51,7 @@ export default function CommitteePage() {
   }
 
   return <SubPageShell page={page} className="cm-page">
-    <PageBanner alt={t('brand_name')} />
+    <PageBanner alt={t('brand_name')} whole />
     <section className="hv-hero cm-hero">
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('cm_kicker')}</span>
