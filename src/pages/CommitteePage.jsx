@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Mail, Phone, Users } from 'lucide-react'
-import SubPageShell, { pickText, useSubPage } from '../components/SubPageShell'
+import SubPageShell, { pickText, useSubPage, samitiPhotoHero } from '../components/SubPageShell'
 import { localDigits } from '../components/StambhaPillar'
 import { supabase } from '../lib/supabaseClient'
 import { initials } from '../lib/smriti'
@@ -51,7 +51,7 @@ export default function CommitteePage() {
   }
 
   return <SubPageShell page={page} className="cm-page">
-    <section className="hv-hero cm-hero">
+    <section className="hv-hero hv-hero-photo cm-hero" style={samitiPhotoHero('linear-gradient(160deg,rgba(20,52,40,.88) 0%,rgba(40,80,64,.60) 50%,rgba(122,36,48,.80) 100%)')}>
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('cm_kicker')}</span>
         <h1>{t('cm_title')}</h1>

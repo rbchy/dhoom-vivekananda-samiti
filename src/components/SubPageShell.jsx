@@ -37,6 +37,11 @@ export default function SubPageShell({ page, className = '', children }) {
   </div>
 }
 
+// The photo of the Samiti office and Community Clinic behind a page title (class "hv-hero-photo").
+// tint: the page's own colours laid over the photo so the white title stays readable.
+export const SAMITI_PHOTO = 'images/samiti-office-clinic.webp'
+export const samitiPhotoHero = tint => ({ backgroundImage: `${tint},url("${home}${SAMITI_PHOTO}")` })
+
 // Bangla text for Bangla, English for every other language (falls back to the other one)
 export const pickText = (item, field, language) => (language === 'bn' ? item?.[`${field}_bn`] || item?.[`${field}_en`] : item?.[`${field}_en`] || item?.[`${field}_bn`]) || ''
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CalendarDays, MapPin, MessageSquareQuote, PenLine, Quote } from 'lucide-react'
 import Modal from '../components/Modal'
-import SubPageShell, { newId, pickText, useSubPage } from '../components/SubPageShell'
+import SubPageShell, { newId, pickText, useSubPage, samitiPhotoHero } from '../components/SubPageShell'
 import { supabase } from '../lib/supabaseClient'
 import { checkPhone, EMAIL_PATTERN } from '../lib/validation'
 import { ORGANISATIONS } from '../i18n-org'
@@ -40,7 +40,7 @@ export default function VisitsPage() {
   }, [visits])
 
   return <SubPageShell page={page} className="hv-page">
-    <section className="hv-hero">
+    <section className="hv-hero hv-hero-photo" style={samitiPhotoHero('linear-gradient(160deg,rgba(78,23,32,.88) 0%,rgba(122,36,48,.62) 50%,rgba(168,69,31,.80) 100%)')}>
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('hv_kicker')}</span>
         <h1>{t('hv_title')}</h1>
