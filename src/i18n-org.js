@@ -8,9 +8,10 @@
 // coverPosition (optional): which part of the cover stays in view when it is cropped, e.g. 'center top' keeps a sign at the top.
 // coverFit (optional): 'contain' — on wide screens show the whole cover photo over a blurred copy of it instead of cropping;
 // 'tall' — the photo fills the full width and the banner is taller, so more of a tall photo shows (cropped at coverPosition).
+// 'full' — the whole photo is shown, nothing cropped, on the home-page card and at the top of the institution's page.
 export const ORGANISATIONS = [
   // deities: words that pick this temple's deities from Admin → Mission & Deities (their picture, puja time and pranam mantra)
-  { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির', deities: ['kali'],
+  { id: 'dakshin-kalika', type: 'temple', cover: 'images/dakshin-kalika-mandir.webp', coverFit: 'full', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির', deities: ['kali'],
     // Enlistment certificate from the Hindu Religious Welfare Trust (shown on the institution's page)
     registration: { image: 'images/registration/dakshin-kalika-registration.webp', number_bn: '১২২৫৫/চট্ট/মীর/৪৯', number_en: '12255/Chatta/Mir/49', date: '2022-03-06' } },
   { id: 'durga', type: 'temple', name_en: 'Sree Sree Basanti Durga Mandir', name_bn: 'শ্রীশ্রী বাসন্তী দুর্গা মন্দির', established: '2010-03-22', deities: ['durga'],

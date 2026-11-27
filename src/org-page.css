@@ -102,3 +102,7 @@
 @media(max-width:700px){.org-hero-contain::after{background:linear-gradient(180deg,rgba(30,8,6,.1),rgba(30,8,6,.8)),var(--cover) var(--cover-position)/cover no-repeat}}
 /* A tall cover photo that fills the full width (org.coverFit 'tall'): a taller banner shows more of it */
 .org-hero.org-hero-tall{min-height:clamp(320px,48vw,680px)}
+
+/* coverFit 'full': show the whole cover photo, nothing cropped */
+.org-hero-full{background:#3a2418;display:flex;justify-content:center}
+.org-hero-full img{display:block;width:100%;max-width:1500px;height:auto}

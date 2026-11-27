@@ -81,12 +81,16 @@ export default function OrgPage() {
       </div>
     </header>
 
+    {org.cover && org.coverFit === 'full' ? <section className="org-hero-full">
+      <img src={cover} alt={title} />
+      <h1 className="sr-only">{title}</h1>
+    </section> :
     <section className={org.cover && org.coverFit === 'contain' ? 'org-hero org-hero-contain' : org.cover && org.coverFit === 'tall' ? 'org-hero org-hero-tall' : 'org-hero'} style={org.cover && org.coverFit === 'contain'
       ? { '--cover': `url("${cover}")`, '--cover-position': org.coverPosition || 'center' }
       : { backgroundImage: `linear-gradient(180deg,rgba(30,8,6,.15),rgba(30,8,6,.82)),url("${cover}")`, ...(org.cover && org.coverPosition ? { backgroundPosition: org.coverPosition } : {}) }}>
       {/* The name and logo are in the top bar; the photo stays clear */}
       <h1 className="sr-only">{title}</h1>
-    </section>
+    </section>}
 
     <nav className="org-switch" aria-label={t('nav_institutions')}>
       {ORGANISATIONS.map(o => <Link key={o.id} to={`/org/${o.id}`} className={o.id === org.id ? 'active' : ''} aria-current={o.id === org.id ? 'page' : undefined}>{language === 'bn' ? o.name_bn : o.name_en}</Link>)}

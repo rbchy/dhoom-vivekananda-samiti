@@ -294,10 +294,9 @@ function App() {
         </div>
       </div>
       <section className="feature-grid" aria-label={t('nav_about')}>{featureCards.map(({ key, href, Icon }) => <a href={href} className="feature-card" key={key}><span className="feature-icon"><Icon size={33} strokeWidth={1.55} /></span><h2>{t(`${key}_t`)}</h2><p>{t(`${key}_c`)}</p><span className="feature-action">{t(`${key}_a`)} <b>→</b></span></a>)}</section>
-      <section className="content-section welcome-section" id="about"><div><span className="section-eyebrow">{t('welcome_eyebrow')}</span><h1>{t('welcome_title')}</h1><p>{t('welcome_p1')}</p>
+      <section className="content-section welcome-section" id="about"><div><figure className="welcome-office"><img src={`${import.meta.env.BASE_URL}images/samiti-office-front.webp`} alt={t('brand_name')} width="1400" height="1054" loading="lazy" /></figure><span className="section-eyebrow">{t('welcome_eyebrow')}</span><h1>{t('welcome_title')}</h1><p>{t('welcome_p1')}</p>
         {TRANSLATIONS[language]?.welcome_history && <p>{TRANSLATIONS[language].welcome_history}</p>}
         {TRANSLATIONS[language]?.welcome_heritage && <p>{TRANSLATIONS[language].welcome_heritage}</p>}
-        <figure className="welcome-watercolor"><img src={`${import.meta.env.BASE_URL}images/samiti-office-watercolor.webp`} alt={t('brand_name')} width="1000" height="753" loading="lazy" /></figure>
         <h3 className="acts-title">{t('acts_title')}</h3>
         <ul className="acts-grid" id="services">{ACTIVITIES.map(act => { const Icon = ORG_ICONS[act.icon] || Landmark; const org = ORGANISATIONS.find(o => o.id === act.id); const name = org ? (language === 'bn' ? org.name_bn : org.name_en) : t(`act_${act.id}_t`); return <li key={act.id} id={`act-${act.id}`} className={`act-item act-${act.icon}`}><span className="act-icon"><Icon size={20} strokeWidth={1.8} /></span><div><strong>{pageOf(act.id) ? <Link to={pagePath(act.id)}>{name}</Link> : name}</strong><small>{t(`act_${act.id}_d`)}</small></div></li> })}</ul>
         <p>{t('welcome_p2')}</p>
@@ -316,7 +315,7 @@ function App() {
       <section className="org-section" id="organisations">
         <span className="section-eyebrow">{t('orgs_eyebrow')}</span><h2>{t('orgs_title')}</h2><p className="org-intro">{t('orgs_p')}</p>
         <div className="org-grid">{ORGANISATIONS.map(org => { const Icon = ORG_ICONS[org.type] || Landmark; const photos = orgPhotos(org.id); return <article className={`org-card org-${org.type}`} id={`org-${org.id}`} key={org.id}>
-          {org.cover ? <Link className="org-cover" to={`/org/${org.id}`} aria-label={`${t('org_details')} — ${org.name_en}`}><img src={`${import.meta.env.BASE_URL}${org.cover}`} alt={language === 'bn' ? org.name_bn : org.name_en} loading="lazy" style={org.coverPosition ? { objectPosition: org.coverPosition } : undefined} /></Link>
+          {org.cover ? <Link className={org.coverFit === 'full' ? 'org-cover org-cover-full' : 'org-cover'} to={`/org/${org.id}`} aria-label={`${t('org_details')} — ${org.name_en}`}><img src={`${import.meta.env.BASE_URL}${org.cover}`} alt={language === 'bn' ? org.name_bn : org.name_en} loading="lazy" style={org.coverPosition ? { objectPosition: org.coverPosition } : undefined} /></Link>
             : photos[0] && <button type="button" className="org-cover" onClick={() => showOrgPhotos(org.id)} aria-label={`${t('org_view_photos')} — ${org.name_en}`}><img src={photos[0].image_url} alt={pick(photos[0], 'title', language) || org.name_en} loading="lazy" /></button>}
           <div className="org-card-body">
             <span className="org-icon"><Icon size={30} strokeWidth={1.5} /></span>
