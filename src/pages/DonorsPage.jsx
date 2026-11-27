@@ -30,7 +30,7 @@ export default function DonorsPage() {
   const [first, ...rest] = donors || []
 
   return <SubPageShell page={page} className="dn-page">
-    <PageBanner alt={t('brand_name')} />
+    <PageBanner alt={t('brand_name')} whole />
     <section className="hv-hero dn-hero">
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('dn_kicker')}</span>

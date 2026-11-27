@@ -40,7 +40,7 @@ export default function VisitsPage() {
   }, [visits])
 
   return <SubPageShell page={page} className="hv-page">
-    <PageBanner alt={t('brand_name')} />
+    <PageBanner alt={t('brand_name')} whole />
     <section className="hv-hero">
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('hv_kicker')}</span>
