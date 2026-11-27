@@ -93,3 +93,10 @@
 .org-deity blockquote{margin:0;padding:8px 10px;border-top:1px dashed #e6d3a8;color:#5b4636;font-size:14px;line-height:1.6}
 .org-deity blockquote span{display:block}
 @media(max-width:560px){.org-bar-logo{width:34px;height:34px}}
+
+/* A tall cover photo (org.coverFit 'contain'): whole photo in the middle over a blurred copy of itself on wide screens;
+   on phones it fills the banner, cropped at --cover-position */
+.org-hero-contain{position:relative;isolation:isolate;overflow:hidden;background:#3a2418}
+.org-hero-contain::before{content:'';position:absolute;inset:-30px;background:var(--cover) center/cover no-repeat;filter:blur(22px) brightness(.55);z-index:-2}
+.org-hero-contain::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,8,6,0) 45%,rgba(30,8,6,.8)),var(--cover) center/contain no-repeat;z-index:-1}
+@media(max-width:700px){.org-hero-contain::after{background:linear-gradient(180deg,rgba(30,8,6,.1),rgba(30,8,6,.8)),var(--cover) var(--cover-position)/cover no-repeat}}
