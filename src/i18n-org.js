@@ -21,7 +21,7 @@ export const ORGANISATIONS = [
   { id: 'shiv', type: 'temple', name_en: 'Sree Sree Shiv Mandir', name_bn: 'শ্রীশ্রী শিব মন্দির', deities: ['shiv', 'mahadev', 'ganga'],
     desc_en: 'Two deities are worshipped in this temple: Lord Shiva (Mahadev) as the Shiva Linga, and Ma Ganga, who flows from his matted hair. Both receive daily puja every morning from 7 to 8 AM, and devotees offer water, flowers and prayers to them together. Monday Shiva Puja, the month of Shravan and Maha Shivaratri are the great days of the temple.',
     desc_bn: 'এই মন্দিরে দুই ঠাকুর পূজিত হন — শিবলিঙ্গরূপে দেবাদিদেব মহাদেব আর তাঁর জটা থেকে প্রবাহিত পতিতপাবনী মা গঙ্গা। প্রতিদিন সকাল ৭টা থেকে ৮টা পর্যন্ত দুজনেরই নিত্যপূজা হয়, ভক্তরা একসঙ্গে দুজনকে জল, ফুল ও প্রণাম নিবেদন করেন। সোমবারের শিবপূজা, শ্রাবণ মাস ও মহাশিবরাত্রি এই মন্দিরের বিশেষ দিন।' },
-  { id: 'ramakrishna', cover: 'images/ramakrishna-mandir.webp', coverPosition: 'center top', coverFit: 'tall', type: 'temple', name_en: 'Sree Sree Ramakrishna Mandir', name_bn: 'শ্রীশ্রী রামকৃষ্ণ মন্দির', deities: ['ramakrishna', 'sarada', 'vivekananda'] },
+  { id: 'ramakrishna', cover: 'images/ramakrishna-mandir.webp', coverPosition: 'center top', type: 'temple', name_en: 'Sree Sree Ramakrishna Mandir', name_bn: 'শ্রীশ্রী রামকৃষ্ণ মন্দির', deities: ['ramakrishna', 'sarada', 'vivekananda'] },
   { id: 'gourishankar', type: 'cremation', name_en: 'Sree Sree GouriShankar Funeral Temple', name_bn: 'শ্রীশ্রী গৌরীশংকর শ্মশান মন্দির' }
 ]
 
