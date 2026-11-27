@@ -315,7 +315,8 @@ function App() {
       <section className="org-section" id="organisations">
         <span className="section-eyebrow">{t('orgs_eyebrow')}</span><h2>{t('orgs_title')}</h2><p className="org-intro">{t('orgs_p')}</p>
         <div className="org-grid">{ORGANISATIONS.map(org => { const Icon = ORG_ICONS[org.type] || Landmark; const photos = orgPhotos(org.id); return <article className={`org-card org-${org.type}`} id={`org-${org.id}`} key={org.id}>
-          {photos[0] && <button type="button" className="org-cover" onClick={() => showOrgPhotos(org.id)} aria-label={`${t('org_view_photos')} — ${org.name_en}`}><img src={photos[0].image_url} alt={pick(photos[0], 'title', language) || org.name_en} loading="lazy" /></button>}
+          {org.cover ? <Link className="org-cover" to={`/org/${org.id}`} aria-label={`${t('org_details')} — ${org.name_en}`}><img src={`${import.meta.env.BASE_URL}${org.cover}`} alt={language === 'bn' ? org.name_bn : org.name_en} loading="lazy" /></Link>
+            : photos[0] && <button type="button" className="org-cover" onClick={() => showOrgPhotos(org.id)} aria-label={`${t('org_view_photos')} — ${org.name_en}`}><img src={photos[0].image_url} alt={pick(photos[0], 'title', language) || org.name_en} loading="lazy" /></button>}
           <div className="org-card-body">
             <span className="org-icon"><Icon size={30} strokeWidth={1.5} /></span>
             <div><span className="org-type">{t(`org_type_${org.type}`)}</span><h3 lang={language === 'bn' ? 'bn' : undefined}>{language === 'bn' ? org.name_bn : org.name_en}</h3>{language !== 'bn' && <p className="org-bengali" lang="bn">{org.name_bn}</p>}
