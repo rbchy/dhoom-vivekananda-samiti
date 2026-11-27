@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Globe2, Mail, MapPin, Phone, Plus, Search } from 'lucide-react'
-import SubPageShell, { newId, pickText, useSubPage } from '../components/SubPageShell'
+import SubPageShell, { newId, pickText, useSubPage, PageBanner } from '../components/SubPageShell'
 import { supabase } from '../lib/supabaseClient'
 import { checkPhone, EMAIL_PATTERN } from '../lib/validation'
 import { BHAVADHARA_TYPES } from '../i18n-visits'
@@ -43,6 +43,7 @@ export default function BhavadharaPage() {
   }
 
   return <SubPageShell page={page} className="bd-page">
+    <PageBanner src="images/holy-trio.webp" alt="Sri Ramakrishna, Holy Mother Sri Sarada Devi and Swami Vivekananda" framed fill="#a62f35" />
     <section className="hv-hero bd-hero">
       <div className="hv-hero-text">
         <span className="hv-kicker">{t('bd_kicker')}</span>

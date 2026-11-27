@@ -37,10 +37,14 @@ export default function SubPageShell({ page, className = '', children }) {
   </div>
 }
 
-// The photo of the Samiti office and Community Clinic behind a page title (class "hv-hero-photo").
-// tint: the page's own colours laid over the photo so the white title stays readable.
+// A photo across the top of a page, shown on its own; the page title and text follow below it.
+// framed: a smaller picture shown whole in the middle of a band of the colour `fill` (instead of cropped to the full width)
 export const SAMITI_PHOTO = 'images/samiti-office-clinic.webp'
-export const samitiPhotoHero = tint => ({ backgroundImage: `${tint},url("${home}${SAMITI_PHOTO}")` })
+export function PageBanner({ src = SAMITI_PHOTO, alt, framed = false, fill, position }) {
+  return <figure className={framed ? 'page-banner framed' : 'page-banner'} style={fill ? { background: fill } : undefined}>
+    <img src={`${home}${src}`} alt={alt} style={position ? { objectPosition: position } : undefined} />
+  </figure>
+}
 
 // Bangla text for Bangla, English for every other language (falls back to the other one)
 export const pickText = (item, field, language) => (language === 'bn' ? item?.[`${field}_bn`] || item?.[`${field}_en`] : item?.[`${field}_en`] || item?.[`${field}_bn`]) || ''
