@@ -297,6 +297,7 @@ function App() {
       <section className="content-section welcome-section" id="about"><div><span className="section-eyebrow">{t('welcome_eyebrow')}</span><h1>{t('welcome_title')}</h1><p>{t('welcome_p1')}</p>
         {TRANSLATIONS[language]?.welcome_history && <p>{TRANSLATIONS[language].welcome_history}</p>}
         {TRANSLATIONS[language]?.welcome_heritage && <p>{TRANSLATIONS[language].welcome_heritage}</p>}
+        <figure className="welcome-watercolor"><img src={`${import.meta.env.BASE_URL}images/samiti-office-watercolor.webp`} alt={t('brand_name')} width="1000" height="753" loading="lazy" /></figure>
         <h3 className="acts-title">{t('acts_title')}</h3>
         <ul className="acts-grid" id="services">{ACTIVITIES.map(act => { const Icon = ORG_ICONS[act.icon] || Landmark; const org = ORGANISATIONS.find(o => o.id === act.id); const name = org ? (language === 'bn' ? org.name_bn : org.name_en) : t(`act_${act.id}_t`); return <li key={act.id} id={`act-${act.id}`} className={`act-item act-${act.icon}`}><span className="act-icon"><Icon size={20} strokeWidth={1.8} /></span><div><strong>{pageOf(act.id) ? <Link to={pagePath(act.id)}>{name}</Link> : name}</strong><small>{t(`act_${act.id}_d`)}</small></div></li> })}</ul>
         <p>{t('welcome_p2')}</p>
