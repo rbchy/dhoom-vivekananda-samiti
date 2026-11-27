@@ -3,6 +3,8 @@
 
 // The institutions under the Samiti. Bangla name is shown for Bangla, English for every other language.
 // type: 'temple' | 'clinic' | 'cremation' — decides the icon and the small label on each card.
+// cover (optional): a fixed photo in public/ shown on the home-page card and at the top of the institution's page,
+// instead of its first gallery photo (the clinic uses the photo of the Samiti office and clinic building).
 export const ORGANISATIONS = [
   // deities: words that pick this temple's deities from Admin → Mission & Deities (their picture, puja time and pranam mantra)
   { id: 'dakshin-kalika', type: 'temple', name_en: 'Sree Sree Dokkhin Kalika Mandir', name_bn: 'শ্রীশ্রী দক্ষিণকালিকা মন্দির', deities: ['kali'],
@@ -11,7 +13,7 @@ export const ORGANISATIONS = [
   { id: 'durga', type: 'temple', name_en: 'Sree Sree Basanti Durga Mandir', name_bn: 'শ্রীশ্রী বাসন্তী দুর্গা মন্দির', established: '2010-03-22', deities: ['durga'],
     desc_en: 'Established on 22 March 2010, the mandap holds the ten-armed Mother Durga with Lakshmi, Saraswati, Kartik, Ganesh and Lord Shiva. Basanti Puja, the worship of the Mother in spring, is the temple\'s main festival.',
     desc_bn: '২০১০ সালের ২২ মার্চ প্রতিষ্ঠিত এই মন্দিরের মণ্ডপে লক্ষ্মী, সরস্বতী, কার্তিক, গণেশ ও দেবাদিদেব মহাদেবসহ দশভুজা মা দুর্গা অধিষ্ঠিত। বসন্তকালে মায়ের আরাধনা, বাসন্তী পূজা, এই মন্দিরের প্রধান উৎসব।' },
-  { id: 'clinic', type: 'clinic', name_en: 'Dhoom Vivekananda Samiti Community Clinic', name_bn: 'ধুম বিবেকানন্দ সমিতি কমিউনিটি ক্লিনিক' },
+  { id: 'clinic', type: 'clinic', cover: 'images/samiti-office-clinic.webp', name_en: 'Dhoom Vivekananda Samiti Community Clinic', name_bn: 'ধুম বিবেকানন্দ সমিতি কমিউনিটি ক্লিনিক' },
   // Two deities are worshipped here: Lord Shiva and Ma Ganga
   { id: 'shiv', type: 'temple', name_en: 'Sree Sree Shiv Mandir', name_bn: 'শ্রীশ্রী শিব মন্দির', deities: ['shiv', 'mahadev', 'ganga'],
     desc_en: 'Two deities are worshipped in this temple: Lord Shiva (Mahadev) as the Shiva Linga, and Ma Ganga, who flows from his matted hair. Both receive daily puja every morning from 7 to 8 AM, and devotees offer water, flowers and prayers to them together. Monday Shiva Puja, the month of Shravan and Maha Shivaratri are the great days of the temple.',
