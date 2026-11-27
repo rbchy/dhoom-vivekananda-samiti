@@ -100,3 +100,5 @@
 .org-hero-contain::before{content:'';position:absolute;inset:-30px;background:var(--cover) center/cover no-repeat;filter:blur(22px) brightness(.55);z-index:-2}
 .org-hero-contain::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,8,6,0) 45%,rgba(30,8,6,.8)),var(--cover) center/contain no-repeat;z-index:-1}
 @media(max-width:700px){.org-hero-contain::after{background:linear-gradient(180deg,rgba(30,8,6,.1),rgba(30,8,6,.8)),var(--cover) var(--cover-position)/cover no-repeat}}
+/* A tall cover photo that fills the full width (org.coverFit 'tall'): a taller banner shows more of it */
+.org-hero.org-hero-tall{min-height:clamp(320px,48vw,680px)}

@@ -81,7 +81,7 @@ export default function OrgPage() {
       </div>
     </header>
 
-    <section className={org.cover && org.coverFit === 'contain' ? 'org-hero org-hero-contain' : 'org-hero'} style={org.cover && org.coverFit === 'contain'
+    <section className={org.cover && org.coverFit === 'contain' ? 'org-hero org-hero-contain' : org.cover && org.coverFit === 'tall' ? 'org-hero org-hero-tall' : 'org-hero'} style={org.cover && org.coverFit === 'contain'
       ? { '--cover': `url("${cover}")`, '--cover-position': org.coverPosition || 'center' }
       : { backgroundImage: `linear-gradient(180deg,rgba(30,8,6,.15),rgba(30,8,6,.82)),url("${cover}")`, ...(org.cover && org.coverPosition ? { backgroundPosition: org.coverPosition } : {}) }}>
       {/* The name and logo are in the top bar; the photo stays clear */}
