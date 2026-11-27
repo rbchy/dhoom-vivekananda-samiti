@@ -139,3 +139,10 @@
 /* The whole photo of the Samiti office and Community Clinic above "Support the Temple / মন্দিরের পাশে দাঁড়ান" */
 .donate-photo{margin:0 auto 26px;max-width:900px}
 .donate-photo img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 12px 30px rgba(71,43,25,.15)}
+
+.welcome-office{margin:40px 0 22px}
+@media(max-width:560px){.welcome-office{margin-top:0}}
+.content-section .welcome-office img{display:block;width:100%;height:auto;aspect-ratio:1400/1054;object-fit:cover;border-radius:8px;box-shadow:0 10px 28px rgba(60,30,20,.18)}
+
+/* coverFit 'full': the whole photo on the home-page card, nothing cropped */
+.org-cover.org-cover-full img{height:auto}
