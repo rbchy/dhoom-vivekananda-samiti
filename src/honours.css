@@ -1,7 +1,11 @@
 /* Honoured donors (/donors) and Samiti committee (/committee) */
 .dn-page,.cm-page{background:#fdf8f0;min-height:100vh;display:flex;flex-direction:column}
 .dn-page>main,.cm-page>main{flex:1}
-.dn-hero{background:linear-gradient(160deg,#5a3a0e 0%,#8a5a14 45%,#7a2430 100%)}
+.dn-hero{background:linear-gradient(160deg,#5a3a0e 0%,#8a5a14 45%,#7a2430 100%);background-size:cover;background-position:center 40%}
+/* The photo behind the title: the Samiti office and Community Clinic (set in DonorsPage.jsx) */
+.dn-hero{min-height:clamp(260px,34vw,420px);display:flex;align-items:center}
+.dn-hero .hv-hero-text{width:100%}
+.dn-hero h1,.dn-hero p{text-shadow:0 1px 4px rgba(0,0,0,.45)}
 .cm-hero{background:linear-gradient(160deg,#1f4a3a 0%,#2f5d4c 45%,#7a2430 100%)}
 .dn-count{display:inline-flex!important;align-items:center;gap:7px;margin-top:16px!important;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.14);font-weight:700}
 .dn-main{max-width:1180px;width:100%;margin:0 auto;padding:clamp(28px,5vw,56px) clamp(16px,4vw,32px)}
