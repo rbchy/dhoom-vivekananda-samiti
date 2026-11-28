@@ -12,7 +12,7 @@ import { ORGANISATIONS, SERVICES } from '../i18n-org'
 const LIMITS = { title: 150, description: 1000 }
 const CATEGORIES = { festivals: 'Festivals / উৎসব', worship: 'Worship / পূজা', community: 'Community / সমাজ', temple: 'Temple / মন্দির', clinic: 'Clinic / ক্লিনিক', seva: 'Service work / সেবাকাজ' }
 // Which organisation a photo belongs to ('' = the Samiti in general)
-const GENERAL_LABEL = 'Samiti (general) / সমিতি (সাধারণ)'
+const GENERAL_LABEL = 'Dhoom Vivekananda Samiti (Sheba) / ধুম বিবেকানন্দ সমিতি (সেবা)'
 // institutions and service works with their own page (their photos show on that page)
 const ORG_LABELS = Object.fromEntries([...ORGANISATIONS, ...SERVICES].map(org => [org.id, `${org.type === 'service' ? 'Seva: ' : ''}${org.name_en} / ${org.name_bn}`]))
 const PAGES = [...ORGANISATIONS, ...SERVICES]
