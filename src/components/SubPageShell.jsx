@@ -50,6 +50,35 @@ export function PageBanner({ src = SAMITI_PHOTO, alt, framed = false, whole = fa
   </figure>
 }
 
+// Several photos of the same kind taking turns across the top of a page (fade every few seconds).
+// Shown whole in the middle of a band of the colour `fill`, like PageBanner framed. Stops on hover or keyboard focus,
+// can be moved with the arrows or the dots, and does not move by itself for visitors who ask for reduced motion.
+export function PageSlideshow({ slides, fill, interval = 5000, label = 'Photos' }) {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const count = slides.length
+  const go = step => setIndex(i => (i + step + count) % count)
+  useEffect(() => {
+    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    if (paused || still || count < 2) return
+    const timer = setInterval(() => setIndex(i => (i + 1) % count), interval)
+    return () => clearInterval(timer)
+  }, [paused, count, interval])
+  let touchX = null
+  return <figure className="page-banner framed page-slideshow" style={fill ? { background: fill } : undefined} aria-roledescription="carousel" aria-label={label}
+    onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
+    onTouchStart={e => { touchX = e.touches[0].clientX }} onTouchEnd={e => { if (touchX === null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); touchX = null }}>
+    <div className="page-slides">
+      {slides.map((slide, i) => <img key={slide.src} src={`${home}${slide.src}`} alt={slide.alt} className={i === index ? 'active' : ''} aria-hidden={i !== index} loading={i === 0 ? 'eager' : 'lazy'} />)}
+    </div>
+    {count > 1 && <>
+      <button type="button" className="page-slide-arrow prev" onClick={() => go(-1)} aria-label="Previous photo">‹</button>
+      <button type="button" className="page-slide-arrow next" onClick={() => go(1)} aria-label="Next photo">›</button>
+      <div className="page-slide-dots">{slides.map((slide, i) => <button key={slide.src} type="button" className={i === index ? 'active' : ''} aria-label={slide.alt} aria-current={i === index ? 'true' : undefined} onClick={() => setIndex(i)} />)}</div>
+    </>}
+  </figure>
+}
+
 // Bangla text for Bangla, English for every other language (falls back to the other one)
 export const pickText = (item, field, language) => (language === 'bn' ? item?.[`${field}_bn`] || item?.[`${field}_en`] : item?.[`${field}_en`] || item?.[`${field}_bn`]) || ''
 

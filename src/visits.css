@@ -97,3 +97,16 @@
 .page-banner.whole{position:relative;overflow:hidden;display:flex;justify-content:center;isolation:isolate}
 .page-banner.whole::before{content:'';position:absolute;inset:-30px;background:var(--banner-img) center/cover no-repeat;filter:blur(24px) brightness(.6);z-index:-1}
 .page-banner.whole img{width:auto;max-width:100%;height:auto;max-height:clamp(260px,60vw,640px);object-fit:contain}
+
+/* PageSlideshow: photos of the same kind taking turns, shown whole in a coloured band */
+.page-slideshow{position:relative}
+.page-slides{position:relative;width:100%;height:clamp(240px,38vw,460px)}
+.page-banner.framed .page-slides img{position:absolute;inset:0;margin:auto;width:auto;height:100%;max-width:100%;max-height:none;object-fit:contain;opacity:0;transition:opacity .9s ease}
+.page-banner.framed .page-slides img.active{opacity:1}
+.page-slide-arrow{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font-size:30px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0 0 4px}
+.page-slide-arrow:hover,.page-slide-arrow:focus-visible{background:rgba(0,0,0,.6)}
+.page-slide-arrow.prev{left:clamp(6px,2vw,24px)}.page-slide-arrow.next{right:clamp(6px,2vw,24px)}
+.page-slide-dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:8px;line-height:1}
+.page-slide-dots button{width:10px;height:10px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer}
+.page-slide-dots button.active{background:#ffd66b;transform:scale(1.25)}
+@media (prefers-reduced-motion:reduce){.page-banner.framed .page-slides img{transition:none}}
