@@ -29,6 +29,11 @@ export const ORGANISATIONS = [
 // Service work of the Samiti that has its own page (/service/<id>) but is not an institution
 export const SERVICES = [
   { id: 'clothes', type: 'service', name_en: 'Annual Clothes Distribution', name_bn: 'বার্ষিক বস্ত্র বিতরণ',
+    cover: 'images/clothes-distribution.webp', coverFit: 'full',
+    cover_title_en: 'Relief distribution for flood-affected families',
+    cover_title_bn: 'বন্যায় ক্ষতিগ্রস্তদের মাঝে ত্রাণ সামগ্রী বিতরণ',
+    cover_caption_en: 'New clothes and relief materials were given to families affected by the flood, organised by Ramakrishna Mission Sevashrama, Chattogram, with the support of Vivekananda Study and Philanthropic Center, New York, USA.',
+    cover_caption_bn: 'রামকৃষ্ণ মিশন সেবাশ্রম, চট্টগ্রাম-এর উদ্যোগে এবং বিবেকানন্দ স্টাডি অ্যান্ড ফিলানথ্রপিক সেন্টার, নিউইয়র্ক, ইউ.এস.এ.-এর সহযোগিতায় বন্যায় ক্ষতিগ্রস্ত পরিবারগুলোর মাঝে নতুন বস্ত্র ও ত্রাণ সামগ্রী বিতরণ করা হয়।',
     desc_en: 'Every year, before the winter and the great festivals, the Samiti gives new clothes and blankets to distressed and poor families of the area, without any distinction. Devotees and well-wishers make it possible with their gifts of money and clothes.',
     desc_bn: 'প্রতি বছর শীতের আগে ও বড় উৎসবের সময় সমিতি এলাকার দুঃস্থ ও দরিদ্র পরিবারের মাঝে কোনো ভেদাভেদ ছাড়াই নতুন বস্ত্র ও কম্বল বিতরণ করে। ভক্ত ও শুভানুধ্যায়ীদের অর্থ ও বস্ত্র দানে এই সেবা সম্ভব হয়।' },
   { id: 'gita', type: 'service', name_en: 'Gita Learning Centre for Young Children', name_bn: 'শিশুদের জন্য গীতা শিক্ষা কেন্দ্র',

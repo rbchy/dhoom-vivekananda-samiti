@@ -82,7 +82,14 @@ export default function OrgPage() {
     </header>
 
     {org.cover && org.coverFit === 'full' ? <section className="org-hero-full">
-      <img src={cover} alt={title} />
+      <figure>
+        <img src={cover} alt={pick(org, 'cover_title', language) || title} />
+        {/* optional caption for the cover photo (cover_title_en/bn, cover_caption_en/bn) */}
+        {(org.cover_title_en || org.cover_caption_en) && <figcaption>
+          {pick(org, 'cover_title', language) && <strong>{pick(org, 'cover_title', language)}</strong>}
+          {pick(org, 'cover_caption', language) && <span>{pick(org, 'cover_caption', language)}</span>}
+        </figcaption>}
+      </figure>
       <h1 className="sr-only">{title}</h1>
     </section> :
     <section className={org.cover && org.coverFit === 'contain' ? 'org-hero org-hero-contain' : org.cover && org.coverFit === 'tall' ? 'org-hero org-hero-tall' : 'org-hero'} style={org.cover && org.coverFit === 'contain'

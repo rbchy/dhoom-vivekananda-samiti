@@ -105,4 +105,8 @@
 
 /* coverFit 'full': show the whole cover photo, nothing cropped */
 .org-hero-full{background:#3a2418;display:flex;justify-content:center}
-.org-hero-full img{display:block;width:100%;max-width:1500px;height:auto}
+.org-hero-full figure{margin:0;width:100%;max-width:1500px}
+.org-hero-full img{display:block;width:100%;height:auto}
+.org-hero-full figcaption{padding:14px clamp(16px,4vw,40px) 18px;color:#f7ead6;line-height:1.55;text-align:center}
+.org-hero-full figcaption strong{display:block;font-size:clamp(18px,2.2vw,24px);color:#ffd66b;margin-bottom:4px}
+.org-hero-full figcaption span{display:block;font-size:clamp(14px,1.6vw,17px);max-width:900px;margin:0 auto}
